@@ -1,0 +1,247 @@
+
+body {
+ margin: 0;
+ padding: 10px;
+ font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+ font-size: 11px;
+ color: black; /* #4F5155; */
+ background: white;
+}
+
+a {
+ color: #8B0D00;
+ background-color: transparent;
+ text-decoration: none;
+ font-weight: bold;
+}
+
+a:visited {
+ color: #8B0D00;
+ background-color: transparent;
+ text-decoration: none;
+}
+
+a:hover {
+ color: #000;
+ text-decoration: none;
+ background-color: transparent;
+}
+
+#header {
+ margin: 0;
+ padding: 0;
+}
+
+#header_left {
+ background-color: transparent;
+ float: left;
+ padding: 21px 0 0 32px;
+ margin: 0
+}
+
+#header_right {
+ background-color: transparent;
+ float: right;
+ text-align: right;
+ padding: 35px 50px 20px 0;
+ margin: 0
+}
+
+#footer {
+ margin: 20px 0 15px 0;
+ padding: 0;
+}
+
+#footer p {
+ font-size: 10px;
+ color: #999;
+ text-align: center;
+}
+
+#outer {
+ margin: 30px 40px 0 40px;
+}
+
+img {
+ padding:0;
+ border: 0;
+ margin: 0;
+}
+
+.nopad {
+ padding:0;
+ border: 0;
+ margin: 0;
+}
+
+table {
+ background-color: #efefef;
+}
+
+th {
+ background-color: #eee;
+ font-weight: bold;
+ padding: 6px;
+ text-align: left;
+}
+
+td {
+ background-color: #fff;
+ padding: 6px;
+}
+
+
+form {
+ margin: 0;
+ padding: 0;
+ padding-top:15px;
+}
+
+.input {
+ font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+ font-size: 11px;
+ width: 600px;
+ color: #333;
+ border: 1px solid #B3B4BD;
+ font-size: 11px;
+ height: 2em;
+ padding: 0;
+ margin: 0;
+}
+
+/* The following are the styles initially set up, with
+ * only the membershipID (MSID) displayed. The fix for
+ * 2008, however, meant an extra column had to be added.
+ * Hopefully for 2009 we can revert to this one.
+
+table#subsPayments input {
+	width: 50px;
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td {
+	width:150px;
+}
+table#subsPayments td:first-child+td+td+td+td+td{
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td+td+td+td+td > input {
+	width: 76px;
+	text-align: left;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td > input {
+	width: 20px;
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td+td+td+td+td+td > input {
+	width: 200px;
+	text-align: left;
+}
+*/
+
+/* The following subsPayment specs are for 2008 only (I hope) */
+table#subsPayments input {  /* Default input field width */
+	width: 50px;
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td+td {  /* MembershipName */
+	width:90px;
+}
+
+table#subsPayments td:first-child+td+td {  /* IDs */
+	width:37px;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td {  /* Login */
+	width:50px;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td {  /* Fee */
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td+td+td+td+td+td > input {  /* Date Paid */
+	width: 76px;
+	text-align: left;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td+td > input {  /* Paid */
+	width: 20px;
+	text-align: center;
+}
+
+table#subsPayments td:first-child+td+td+td+td+td+td+td+td+td+td+td+td > input {  /* Notes */
+	width: 250px;
+	text-align: left;
+}
+
+.textarea {
+ font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+ font-size: 12px;
+ width: 600px;
+ color: #333;
+ border: 1px solid #B3B4BD;
+ padding: 0;
+ margin: 0;
+}
+
+.select {
+ background-color: #fff;
+ font-size:  11px;
+ font-weight: normal;
+ color: #333;
+ padding: 0;
+ margin: 0 0 3px 0;
+}
+
+.checkbox {
+ background-color: transparent;
+ padding: 0;
+ border: 0;
+}
+
+.submit {
+ background-color: #C0C0C0;
+ color: transparent;
+ font-weight: bold;
+ border: 1px solid #000;
+ margin: 6px 0 0 0;
+ padding: 1px 5px 1px 5px;
+}
+
+/* Various odd ball additions of Richard's */
+
+.FormReloadMessage {
+	color: #CC0000;
+	font-size:15px;
+	font-weight: bold;
+}
+
+
+.ColumnChanged {
+	color: blue;
+}
+
+.ColumnSuspect {
+	background-color: #FF7777;
+}
+
+.PaymentFormYearSelect {
+	margin-right: 40px;
+}
+
+.EmptyForm {
+	padding: 0;
+	margin: 0;
+}
+
+/*----- footer ----- */
+div.footer {
+	text-align: center;
+	padding-top:12px;
+	font-size: 80%;
+}

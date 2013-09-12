@@ -1,0 +1,324 @@
+/* Simplified version of CTC style sheet for use with database forms */
+
+@media screen, projection {
+	body {
+		margin: 0px;
+		padding: 0px;
+		border: 0px;
+		line-height: 1.3em;
+		min-width: 1000px;
+		background-color: #D0D0D0;
+		color:#000;
+	}
+
+	img {
+		border: none;
+	}
+
+	p {
+		margin-top: 0.5em;
+	}
+
+	p.error {
+		color: #C00000;
+		margin-top: 0;
+		padding-top: 4px;
+		padding-bottom: 0px;
+		line-height: 12px;
+		text-align: center;
+	}
+
+	p.errorLeft {
+		color: #C00000;
+		margin-top: 0;
+		padding-top: 4px;
+		padding-bottom: 0px;
+		line-height: 12px;
+		text-align: left;
+	}
+
+	hr {
+		margin-top: 10px;
+		margin-right: 7px;
+		height: 2px;
+		color: #CCCCCC;
+	}
+
+	/* ---------- main page layout ------- */
+
+	div#wrap, div#wrapNewWindow {
+		font-family: Verdana, sans-serif;
+		font-size: 75%;
+		line-height: 1.3em;
+		margin: 0 auto;
+		padding-top: 15px;
+		padding-bottom: 1em;
+		background-color: #E8E8E8;
+		overflow: auto;  /* Fix Moz bug */
+ 	}
+
+ 	div#wrap {
+		width: 1000px;
+	}
+
+	div#wrapNewWindow {
+		padding: 10px;
+	}
+
+	div.menu {
+		background: #F0F0F0;
+		padding: 10px;
+		margin-left: 10px;
+		margin-right: 10px;
+		border: 1px solid #808080;
+		float: left;
+		width: 150px;
+	}
+
+	div.main {
+		float: right;
+		width: 785px;
+		padding-right: 10px;
+		padding-top: 10px;
+	}
+
+	/* ---------- h1, h2, h3, h4, h5, hr ---------- */
+
+	h1 {
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		/* color: #669933; */
+		font-size: 200%;
+		display: block;
+		margin-top: 0px;
+		margin-bottom: 15px;
+	}
+
+	h2 {
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		/* color: #669933; */
+		font-size: 140%;
+		display: block;
+		margin-top: 15px;
+		margin-bottom: 10px;
+	}
+
+	h3 {
+		font-weight: bold;
+		font-family: arial, sans-serif;
+		font-size: 120%;
+		display: block;
+		margin-top: 15px;
+		margin-bottom: 10px;
+	}
+
+	div.menu h3 {
+		margin-top: 0px;
+	}
+
+	h4 {
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		font-size: 110%;
+		color: #669933;
+		display: block;
+		margin-top: 10px;
+	}
+
+	table.menu h4 {
+		color: #202020;
+		font-style: italic;
+	}
+
+	h5 {
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		font-size: 100%;
+		margin-top: 0.5em;
+	}
+
+
+
+	/* ---------- tables --------------- */
+	table {
+		font-size: 1em;  /* Fix IE screw up (not inheriting body font styles */
+	}
+
+	table.oddEven {
+		padding: 1em;
+		border-collapse: collapse;
+	}
+
+	table.oddEven td, th {
+		text-align: left;
+		border: 1px solid white;
+		padding-left: 3px;
+		padding-right: 3px;
+	}
+
+	table.oddEven tr.odd {
+		background-color: #F4f4F4;
+	}
+
+	table#memberSelect, table#membershipSelect {
+		table-layout: fixed;
+		width: 98%;
+	}
+
+	table#memberSelect col.col1 { width: 9%; }
+	table#memberSelect col.col2 { width: 18%; }
+	table#memberSelect col.col3 { width: 15%; }
+	table#memberSelect col.col4 { width: 45%; }
+	table#memberSelect col.col5 { width: 13%; }
+
+	table#memberSelect td:first-child { text-align: center; }
+
+	table#membershipSelect th { text-align: left; }
+	table#membershipSelect col.col1 { width: 9%; }
+	table#membershipSelect col.col2 { width: 6%; }
+	table#membershipSelect col.col3 { width: 33%; }
+	table#membershipSelect col.col4 { width: 52%; }
+
+	table#membershipSelect td:first-child { text-align: center; }
+
+	table.memberDataForm {
+		table-layout: fixed;
+		width: 70%;
+	}
+	table.memberDataForm td:first-child {
+		width: 31%;
+	}
+	table.memberDataForm textarea{
+		width: 97%;
+	}
+
+	table#textAreaInputs col.col1 { width: 20%;}
+
+	table.MemberInNewCouple {
+		width: 100%;
+	}
+
+	table#NewCoupleMembers {
+		width: 97%;
+	}
+
+	table.MemberInNewCouple col.col1 {
+		width: 35%;
+	}
+
+	table.MemberInNewCouple input, table.MemberInNewCouple textarea  {
+		width: 96%;
+	}
+
+	table.MemberInNewCouple input.dateinput  {
+		width: 60%;
+	}
+
+	table.MemberInNewCouple td.label {
+		padding-left: 12px;
+	}
+
+	table#NewCoupleMembershipFields {
+		table-layout: fixed;
+		width: 80%;
+	}
+
+	table#NewCoupleMembershipFields col.col1 {
+		width: 30%;
+	}
+
+	table#NewCoupleMembershipFields input, textarea {
+		width: 70%;
+	}
+
+	table#NewCoupleMembershipAreas {
+		width: 80%;
+	}
+
+	td.MenuSubhead {
+		font-family: arial, sans-serif;
+		font-weight: bold;
+		font-size: 110%;
+		color: black;
+		padding-top: 15px;
+		padding-bottom: 8px;
+	}
+
+	table.QueryForm {
+		table-layout: fixed;
+		width: 100%;
+	}
+	table.QueryForm col.col1 { width: 13%; }
+	table.QueryForm col.col2 { width: 87%; }
+
+	table.tripNotificationsTable tr th:first-child { width: 20%; }
+	table.tripNotificationsTable td {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+
+
+	/* ---------- navigation ---------- */
+
+
+
+	a {
+		color: #558822;
+		text-decoration: underline;
+	}
+
+	a.thumb img {
+		border: #558822 solid 2px;
+	}
+
+	a:hover {
+		color: black;
+		text-decoration: none;
+	}
+
+	td a {
+		line-height: 130%; /* Space out tables of anchors */
+	}
+
+	li {
+		margin-top: 0.3em;
+		margin-left: 3em;
+	}
+
+	ul {
+		margin-bottom: 0.5em;
+	}
+
+
+	/*-----forms----- */
+
+	.back_button {
+		padding-top: 8px;
+		margin-top: 8px;
+	}
+
+	textarea {
+		border: 1px solid #666666;
+		padding: 5px;
+		width: 70%;
+		font-family: Verdana, sans-serif;
+		font-size: 100%;
+	}
+
+	input[type=submit] {
+		width:80px;
+	}
+
+	textarea.UserQueryFormTA { width: 95%;}
+
+	/*----- footer ----- */
+	div.footer {
+		text-align: center;
+		padding-top:12px;
+		font-size: 70%;
+	}
+}
