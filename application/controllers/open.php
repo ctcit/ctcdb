@@ -71,13 +71,16 @@ class Open extends MY_Controller {
 
     // This function handles incoming text messages from the 'send-sms-to-website'
     // service (http://www.send-sms-to-website.com/). Each text results
-    // in a GET to this URL with parameters FROM (the phone number) and TEXT
+    // in a POST to this URL with parameters FROM (the phone number) and TEXT
     // (the message).
     // I have booked the keywords CTC and TRIP (which must be the first words
     // of the text message).
+    // The message is displayed on the website via the Notify Trip Change
+    // entry in the main site's Member's Menu, and a response text is sent
+    // via http://websms.co.nz acknowledging receipt of the message.
     public function incomingtext() {
-        $mob = $this->input->get('FROM');  // Originating mobile number
-        $message = $this->input->get('TEXT');
+        $mob = $this->input->post('FROM');  // Originating mobile number
+        $message = $this->input->post('TEXT');
         if ($mob && $message) {
             $username = "richard.lobb@canterbury.ac.nz";
             $pass = "mugglewump";
