@@ -115,7 +115,7 @@ class Subs extends MY_Controller {
 	// (or field, really) is suspect if it breaches any of the following consistency
 	// checks:
 	//
-	//	1. DatePaid should be within the subscription year extended by 4 months
+	//  1. DatePaid should be within the subscription year extended by 4 months
 	//     at each end.
 	//  2. CardNumber must be in the range 1000 - 9999 for a paid-member (defined
 	//     by the Paid box being checked in the submitted form or the existence

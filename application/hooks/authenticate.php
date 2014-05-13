@@ -54,31 +54,31 @@ function getJoomlaUserData() {
 	
 	$prefix = $mosConfig_dbprefix;
 	if ( $sessionCookie && strlen($sessionCookie) == 32 && $sessionCookie != '-') {
-		$con = mysql_connect($mosConfig_host, $mosConfig_user, $mosConfig_password);
+		$con = mysqli_connect($mosConfig_host, $mosConfig_user, $mosConfig_password);
 		$con || die('Could not connect to Joomla database');
-		mysql_select_db($mosConfig_db) || die ('Could not open database');
-		$result = mysql_query("select * from {$prefix}session where session_id = '$sessionValueCheck'");
+		mysqli_select_db($con, $mosConfig_db) || die ('Could not open database');
+		$result = mysqli_query($con, "select * from {$prefix}session where session_id = '$sessionValueCheck'");
 		if ($result) {
-			$row = mysql_fetch_assoc($result);
+			$row = mysqli_fetch_assoc($result);
 			$userId = $row['userid'];
 		}
 	}
 	
 	if ($userId != 0) {
 		// User is logged into Joomla. Get their name and login name.
-		$result = mysql_query(
+		$result = mysqli_query($con, 
 			"SELECT name, email, username as login
 			 FROM {$prefix}users
 			 WHERE {$prefix}users.id = '$userId'"
 		);
 		if (!$result) die("Whoops. Something blew up! Please tell the webmaster");
 		
-		$row = mysql_fetch_assoc($result);
+		$row = mysqli_fetch_assoc($result);
 		$name = $row['name'];
 		$login = $row['login'];
 		$email = $row['email'];
 		
-		$result = mysql_query(
+		$result = mysqli_query($con, 
                     "SELECT role as Role
                      FROM ctcweb9_ctc.members_roles, ctcweb9_ctc.roles
                      WHERE memberId='$userId'
@@ -89,8 +89,8 @@ function getJoomlaUserData() {
 	     	// FROM {$prefix}contact_details
 	     	// WHERE user_id = '$userId'"
 		
-		if (mysql_num_rows($result) > 0) {
-			while (($row = mysql_fetch_array($result)) != NULL) {
+		if (mysqli_num_rows($result) > 0) {
+			while (($row = mysqli_fetch_array($result)) != NULL) {
 				$roles[] = strtolower($row['Role']);
 			}
 		}
