@@ -294,7 +294,6 @@ class Ctcmodel extends CI_Model
         $resignationDateMysql = date_to_mysql($resignationDate);
         $status = $this->getMembershipStatusByMembershipId($membershipId);
         assert($status == 'Active');
-        echo "Date = ".date('Y-m-d');
         $this->db->where('id', $membershipId);
         $this->db->update("memberships",
             array('statusAdmin' => $reason,
