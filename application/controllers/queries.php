@@ -301,14 +301,20 @@ class Queries extends MY_Controller {
 
     // Return a subquery that selects the membership subset that receives the given item,
     // as specified by the given where clause (empty to select all members).
-    public function subQuery($item, $where) {
+    public function subQuery($item, $where, $showUnpaid) {
+        if ($showUnpaid) {
+            $unpaid = "IF(paid=\'No\', \'Unpaid\',\'\')";
+        } else {
+            $unpaid = "''";
+        }
+                
         $query =
 'SELECT membershipId, mailName, nameBySurname, address1, address2,
 city, postcode, mailNewsletter, type as membershipType,
 sub, reducedSub, latePenalty, login1, login2,
 primaryEmail as email,
-\''. $item . '\' as item,
-IF(paid=\'No\', \'Unpaid\',\'\') as unpaid
+' . $unpaid . ' as unpaid,
+\''. $item . '\' as item
 FROM view_memberships
 WHERE status = \'Active\'';
         if ($where != '') {
@@ -333,10 +339,11 @@ WHERE status = \'Active\'';
 
         $subQueries = '';
         $sep = '';
+        $showUnpaid = $this->input->post('ShowUnpaid');
         foreach ($items as $item) {
             list($field, $itemName, $where) = $item;
             if ($this->input->post($field)) {
-                $subQueries .= $sep . $this->subQuery($itemName, $where);
+                $subQueries .= $sep . $this->subQuery($itemName, $where, $showUnpaid);
                 $sep = "\nUNION\n";
             }
         }
