@@ -2,6 +2,36 @@
 <h1>CTC Database</h1>
 Welcome to the CTC database. Choose a menu item from the left to continue.
 
+<h2>Club Documents</h2>
+<ul>
+
+<li>
+<a href="https://drive.google.com/open?id=0B81s5gVABx-JVnpwZTdPcFZPWUk&authuser=0">For trip leaders</a>
+</li>
+<li>
+<a href="https://drive.google.com/open?id=0B81s5gVABx-Jd3h5U0ZzWlNhNjg&authuser=0">Financial</a>
+</li>
+<li>
+<a href="https://drive.google.com/open?id=0B81s5gVABx-JNllGZ1FvNmtxRVU&authuser=0">New members</a>
+</li>
+<li>
+    <a href="https://drive.google.com/open?id=0B81s5gVABx-JZ3A0dWJtcTJRM0k&authuser=0">Rules and regulations</a>
+</li>
+<li>
+    <a href="https://drive.google.com/open?id=0B81s5gVABx-JVG5XeHhNenRUcUk&authuser=0">Club Hut (docs)</a>
+</li>
+<li>
+    <a href="https://docs.google.com/spreadsheets/d/1xzz5pRv9Oj0UXxwI0TAJyfBbfUqAyXWKHKj6HJp8crE/edit?usp=sharing">Club Hut Booking Sheet (read-only unless you're explicitly authorised)</a>
+</li>
+<li>
+    <a href="https://docs.google.com/spreadsheets/d/1ImoqDCDGDsEdbEzt-Iu4qNQiqovHmJRWr7tCWDvcVjs/edit?usp=sharing">Access and Permissions sheet (read-only unless you're explicitly authorised)</a>
+</li>
+<li>
+    <a href="https://drive.google.com/open?id=0B81s5gVABx-JVG5XeHhNenRUcUk&authuser=0">Defunct</a>
+</li>
+
+</ul>
+
 <h2>Notes on membership figures for annual report</h2>
 <p>To get data for the annual report:</p>
 <ol>
