@@ -24,7 +24,7 @@ class Rest extends REST_Controller {
         }
         
         parent::__construct();
-        $this->load->database();
+        $this->load->database('ctcweb9_joom1');
         $this->load->model('tripreportmodel');
     }
     
