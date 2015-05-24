@@ -27,6 +27,6 @@ function selectRows(tableId, firstCol, lastCol) {
 			     rowClass = "odd";
 		     }
 	     }
-		 tbl.rows[i].style.display = show;
+             tbl.rows[i].style.display = show;
 	 }
 }

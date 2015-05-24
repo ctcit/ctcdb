@@ -130,6 +130,7 @@ class Subs extends MY_Controller {
 		$memberships = $membershipQuery->result_array();
 		$table = array();
 		$now = date('d-m-Y');
+
 		foreach ($memberships as $membership) {
 			$id = $membership['MSID'];
 			$transaction = $membership["DatePaid"] != NULL ? 'Edit' : 'New';
