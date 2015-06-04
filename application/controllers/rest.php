@@ -15,7 +15,8 @@ class Rest extends REST_Controller {
 
     public function __construct()
     {
-        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+        header('Access-Control-Allow-Credentials: true');
         header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, HEAD, DELETE");
         $method = $_SERVER['REQUEST_METHOD'];
@@ -54,12 +55,22 @@ class Rest extends REST_Controller {
 
     // Put (i.e. update) a trip report
     public function tripreports_put($report_id) {
-
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
+        $data = $this->put(null, True); // All input data, xss filtered
+        $this->tripreportmodel->saveReport($data, FALSE);
     }
     
     // Post a new trip report
     public function tripreports_post() {
-
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
+        $data = $this->post(null, True); // All input data, xss filtered
+        $this->tripreportmodel->saveReport($data, TRUE);
     }
     
     public function tripreportyears_get() {
@@ -86,6 +97,10 @@ class Rest extends REST_Controller {
     
     // Delete the given trip 
     public function tripreports_delete($id) {
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
         
     }
     
@@ -94,21 +109,27 @@ class Rest extends REST_Controller {
     // ********************************   
     
     
-    public function images_post() {
-        // Add a new image to the database. Body is a JSON record with the
+    public function tripimages_post() {
+        // Add a new trip image to the database. Body is a JSON record with the
         // following attributes:
         //    name: the image name (usually the original filename)
         //    caption: the caption to be displayed (if desired)
         //    dataUrl: the image in the form of a dataUrl
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
+        $this->load->model('imagemodel');
         $name = $this->post('name', false);
         $caption = $this->post('caption', false);
         $dataUrl = $this->post('dataUrl', false);
         $this->log('debug', "Received image $name, captioned $caption");
-        $this->response(23);
+        $id = $this->imagemodel->create_from_dataurl($name, $caption, $dataUrl);
+        $this->response(array('id'=>$id));
     }
     
     
-    public function images_get($image_id) {
+    public function tripimages_get($image_id) {
         // Get the specified image. Returns a JSON record containing the
         // following attributes:
         //    name: the image name (usually the original filename)
@@ -121,8 +142,14 @@ class Rest extends REST_Controller {
         //    t_url: an url that can be used to display the image
     }
     
-    public function images_delete($image_id) {
-        // Delete a specified image
+    public function tripimages_delete($image_id) {
+        // Delete a specified trip image
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
+        $this->load->model('imagemodel');
+        $this->imagemodel->delete($image_id);
         
     }
     
@@ -131,6 +158,10 @@ class Rest extends REST_Controller {
     // ********************************  
     
     public function gpxs_post() {
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
         
     }
     
@@ -139,6 +170,10 @@ class Rest extends REST_Controller {
     }
     
     public function gpxs_delete($gpx_id) {
+        global $userData;
+        if ($userData['userid'] == 0) {
+            $this->response("Not logged in", 401);
+        }
         
     }
 }

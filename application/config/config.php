@@ -11,7 +11,7 @@
 |   http://www.your-site.com/
 |
 */
-$config['base_url'] = "http://localhost/ctc/db"; // http://www.ctc.org.nz/db";
+$config['base_url'] = ''; //"http://192.168.20.22/ctc/db"; // http://www.ctc.org.nz/db";
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ $config['joomla_base'] = "/home/ctcweb9/public_html/";
 |
 | The Joomla base URL [Added by RJL.]
 */
-$config['joomla_base_url'] = "http://localhost/ctc"; // http://www.ctc.org.nz";
+$config['joomla_base_url'] = "http://192.168.20.22/ctc"; // http://www.ctc.org.nz";
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +60,7 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'  Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol'] = 'PATH_INFO';
+$config['uri_protocol'] = 'AUTO';
 
 /*
 |--------------------------------------------------------------------------
@@ -191,7 +191,7 @@ $config['function_trigger'] = 'm';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 2;
 
 /*
 |--------------------------------------------------------------------------
@@ -202,7 +202,7 @@ $config['log_threshold'] = 0;
 | system/logs/ folder.  Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+$config['log_path'] = '/var/log/ctc/';
 
 /*
 |--------------------------------------------------------------------------

@@ -19,13 +19,27 @@ class Tripreportmodel extends CI_Model {
     public $uploader_id = 0;
     public $uploader_name = '';
     public $upload_date = '';
-    public $deleter_id = 0;
-    // The last 3 attributes are arrays of gpx, image and map database rows
+
+    // The next 3 attributes are arrays of gpx, image and map database rows
     // for this trip report, with the addition of ordering and the removal
     // of any blob fields.
     public $gpxs;
     public $images;
     public $maps;
+    
+    protected function log($type, $message) {
+        // Call log_message with the same parameters, but prefix the message
+        // by *rest* for easy identification.
+        log_message($type, '*tripreportmodel* ' . $message);
+    }
+    
+    
+    protected function error($message, $httpCode=400) {
+        // Generate the http response containing the given message with the given
+        // HTTP response code. Log the error first.
+        $this->log('error', $message);
+        $this->response($message, $httpCode);
+    }
     
     
     public function create() {
@@ -37,6 +51,51 @@ class Tripreportmodel extends CI_Model {
         $this->maps = array();
         return $this;
     }
+    
+    
+    public function saveReport($postData, $isNew) {
+        // Create or update a trip report using the data just posted.
+        // Return the id
+        global $userData;
+
+        if ($isNew) {
+            unset($this->id);
+        }
+        unset($this->gpxs);
+        unset($this->images);
+        unset($this->maps);
+        
+        foreach ($this as $key=>$value) {
+            if ($postData[$key]) {
+                $this->$key = $postData[$key];
+            }
+        }
+
+        if ($isNew) {
+            $this->uploader_id = $userData['userid'];
+            $this->uploader_name = $userData['name'];
+            $this->upload_date = strftime('%Y%m%d');
+        }
+
+        if ($isNew) {
+            $this->log('debug', "Inserting trip report: '" . print_r($this, True));
+            if ($this->db->insert('jos_tripreport', $this) === FALSE) {
+                throw new RuntimeException('Trip report insert failed');
+            }
+        } else { // Updating
+            $this->log('debug', "Updating trip report: '" . print_r($this, True));
+            $this->db->where('id', $this->id);
+            if ($this->db->update('jos_tripreport', $this) === FALSE) {
+                throw new RuntimeException('Trip report update failed');
+            }
+        }
+        $this->log('debug', "Insert/update succeeded");
+        $this->id = $this->db->insert_id();
+        $this->saveEntities($this->id, 'image', $postData['images']);
+        $this->saveEntities($this->id, 'gpx', $postData['gpxs']);
+        $this->saveEntities($this->id, 'map', $postData['maps']);
+    }
+    
     
     public function getById($tripId) {
         // Initialise self from the row of the tripreports table corresponding
@@ -110,6 +169,27 @@ class Tripreportmodel extends CI_Model {
 
         foreach ($entities->result() as $row) {
             array_push($this->$listFieldName, $row);
+        }
+    }
+    
+    
+    private function saveEntities($tripId, $entityType, $entityList) {
+        // Save the images, gpxs or maps (corresponding to $entityType = 'image',
+        // 'gpx' and 'map' respectively) to the database. The supplied
+        // $entityList is a list of records each with an id (the image, map or
+        // gpx id) and an ordering.
+        // It is assumed that the actual entities already exist and that
+        // all that has to be done is delete all existing tripId->entityId
+        // links and insert new ones.
+        $bridgeTable = "jos_tripreport_$entityType";
+        $this->db->delete($bridgeTable, array('tripreport_id'=>$tripId));
+        foreach ($entityList as $entity) {
+            $row = array("{$entityType}_id" => $entity['id'],
+                         'tripreport_id'    => $tripId,
+                         'ordering'         => $entity['ordering']);
+            if ($this->db->insert($bridgeTable, $row) === FALSE) {
+                throw new RuntimeException("Failed to insert $entityType");
+            }
         }
     }
 }

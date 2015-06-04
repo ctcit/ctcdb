@@ -40,7 +40,7 @@ $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "ctcweb9_userman";
 $db['default']['password'] = "susanrulesok";
 $db['default']['database'] = "ctcweb9_ctc";
-$db['default']['dbdriver'] = "mysql";
+$db['default']['dbdriver'] = "mysqli";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;
 $db['default']['db_debug'] = TRUE;
@@ -48,5 +48,18 @@ $db['default']['cache_on'] = FALSE;
 $db['default']['cachedir'] = "";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
+
+$db['ctcweb9_joom1']['hostname'] = "localhost";
+$db['ctcweb9_joom1']['username'] = "root";
+$db['ctcweb9_joom1']['password'] = "mugglewump";
+$db['ctcweb9_joom1']['database'] = "ctcweb9_joom1";
+$db['ctcweb9_joom1']['dbdriver'] = "mysqli";
+$db['ctcweb9_joom1']['dbprefix'] = "";
+$db['ctcweb9_joom1']['pconnect'] = TRUE;
+$db['ctcweb9_joom1']['db_debug'] = TRUE;
+$db['ctcweb9_joom1']['cache_on'] = FALSE;
+$db['ctcweb9_joom1']['cachedir'] = "";
+$db['ctcweb9_joom1']['char_set'] = "utf8";
+$db['ctcweb9_joom1']['dbcollat'] = "utf8_general_ci";
 
 ?>

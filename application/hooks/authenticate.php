@@ -20,6 +20,7 @@ function authenticate() {
 	header("Pragma: no-cache");
 	$data = getJoomlaUserData();
 	$GLOBALS['userData'] = $data;
+    log_message('debug', 'Authentication hook result: ' . print_r($data, TRUE));
 	date_default_timezone_set("Pacific/Auckland");
 }
 
