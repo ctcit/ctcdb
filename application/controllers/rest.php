@@ -17,7 +17,8 @@ class Rest extends REST_Controller {
     {
         header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
         header('Access-Control-Allow-Credentials: true');
-        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, " .
+                "Content-Type, Accept, Access-Control-Request-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, HEAD, DELETE");
         $method = $_SERVER['REQUEST_METHOD'];
         if($method == "OPTIONS") {
@@ -55,20 +56,14 @@ class Rest extends REST_Controller {
 
     // Put (i.e. update) a trip report
     public function tripreports_put($report_id) {
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
+        $this->checkCanEdit($report_id);
         $data = $this->put(null, True); // All input data, xss filtered
         $this->tripreportmodel->saveReport($data, FALSE);
     }
     
     // Post a new trip report
     public function tripreports_post() {
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
+        $this->checkLoggedIn();
         $data = $this->post(null, True); // All input data, xss filtered
         $this->tripreportmodel->saveReport($data, TRUE);
     }
@@ -95,14 +90,44 @@ class Rest extends REST_Controller {
         $this->response($rows);
     }
     
-    // Delete the given trip 
+    // Delete the given trip.
     public function tripreports_delete($id) {
+        $this->checkCanEdit($id);
+        $this->tripreportmodel->delete($id);        
+    }
+    
+    
+    private function checkCanEdit($id) {
+        // Check for a current user. If not, issue an immediate 401 Not authenticated.
+        // Then check if the currently logged in user can edit the
+        // trip report with the given id. Otherwise issue an immediate
+        // 403 unauthorised response.
+        // Only the original trip report author or a club officer can
+        // delete trip.
+        // If called with a non-existent tripid an exception will be thrown
+        // and an HTTP return code of 500 will result.
+        // If the function returns normally, editing can proceed.
+        global $userData;
+        $this->checkLoggedIn();
+        $row = $this->tripreportmodel->getById($id);
+        if (count($userData['roles']) == 0 && $userData['userid'] !== $row->id) {
+            $this->response('Unauthorised trip report modification', 403);
+            die();
+        }
+    }
+    
+    
+    private function checkLoggedIn() {
+        // Check that there is a currently logged in user. If not issue
+        // an immediate 401 not authenticated response. Otherwise just return
+        // (no value).
         global $userData;
         if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
+            $this->response('Unauthenticated', 401);
+            die();
         }
-        
     }
+
     
     // ********************************
     //       IMAGES
@@ -115,10 +140,7 @@ class Rest extends REST_Controller {
         //    name: the image name (usually the original filename)
         //    caption: the caption to be displayed (if desired)
         //    dataUrl: the image in the form of a dataUrl
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
+        $this->checkLoggedIn();
         $this->load->model('imagemodel');
         $name = $this->post('name', false);
         $caption = $this->post('caption', false);
@@ -144,10 +166,7 @@ class Rest extends REST_Controller {
     
     public function tripimages_delete($image_id) {
         // Delete a specified trip image
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
+        $this->checkLoggedIn();  // TODO - better security
         $this->load->model('imagemodel');
         $this->imagemodel->delete($image_id);
         
@@ -158,22 +177,24 @@ class Rest extends REST_Controller {
     // ********************************  
     
     public function gpxs_post() {
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
+        $this->checkLoggedIn();
+        $this->load->model('gpxmodel');
+        $name = $this->post('name', false);
+        $caption = $this->post('caption', false);
+        $dataUrl = $this->post('dataUrl', false);
+        $this->log('debug', "Received gpx file $name, captioned $caption");
+        $id = $this->gpxmodel->create_from_dataurl($name, $caption, $dataUrl);
+        $this->response(array('id'=>$id));
         
     }
     
     public function gpxs_get($gpx_id) {
-        
+        // TODO: 
     }
     
     public function gpxs_delete($gpx_id) {
-        global $userData;
-        if ($userData['userid'] == 0) {
-            $this->response("Not logged in", 401);
-        }
-        
+        $this->checkLoggedIn();  // TODO - better security
+        $this->load->model('gpxmodel');
+        $this->gpxmodel->delete($gpx_id);        
     }
 }

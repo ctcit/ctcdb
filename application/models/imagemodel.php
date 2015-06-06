@@ -3,7 +3,8 @@
 // This class provides an interface to images in the database.
 // Intended for use by the rest API, e.g. for TripReports.
 
-define ('THUMBWIDTH', 165);
+define('THUMBWIDTH', 165);
+define("THUMBNAIL_QUALITY", 90);
 
 class Imagemodel extends CI_Model {
     public $id = 0;         // Image id (int)
@@ -44,12 +45,12 @@ class Imagemodel extends CI_Model {
         $thumb_img = imagecreatetruecolor( $this->t_width, $this->t_height );
 
         // copy and resize old image into new image 
-        imagecopyresized( $thumb_img, $img, 0, 0, 0, 0, $this->t_width,
+        imagecopyresampled( $thumb_img, $img, 0, 0, 0, 0, $this->t_width,
                 $this->t_height, $this->width, $this->height );
 
         // save thumbnail into a file
         $thumbname = tempnam('/tmp', 'image');
-        if (imagejpeg( $thumb_img, $thumbname ) === FALSE) {
+        if (imagejpeg( $thumb_img, $thumbname, THUMBNAIL_QUALITY ) === FALSE) {
             throw new RuntimeException("Failed to create thumbnail for $name");
         }
         $this->thumb = file_get_contents($thumbname);

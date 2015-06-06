@@ -53,6 +53,25 @@ class Tripreportmodel extends CI_Model {
     }
     
     
+    public function delete($tripId) {
+        // A pseudo-delete. Currently, we don't actually delete trip reports
+        // or their associated resources. We just flag them as deleted.
+        // This is so the webmaster can recover deleted trip reports
+        // if users wail sufficiently loudly. Note however that individual
+        // resources associated with a report can be deleted through the
+        // client-side interface. So all the administrator can restore
+        // is the state of the trip report at the time the user deleted it.
+        global $userData;
+        
+        $deleter_id = $userData['userid'];
+        if ($deleter_id == 0) {
+            throw new RuntimeException('Deletion by a non-logged in user?!');
+        }
+        $this->db->where(array('id'=>$tripId));
+        $this->db->update('jos_tripreport', array('deleter_id'=>$deleter_id));
+    }
+    
+    
     public function saveReport($postData, $isNew) {
         // Create or update a trip report using the data just posted.
         // Return the id
@@ -75,12 +94,11 @@ class Tripreportmodel extends CI_Model {
             $this->uploader_id = $userData['userid'];
             $this->uploader_name = $userData['name'];
             $this->upload_date = strftime('%Y%m%d');
-        }
-
-        if ($isNew) {
             $this->log('debug', "Inserting trip report: '" . print_r($this, True));
-            if ($this->db->insert('jos_tripreport', $this) === FALSE) {
+            if (!$this->db->insert('jos_tripreport', $this)) {
                 throw new RuntimeException('Trip report insert failed');
+            } else {
+               $this->id = $this->db->insert_id();
             }
         } else { // Updating
             $this->log('debug', "Updating trip report: '" . print_r($this, True));
@@ -90,10 +108,10 @@ class Tripreportmodel extends CI_Model {
             }
         }
         $this->log('debug', "Insert/update succeeded");
-        $this->id = $this->db->insert_id();
         $this->saveEntities($this->id, 'image', $postData['images']);
         $this->saveEntities($this->id, 'gpx', $postData['gpxs']);
         $this->saveEntities($this->id, 'map', $postData['maps']);
+        return $this->id;
     }
     
     
@@ -139,9 +157,10 @@ class Tripreportmodel extends CI_Model {
         return $q->result();
     }
     
-    private function loadEntities($tripId, $entity) {
+    
+    private function loadEntities($tripId, $entityType) {
         // Load the list of image, gpx or map rowss respectively for the
-        // given tripId into $this, where $entity
+        // given tripId into $this, where $entityType
         // is 'image', 'gpx' or 'map' respectively.
         // A hack is that there is no separate map table as maps are images,
         // so we do 'map' as a special case.
@@ -149,7 +168,7 @@ class Tripreportmodel extends CI_Model {
         // objects, one per matching row of the jos_$entity table but without
         // any blob fields. Also, the ordering field from the bridging table
         // is added, too.
-        $mainTable = $entity === 'map' ? 'jos_image' : 'jos_' . $entity;
+        $mainTable = $entityType === 'map' ? 'jos_image' : 'jos_' . $entityType;
         $fieldData = $this->db->field_data($mainTable);
         $fields = array();
         foreach ($fieldData as $field) {
@@ -159,12 +178,12 @@ class Tripreportmodel extends CI_Model {
         }
         $this->db->select(implode(',', $fields) . ',ordering');
         $this->db->from($mainTable);
-        $entityId = $entity . '_id';
-        $this->db->join("jos_tripreport_$entity", "$mainTable.id = jos_tripreport_$entity.$entityId");
-        $this->db->where(array("jos_tripreport_$entity.tripreport_id" => $tripId));
+        $entityId = $entityType . '_id';
+        $this->db->join("jos_tripreport_$entityType", "$mainTable.id = jos_tripreport_$entityType.$entityId");
+        $this->db->where(array("jos_tripreport_$entityType.tripreport_id" => $tripId));
         $this->db->order_by('ordering');
         $entities = $this->db->get();
-        $listFieldName = $entity . 's';
+        $listFieldName = $entityType . 's';
         $this->$listFieldName = array();
 
         foreach ($entities->result() as $row) {
@@ -177,20 +196,64 @@ class Tripreportmodel extends CI_Model {
         // Save the images, gpxs or maps (corresponding to $entityType = 'image',
         // 'gpx' and 'map' respectively) to the database. The supplied
         // $entityList is a list of records each with an id (the image, map or
-        // gpx id) and an ordering.
-        // It is assumed that the actual entities already exist and that
-        // all that has to be done is delete all existing tripId->entityId
-        // links and insert new ones.
+        // gpx id) and an ordering. If the id is zero, the entity record must
+        // include a dataUrl attribute containing the entity itself (image
+        // or GPX) plus caption and name attributes; that is saved first, to give an id.
+        // 
+        $entityTable = $entityType === 'map' ? 'jos_image' : 'jos_' . $entityType;
         $bridgeTable = "jos_tripreport_$entityType";
+        
+        // Firstly delete all existing link table entries, as their ordering 
+        // attributes are probably wrong.
         $this->db->delete($bridgeTable, array('tripreport_id'=>$tripId));
+        
+        // Now process each entity in turn
         foreach ($entityList as $entity) {
+            $this->log('debug', "Saving $entityType, id={$entity['id']}, name='{$entity['name']}");
+            if ($entity['id'] == 0) {
+                $entity['id'] = $this->saveEntity($entityType, $entity);
+            }
             $row = array("{$entityType}_id" => $entity['id'],
                          'tripreport_id'    => $tripId,
                          'ordering'         => $entity['ordering']);
-            if ($this->db->insert($bridgeTable, $row) === FALSE) {
+            if (!$this->db->insert($bridgeTable, $row)) {
                 throw new RuntimeException("Failed to insert $entityType");
+            } else {
+                $this->log('debug', "Saved $entityType id={$entity['id']}, tripId=$tripId, table=$bridgeTable");
             }
         }
+    }
+    
+    
+    private function saveEntity($entityType, $entity) {
+        $CI =& get_instance();
+        if ($entityType === 'gpx') {
+            $CI->load->model('gpxmodel');
+            $id = $this->gpxmodel->create_from_dataurl($entity['name'], $entity['caption'], $entity['dataUrl']);
+        } else if ($entityType === 'map' || $entityType === 'image') {
+            $CI->load->model('imagemodel');
+            $id = $this->imagemodel->create_from_dataurl($entity['name'], $entity['caption'], $entity['dataUrl']);
+        } else {
+            throw new RuntimeException("Unknown entity type: $entityType");
+        }
+        return $id;
+    }
+    
+    
+    private function deleteEntities($tripId, $entityType) {
+        // Delete the images, gpxs or maps (corresponding to $entityType = 'image',
+        // 'gpx' and 'map' respectively) for the given TripReport from the database.
+        // Currently this isn't used as we don't actually delete trip reports
+        // but is left here in case it's needed in the future.
+        // *** NEVER TESTED ***
+        $entityTable = $entity === 'map' ? 'jos_image' : 'jos_' . $entity;
+        $bridgeTable = "jos_tripreport_$entityType";
+        $tables = array($entityTable, $bridgeTable);
+        
+        $this->db->from($bridgeTable);
+        $this->db->join($entityTable, "$bridgeTable.{$entityType}_id=$entityTable.id");
+        $this->db->where(array("$bridgeTable.tripreport_id"=>$tripId));
+        $this->db->delete($tables);
     }
 }
 
