@@ -74,8 +74,9 @@ class Rest extends REST_Controller {
         $this->response($years);
     }
  
-    // Get a trip rerport
+    // Get a trip rerport.
     public function tripreports_get($id=NULL) {
+        global $userData;
         if ($id) {
             $row = $this->tripreportmodel->getById($id);
         } else {
@@ -126,6 +127,23 @@ class Rest extends REST_Controller {
             $this->response('Unauthenticated', 401);
             die();
         }
+    }
+    
+    // *******************************
+    //    CURRENT USER INFO
+    // *******************************
+    // Return the data relating to the currently-logged in user.
+    // If no user is logged in this will be just {id: 0}. Otherwise it
+    // will be an object with id, 
+    public function user_get() {
+        global $userData;
+        $data = array('id'=> $userData['id']);
+        if ($data['id']) {
+            $data['login'] = $userData['login'];
+            $data['name'] = $userData['name'];
+            $data['roles'] = $userData['roles'];
+        }
+        $this->response((object) $data);
     }
 
     

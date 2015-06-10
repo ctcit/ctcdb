@@ -84,6 +84,11 @@ class Imagemodel extends CI_Model {
         return $id;
     }
     
+    // Update just the name and caption of an image, given its id.
+    public function update_name_and_caption($id, $name, $caption) {
+        $this->db->where('id', $id);
+        $this->db->update('jos_image', array('name'=>$name, 'caption'=>$caption));
+    }
     
     public function delete($image_id) {
         $this->db->delete('jos_image', array('id'=>$image_id));

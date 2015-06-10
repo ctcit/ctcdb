@@ -43,6 +43,14 @@ class Gpxmodel extends CI_Model {
     }
     
     
+    
+    // Update just the name and caption of a gpx file, given its id.
+    public function update_name_and_caption($id, $name, $caption) {
+        $this->db->where('id', $id);
+        $this->db->update('jos_gpx', array('name'=>$name, 'caption'=>$caption));
+    }
+    
+    
     public function delete($gpx_id) {
         $this->db->delete('jos_gpx', array('id'=>$gpx_id));
         $this->db->delete('jos_tripreport_gpx', array('gpx_id'=>$gpx_id));

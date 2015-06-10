@@ -212,6 +212,8 @@ class Tripreportmodel extends CI_Model {
             $this->log('debug', "Saving $entityType, id={$entity['id']}, name='{$entity['name']}");
             if ($entity['id'] == 0) {
                 $entity['id'] = $this->saveEntity($entityType, $entity);
+            } else {
+                $this->updateEntity($entityType, $entity);
             }
             $row = array("{$entityType}_id" => $entity['id'],
                          'tripreport_id'    => $tripId,
@@ -226,6 +228,7 @@ class Tripreportmodel extends CI_Model {
     
     
     private function saveEntity($entityType, $entity) {
+        // Add an entity (image, map or gpx) to the database and return its id
         $CI =& get_instance();
         if ($entityType === 'gpx') {
             $CI->load->model('gpxmodel');
@@ -238,6 +241,25 @@ class Tripreportmodel extends CI_Model {
         }
         return $id;
     }
+    
+    
+    private function updateEntity($entityType, $entity) {
+        // Update an entity's name and caption (which may or may not have
+        // been changed);
+        $CI =& get_instance();
+        if ($entityType === 'gpx') {
+            $CI->load->model('gpxmodel');
+            $id = $this->gpxmodel->update_name_and_caption($entity['id'], 
+                $entity['name'], $entity['caption']);
+        } else if ($entityType === 'map' || $entityType === 'image') {
+            $CI->load->model('imagemodel');
+            $id = $this->imagemodel->update_name_and_caption($entity['id'],
+                $entity['name'], $entity['caption']);
+        } else {
+            throw new RuntimeException("Unknown entity type: $entityType");
+        }
+    }
+        
     
     
     private function deleteEntities($tripId, $entityType) {
