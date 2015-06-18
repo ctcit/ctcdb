@@ -15,7 +15,7 @@ class Tripreportmodel extends CI_Model {
     public $user_set_date_display = 0;  // Boolean true iff $date_display set explicitly
     public $title = '';
     public $body = '';
-    public $map_copyright = '';
+    public $map_copyright = 'Topomap data is Crown Copyright Reserved.';
     public $uploader_id = 0;
     public $uploader_name = '';
     public $upload_date = '';
@@ -64,7 +64,7 @@ class Tripreportmodel extends CI_Model {
         global $userData;
         
         $deleter_id = $userData['userid'];
-        if ($deleter_id == 0) {
+        if ($deleter_id == 0) {  // Shouldn't be possible
             throw new RuntimeException('Deletion by a non-logged in user?!');
         }
         $this->db->where(array('id'=>$tripId));
@@ -122,7 +122,8 @@ class Tripreportmodel extends CI_Model {
         $q = $this->db->get_where('jos_tripreport', 
             array('id' => $tripId, 'deleter_id' => NULL));
         if ($q->num_rows != 1) {
-            throw new Exception("Tripreportmodel:getById($tripId) failed");
+            $this->id = 0; // This is the error indicator
+            return $this;
         }
         foreach ($q->row_array() as $key=>$value) {
             $this->$key = $value;

@@ -8,16 +8,11 @@ class Rest extends REST_Controller {
 	// This class is the controller for the RESTful interface to the CTC
     // database.
 
-    // To handle CORS (Cross Origin Resource Sharing) it first issues
-    // the access-control headers, and then quits if it's an OPTIONS request,
-    // which is the "pre-flight" browser generated request to check access.
-    // See http://stackoverflow.com/questions/15602099/http-options-error-in-phil-sturgeons-codeigniter-restserver-and-backbone-js
-
     public function __construct()
     {
-        header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+        //header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
         header('Access-Control-Allow-Credentials: true');
-        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, " .
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, " .
                 "Content-Type, Accept, Access-Control-Request-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, HEAD, DELETE");
         $method = $_SERVER['REQUEST_METHOD'];
@@ -61,11 +56,12 @@ class Rest extends REST_Controller {
         $this->tripreportmodel->saveReport($data, FALSE);
     }
     
-    // Post a new trip report
+    // Post a new trip report. Returns trip id.
     public function tripreports_post() {
         $this->checkLoggedIn();
         $data = $this->post(null, True); // All input data, xss filtered
-        $this->tripreportmodel->saveReport($data, TRUE);
+        $id = $this->tripreportmodel->saveReport($data, TRUE);
+        $this->response(array('id'=>$id));
     }
     
     public function tripreportyears_get() {
@@ -79,6 +75,9 @@ class Rest extends REST_Controller {
         global $userData;
         if ($id) {
             $row = $this->tripreportmodel->getById($id);
+            if ($row->id == 0) {
+                show_404($this->uri->uri_string());
+            }
         } else {
             $row = $this->tripreportmodel->create();
         }
@@ -134,10 +133,11 @@ class Rest extends REST_Controller {
     // *******************************
     // Return the data relating to the currently-logged in user.
     // If no user is logged in this will be just {id: 0}. Otherwise it
-    // will be an object with id, 
+    // will be an object with id, login, name and a list of official roles for that
+    // user.
     public function user_get() {
         global $userData;
-        $data = array('id'=> $userData['id']);
+        $data = array('id'=>(isset($userData['userid']) ? $userData['userid'] : 0));
         if ($data['id']) {
             $data['login'] = $userData['login'];
             $data['name'] = $userData['name'];
