@@ -197,10 +197,11 @@ class Tripreportmodel extends CI_Model {
         // Save the images, gpxs or maps (corresponding to $entityType = 'image',
         // 'gpx' and 'map' respectively) to the database. The supplied
         // $entityList is a list of records each with an id (the image, map or
-        // gpx id) and an ordering. If the id is zero, the entity record must
+        // gpx id). If the id is zero, the entity record must
         // include a dataUrl attribute containing the entity itself (image
-        // or GPX) plus caption and name attributes; that is saved first, to give an id.
-        // 
+        // or GPX) plus caption and name attributes; that is saved first, to
+        // give an id.
+        // The ordering of the saved entities is that of the list.
         $entityTable = $entityType === 'map' ? 'jos_image' : 'jos_' . $entityType;
         $bridgeTable = "jos_tripreport_$entityType";
         
@@ -209,6 +210,7 @@ class Tripreportmodel extends CI_Model {
         $this->db->delete($bridgeTable, array('tripreport_id'=>$tripId));
         
         // Now process each entity in turn
+        $ordering = 0;
         foreach ($entityList as $entity) {
             $this->log('debug', "Saving $entityType, id={$entity['id']}, name='{$entity['name']}");
             if ($entity['id'] == 0) {
@@ -218,12 +220,14 @@ class Tripreportmodel extends CI_Model {
             }
             $row = array("{$entityType}_id" => $entity['id'],
                          'tripreport_id'    => $tripId,
-                         'ordering'         => $entity['ordering']);
+                         'ordering'         => $ordering);
             if (!$this->db->insert($bridgeTable, $row)) {
                 throw new RuntimeException("Failed to insert $entityType");
             } else {
-                $this->log('debug', "Saved $entityType id={$entity['id']}, tripId=$tripId, table=$bridgeTable");
+                $this->log('debug', "Saved $entityType id={$entity['id']} " .
+                        "order=$ordering tripId=$tripId, table=$bridgeTable");
             }
+            $ordering++;
         }
     }
     
