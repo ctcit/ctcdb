@@ -1,5 +1,7 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+define("DEVEL", TRUE);  // Set this FALSE when deploying to ctc.org.nz
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -11,7 +13,9 @@
 |   http://www.your-site.com/
 |
 */
-$config['base_url'] = ''; //"http://192.168.20.22/ctc/db"; // http://www.ctc.org.nz/db";
+
+$config['base_url'] = defined("DEVEL") && DEVEL ?
+        "http://localhost/ctc/db" : "http://www.ctc.org.nz/db";
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +25,8 @@ $config['base_url'] = ''; //"http://192.168.20.22/ctc/db"; // http://www.ctc.org
 | This app is configured to run in conjunction with Joomla (for authenticating
 | users) so the Joomla site base directory is also required. [Added by RJL.]
 */
-$config['joomla_base'] = "/home/ctcweb9/public_html/";
+$config['joomla_base'] = defined("DEVEL") && DEVEL ?
+        "/var/www/html/ctc/" : "/home/ctcweb9/public_html/";
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +35,9 @@ $config['joomla_base'] = "/home/ctcweb9/public_html/";
 |
 | The Joomla base URL [Added by RJL.]
 */
-$config['joomla_base_url'] = "http://192.168.20.22/ctc"; // http://www.ctc.org.nz";
+
+$config['joomla_base_url'] = defined("DEVEL") && DEVEL ?
+        "http://localhost/ctc" : "http://www.ctc.org.nz";
 
 /*
 |--------------------------------------------------------------------------
@@ -60,8 +67,8 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'  Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol'] = 'AUTO';
 
+$config['uri_protocol'] = "PATH_INFO";
 /*
 |--------------------------------------------------------------------------
 | URL suffix
@@ -101,7 +108,7 @@ $config['charset'] = "UTF-8";
 /*
 |--------------------------------------------------------------------------
 | Enable/Disable System Hooks
-|------------------------------------------------------------FALSE--------------
+|--------------------------------------------------------------------------
 |
 | If you would like to use the "hooks" feature you must enable it by
 | setting this variable to TRUE (boolean).  See the user guide for details.
@@ -166,7 +173,7 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 | use segment based URLs.
 |
 */
-$config['enable_query_strings'] = FALSE; // TRUE;
+$config['enable_query_strings'] = FALSE;
 $config['directory_trigger'] = 'd';
 $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
@@ -176,7 +183,7 @@ $config['function_trigger'] = 'm';
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to
+| If you have enabled error logging, you can set an error threshold to 
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
