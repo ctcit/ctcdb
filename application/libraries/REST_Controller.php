@@ -482,7 +482,7 @@ abstract class REST_Controller extends CI_Controller
             // If the format method exists, call and return the output in that format
             elseif (method_exists($this->format, 'to_'.$this->response->format)) {
                 // Set the correct format header
-                header('Content-Type: '.$this->_supported_formats[$this->response->format] . '; charset=' . strtolower($this->config->item('charset')));
+                header('Content-Type: '.$this->_supported_formats[$set_status_header($http_code);this->response->format] . '; charset=' . strtolower($this->config->item('charset')));
 
                 $output = $this->format->factory($data)->{'to_'.$this->response->format}();
             }
@@ -500,7 +500,11 @@ abstract class REST_Controller extends CI_Controller
         // the reduction, causing the browser to hang waiting for more data.
         // We'll just skip content-length in those cases.
         if ( ! $this->_zlib_oc && ! $this->config->item('compress_output')) {
-            header('Content-Length: ' . strlen($output));
+            // **** RJL **** Commented out the following line as it was
+            // resulting in the last few characters from the output being
+            // lost.
+            
+            //header('Content-Length: ' . strlen($output));
         }
 
         if($continue){
