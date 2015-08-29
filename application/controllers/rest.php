@@ -5,8 +5,12 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 require_once('application/libraries/REST_Controller.php');
 
 class Rest extends REST_Controller {
-	// This class is the controller for the RESTful interface to the CTC
+    // This class is the controller for the RESTful interface to the CTC
     // database.
+    // To handle CORS (Cross Origin Resource Sharing) it first issues
+    // the access-control headers, and then quits if it's an OPTIONS request,
+    // which is the "pre-flight" browser generated request to check access.
+    // See http://stackoverflow.com/questions/15602099/http-options-error-in-phil-sturgeons-codeigniter-restserver-and-backb
 
     public function __construct()
     {

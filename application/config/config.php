@@ -359,4 +359,4 @@ $config['full_access_roles'] = array('webmaster',
 | "ctcweb9_" prefix, we define a symbol that is either "ctcweb9_" or empty.
  */
 $config['db_name_prefix'] = 'ctcweb9_';
-?>
+
