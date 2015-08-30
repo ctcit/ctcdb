@@ -14,11 +14,16 @@ class Rest extends REST_Controller {
 
     public function __construct()
     {
-        //header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+        if (isset($_SERVER['HTTP_ORIGIN'])) {
+            header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+            header("Vary: Origin");  // Not sure if I need this?
+        }
+
         header('Access-Control-Allow-Credentials: true');
         header("Access-Control-Allow-Headers: Origin, X-Requested-With, " .
                 "Content-Type, Accept, Access-Control-Request-Method");
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, HEAD, DELETE");
+
         $method = $_SERVER['REQUEST_METHOD'];
         if($method == "OPTIONS") {
             die();
