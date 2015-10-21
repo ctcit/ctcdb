@@ -22,7 +22,7 @@
 		echo "<p>Internet banking is the preferred payment method, using:</p>\n";
 		echo "<table  style=\"padding-left: 20pt\" id=\"internetPaymentDetails\">\n";
 		echo "<tr><td>Payee Name:</td><td>The Christchurch Tramping Club</td></tr>\n";
-		echo "<tr><td>Payee A/N:</td><td>03 1592 0439483 00</td></tr>\n";
+		echo "<tr><td>Payee A/N:</td><td>38-9017-0279838-00</td></tr>\n";
 		echo "<tr><td>Particulars:</td><td>$login</td></tr>\n";
 		echo "<tr><td>Code:</td><td>Subs</td></tr>\n";
 		echo "<tr><td>Reference:</td><td>$msid</td></tr>\n";
