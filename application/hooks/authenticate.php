@@ -46,6 +46,7 @@ function getJoomlaUserData() {
         $email = '';
         $fullAccess = false;
         $roles = array();
+        $memberId = 0;
     } else {
         $login = $user->username;
         $name = $user->name;
