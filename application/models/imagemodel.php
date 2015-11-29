@@ -3,7 +3,7 @@
 // This class provides an interface to images in the database.
 // Intended for use by the rest API, e.g. for TripReports.
 
-define('THUMBWIDTH', 165);
+define('THUMB_MAX_DIMENSION', 165);
 define("THUMBNAIL_QUALITY", 90);
 
 class Imagemodel extends CI_Model {
@@ -38,8 +38,13 @@ class Imagemodel extends CI_Model {
         $this->height = imagesy($img);
         
         // calculate thumbnail size
-        $this->t_width = THUMBWIDTH;
-        $this->t_height = floor( $this->height * ( THUMBWIDTH / $this->width ) );
+        if ($this->height > $this->width) { // Portrait aspect ratio?
+            $this->t_height = THUMB_MAX_DIMENSION;
+            $this->t_width = floor( $this->width * ( THUMB_MAX_DIMENSION / $this->height ) );
+        } else {
+            $this->t_width = THUMB_MAX_DIMENSION;
+            $this->t_height = floor( $this->height * ( THUMB_MAX_DIMENSION / $this->width ) );
+        }
 
         // create a new temporary image (empty)
         $thumb_img = imagecreatetruecolor( $this->t_width, $this->t_height );

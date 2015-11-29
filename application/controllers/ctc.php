@@ -21,12 +21,8 @@ class Ctc extends MY_Controller {
 
 		$this->load->database();
 		$this->load->helper(array('url','form','date','pageload'));
-		// Some functions use the old form_validation library, some use the new.
-		// So both are loaded.
-		$this->load->library('form_validation');
 		$this->load->library('form_validation');
 		$this->load->model('Ctcmodel');
-		$this->form_validation->set_error_delimiters('<p style="font-size: 18px; color: red">', '</p>');
 		$this->form_validation->set_error_delimiters('<p style="font-size: 18px; color: red">', '</p>');
 		$this->currentMemberId = -1;
 	}
@@ -34,7 +30,8 @@ class Ctc extends MY_Controller {
 	public function newMember()
 	{
 		$this->currentMemberId = -1;
-		$this->_setupValidation();
+		$this->_setupMemberValidation();
+        $this->_setupMembershipValidation();
 		if ($this->form_validation->run()) {
 			$result = $this->Ctcmodel->insertMember();
 			if ($result) {
@@ -76,23 +73,10 @@ class Ctc extends MY_Controller {
 	public function newCouple()
 	{
 		$this->currentMemberId = -1;
-		$rules['lastName__1'] = "required";
-		$rules['firstName__1'] = "required";
-		$rules['dateJoined__1'] = "callback__dateCheck";
-		$rules['lastName__2'] = "required";
-		$rules['firstName__2'] = "required";
-		$rules['dateJoined__2'] = "callback__dateCheck";
-		$rules['address1'] = "required";
-		$rules['city'] = "required";
-		$rules['primaryEmail__1']="valid_email";
-		$rules['secondaryEmail__1']="valid_email";
-		$rules['primaryEmail__2']="valid_email";
-		$rules['secondaryEmail__2']="valid_email";
-		$rules['membershipEmail']="valid_email";
-		$rules['loginName__1']="required|min_length[4]|callback__loginCheck|callback__differentLogins";
-		$rules['loginName__2']="required|min_length[4]|callback__loginCheck";
+        $this->_setupMemberValidation('__1');
+        $this->_setupMemberValidation('__2');
+        $this->_setupMembershipValidation();
 
-		$this->form_validation->set_rules($rules);
 		if ($this->form_validation->run()) {
 			$result = $this->Ctcmodel->insertCouple();
 			if ($result) {
@@ -135,8 +119,6 @@ class Ctc extends MY_Controller {
 		if ($id == 0) {  // Security check (weak -- TODO: can this be improved?)
 			die("Access denied 4");
 		}
-		$this->load->library('form_validation');
-		$this->form_validation->set_error_delimiters('<p class="error">', '</p>');
 		$this->form_validation->set_rules('newpass', 'New Password', 'trim|required|min_length[5]|matches[newpassconf]');
 		$this->form_validation->set_rules('newpassconf', 'Confirm New Password', 'trim|required');
 
@@ -169,7 +151,7 @@ class Ctc extends MY_Controller {
 	{
 		$this->currentMemberId = $id;
 
-		$this->_setupValidation();
+		$this->_setupMemberValidation();
 		if ($this->form_validation->run()) {
 			// If we've received a valid form, update the DB and report the result.
 			$changes = $this->Ctcmodel->updateMember($id);
@@ -264,10 +246,7 @@ class Ctc extends MY_Controller {
 	public function coupleMembers2($id1, $id2)
 	// Postback from the coupling-data acquisition form
 	{
-		$rules['address1'] = "required";
-		$rules['city'] = "required";
-		$rules['membershipEmail']="valid_email";
-		$this->form_validation->set_rules($rules);
+        $this->_setupMembershipValidation();
 		if(!$this->form_validation->run()) {
 			$fields = $this->_getFormDataFromPost();
 			$formData = array('fields' => $fields,
@@ -484,17 +463,59 @@ class Ctc extends MY_Controller {
 	// VALIDATION CODE
 	// ===============
 
-	function _setupValidation()
+    // The rules for validating member fields
+    // A suffix can be added to all field names (and labels) for handling
+    // couple membership forms.
+	function _setupMemberValidation($suffix = '')
 	{
-		$rules['lastName'] = "required";
-		$rules['firstName'] = "required";
-		$rules['address1'] = "required";
-		$rules['city'] = "required";
-		$rules['primaryEmail']="valid_email";
-		$rules['secondaryEmail']="valid_email";
-		$rules['membershipEmail']="valid_email";
-		$rules['dateJoined']="callback__dateCheck";
-		$rules['loginName']="required|min_length[4]|callback__loginCheck";
+        $rules = array(
+            array(
+                'field' => "lastName{$suffix}",
+                'label' => "Last Name{$suffix}",
+                'rules' => 'required'),
+            array(
+                'field' => "firstName{$suffix}",
+                'label' => "First Name{$suffix}",
+                'rules' => 'required'),
+            array(
+                'field' => "primaryEmail{$suffix}",
+                'label' => "Primary Email{$suffix}",
+                'rules' => 'valid_email'),
+            array(
+                'field' => "secondaryEmail{$suffix}",
+                'label' => "Secondary Email{$suffix}",
+                'rules' => 'valid_email'),
+            array(
+                'field' => "loginName{$suffix}",
+                'label' => "Login name{$suffix}",
+                'rules' => 'required|min_length[4]|callback__loginCheck'),
+            array(
+                'field' => "dateJoined{$suffix}",
+                'label' => "Date joined{$suffix}",
+                'rules' => 'callback__dateCheck'),
+        );
+
+		$this->form_validation->set_rules($rules);
+	}
+    
+    // The rules for validating membership fields (as distinct from member fields)
+    function _setupMembershipValidation()
+	{
+        $rules = array(
+            array(
+                'field' => "address1",
+                'label' => 'Address Line 1',
+                'rules' => 'required'),
+            array(
+                'field' => "city",
+                'label' => 'City',
+                'rules' => 'required'),
+            array(
+                'field' => "membershipEmail",
+                'label' => 'Membership Email',
+                'rules' => 'valid_email')
+        );
+
 		$this->form_validation->set_rules($rules);
 	}
 
@@ -504,11 +525,11 @@ class Ctc extends MY_Controller {
 	// (extracted from the current session) or valid for a new member if that id is -1.
 	{
 	    if (! preg_match("/^([-a-z0-9_.])+$/i", $login)) {
-	    	$this->form_validation->set_message('_loginCheck', "Illegal login name: can contain only alphanumeric characters plus '.', '-' and '_'");
+	    	$this->form_validation->set_message('_loginCheck', "Illegal login name ($login): can contain only alphanumeric characters plus '.', '-' and '_'");
 			return FALSE;
 	    }
 		if (!$this->Ctcmodel->isValidLogin($login, $this->currentMemberId)) {
-			$this->form_validation->set_message('_loginCheck', 'Invalid login (already in use?)');
+			$this->form_validation->set_message('_loginCheck', "Invalid login ($login): perhaps already in use?");
 			return FALSE;
 		}
 		else {
@@ -569,4 +590,3 @@ class Ctc extends MY_Controller {
 	}
 
 }
-?>

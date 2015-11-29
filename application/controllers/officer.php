@@ -8,7 +8,7 @@ class Officer extends MY_Controller {
 	public function __construct()
 	{
 		global $userData;
-		if (count($userData['roles']) == 0) {
+		if (!isset($userData['roles']) || count($userData['roles']) == 0) {
 			die('You must be a club officer logged in to the website to use this function');
 		}
 		parent::__construct();

@@ -21,7 +21,7 @@ class MY_Exceptions extends CI_Exceptions
     private function is_rest()
     {
         $ci =& get_instance();
-        return  $ci->uri->segment(1,'') === 'rest';
+        return  isset($ci->uri) && $ci->uri->segment(1,'') === 'rest';
     }
         
 

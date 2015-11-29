@@ -152,6 +152,7 @@ class Tripreportmodel extends CI_Model {
     public function getByYear($year) {
         // Return a list of all the trip reports for the given year.
         // Each is an object with a trip report ID, a date and a title
+        $this->db->select('id, trip_type, year, month, day, duration, date_display, user_set_date_display, title');
         $this->db->order_by('month desc, day desc');
         $q = $this->db->get_where('jos_tripreport',
             array('year'=>$year, 'deleter_id' => NULL));

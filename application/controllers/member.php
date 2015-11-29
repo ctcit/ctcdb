@@ -86,7 +86,8 @@ class Member extends MY_Controller {
 		}
 
 		$this->currentMemberId = $id;
-		$this->_setupValidation();
+		$this->_setupMemberValidation();
+        $this->_setupMembershipValidation();
 
 		if ($this->form_validation->run()) {
 			// If we've received a valid form, update the DB and report the result.
@@ -332,14 +333,47 @@ class Member extends MY_Controller {
 	// VALIDATION CODE
 	// ===============
 
-	function _setupValidation()
+    // The rules for validating member fields
+    // A suffix can be added to all field names (and labels) for handling
+    // couple membership forms.
+	function _setupMemberValidation($suffix = '')
 	{
-		$rules['lastName'] = "required";
-		$rules['firstName'] = "required";
-		$rules['address1'] = "required";
-		$rules['city'] = "required";
-		$rules['primaryEmail']="valid_email";
-		$rules['loginName']="required|min_length[4]|callback__loginCheck";
+        $rules = array(
+            array(
+                'field' => "lastName{$suffix}",
+                'label' => "Last Name{$suffix}",
+                'rules' => 'required'),
+            array(
+                'field' => "firstName{$suffix}",
+                'label' => "First Name{$suffix}",
+                'rules' => 'required'),
+            array(
+                'field' => "primaryEmail{$suffix}",
+                'label' => "Primary Email{$suffix}",
+                'rules' => 'valid_email'),
+            array(
+                'field' => "loginName{$suffix}",
+                'label' => "Login name{$suffix}",
+                'rules' => 'required|min_length[4]|callback__loginCheck')
+        );
+
+		$this->form_validation->set_rules($rules);
+	}
+    
+    // The rules for validating membership fields (as distinct from member fields)
+    function _setupMembershipValidation()
+	{
+        $rules = array(
+            array(
+                'field' => "address1",
+                'label' => 'Address Line 1',
+                'rules' => 'required'),
+            array(
+                'field' => "city",
+                'label' => 'City',
+                'rules' => 'required')
+        );
+
 		$this->form_validation->set_rules($rules);
 	}
 
