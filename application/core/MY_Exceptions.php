@@ -75,7 +75,7 @@ class MY_Exceptions extends CI_Exceptions
     function show_error($heading, $message, $template = 'error_general', $status_code = 500)
     {
         if (!$this->is_rest()) {
-            return $firstBit . parent::show_error($heading, $message, $template, $status_code);
+            return parent::show_error($heading, $message, $template, $status_code);
         } else {
             header('Cache-Control: no-cache, must-revalidate');
             header('Content-type: application/json');
