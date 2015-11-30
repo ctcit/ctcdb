@@ -76,6 +76,7 @@ class Ctc extends MY_Controller {
         $this->_setupMemberValidation('__1');
         $this->_setupMemberValidation('__2');
         $this->_setupMembershipValidation();
+        $this->form_validation->set_rules('loginName__2', 'second login name', 'callback__differentLogins');
 
 		if ($this->form_validation->run()) {
 			$result = $this->Ctcmodel->insertCouple();
@@ -92,6 +93,7 @@ class Ctc extends MY_Controller {
 		$isPostBack = count($_POST) > 0;
 		if ($isPostBack) {
 			$data = $this->_getFormDataFromPost();
+            unset($data['submitButton']);
 		}
 		else {
 			$data = $this->_getNewCoupleFormData();
@@ -538,10 +540,9 @@ class Ctc extends MY_Controller {
 	}
 
 	function _differentLogins($login)
-	// Returns true only if the given login isn't the same as 'loginName__2'
+	// Returns true iff the given login (namely loginName__2) isn't the same as 'loginName__1'
 	{
-		if ($login == $this->input->post('loginName__2', True)) {
-
+		if ($login == $this->input->post('loginName__1', True)) {
 			$this->form_validation->set_message('_differentLogins', 'The two members must have different logins');
 			return FALSE;
 		}
