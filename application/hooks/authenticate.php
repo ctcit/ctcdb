@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-define('JOOMLA_VERSION', '3.0');
+define('JOOMLA_VERSION', '1.2');
 
 function authenticate() {
     /*
@@ -19,7 +19,7 @@ function authenticate() {
      */
     header("Cache-Control: no-store, no-cache, must-revalidate");
     header("Pragma: no-cache");
-    $data = JOOMLA_VERSION === '1.2' ? getJoomlaUserData_J12 : getJoomlaUserData();
+    $data = JOOMLA_VERSION === '1.2' ? getJoomlaUserData_J12() : getJoomlaUserData();
     $GLOBALS['userData'] = $data;
     log_message('debug', 'Authentication hook result: ' . print_r($data, TRUE));
     date_default_timezone_set("Pacific/Auckland");
