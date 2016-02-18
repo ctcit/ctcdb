@@ -11,7 +11,7 @@ class Rest extends REST_Controller {
     // the access-control headers, and then quits if it's an OPTIONS request,
     // which is the "pre-flight" browser generated request to check access.
     // See http://stackoverflow.com/questions/15602099/http-options-error-in-phil-sturgeons-codeigniter-restserver-and-backb
-
+    var $rest;
     public function __construct()
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -30,8 +30,9 @@ class Rest extends REST_Controller {
         }
         
         parent::__construct();
-        $this->load->database('ctcweb9_joom1');
+        $this->load->database('ctcweb9_tripreports');
         $this->load->model('tripreportmodel');
+        $rest = true;
     }
     
     
@@ -96,6 +97,12 @@ class Rest extends REST_Controller {
     // Get a list of trip reports for a given year.
     public function yearstripreports_get($year) {
         $rows = $this->tripreportmodel->getByYear($year);
+        $this->response($rows);
+    }
+    
+    // Get a list of recent trip reports for the front page.
+    public function recenttripreports_get($maxrecent, $maxdays) {
+        $rows = $this->tripreportmodel->getRecent($maxrecent, $maxdays);
         $this->response($rows);
     }
     

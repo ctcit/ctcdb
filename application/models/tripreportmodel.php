@@ -68,7 +68,7 @@ class Tripreportmodel extends CI_Model {
             throw new RuntimeException('Deletion by a non-logged in user?!');
         }
         $this->db->where(array('id'=>$tripId));
-        $this->db->update('jos_tripreport', array('deleter_id'=>$deleter_id));
+        $this->db->update('tripreport', array('deleter_id'=>$deleter_id));
     }
     
     
@@ -95,7 +95,7 @@ class Tripreportmodel extends CI_Model {
             $this->uploader_name = $userData['name'];
             $this->upload_date = strftime('%Y%m%d');
             $this->log('debug', "Inserting trip report: '" . print_r($this, True));
-            if (!$this->db->insert('jos_tripreport', $this)) {
+            if (!$this->db->insert('tripreport', $this)) {
                 throw new RuntimeException('Trip report insert failed');
             } else {
                $this->id = $this->db->insert_id();
@@ -103,7 +103,7 @@ class Tripreportmodel extends CI_Model {
         } else { // Updating
             $this->log('debug', "Updating trip report: '" . print_r($this, True));
             $this->db->where('id', $this->id);
-            if ($this->db->update('jos_tripreport', $this) === FALSE) {
+            if ($this->db->update('tripreport', $this) === FALSE) {
                 throw new RuntimeException('Trip report update failed');
             }
         }
@@ -119,7 +119,7 @@ class Tripreportmodel extends CI_Model {
         // Initialise self from the row of the tripreports table corresponding
         // to the given trip report id, enhanced by lists of gpx, image and
         // map ids.
-        $q = $this->db->get_where('jos_tripreport', 
+        $q = $this->db->get_where('tripreport', 
             array('id' => $tripId, 'deleter_id' => NULL));
         if ($q->num_rows != 1) {
             $this->id = 0; // This is the error indicator
@@ -141,7 +141,7 @@ class Tripreportmodel extends CI_Model {
         $this->db->select('year');
         $this->db->distinct();
         $this->db->order_by('year desc');
-        $q = $this->db->get('jos_tripreport');
+        $q = $this->db->get('tripreport');
         $years = array();
         foreach($q->result() as $row) {
             $years[] = $row->year;
@@ -154,11 +154,33 @@ class Tripreportmodel extends CI_Model {
         // Each is an object with a trip report ID, a date and a title
         $this->db->select('id, trip_type, year, month, day, duration, date_display, user_set_date_display, title');
         $this->db->order_by('month desc, day desc');
-        $q = $this->db->get_where('jos_tripreport',
+        $q = $this->db->get_where('tripreport',
             array('year'=>$year, 'deleter_id' => NULL));
         return $q->result();
     }
     
+    /*
+            $this->db->select(implode(',',$this->getModifiableDataFields()) . ',membershipId, statusAdmin, membershipTypeEnum');
+        $this->db->from('members, memberships, membership_types');
+        $this->db->where("members.id = $id and membershipId = memberships.id and membershipTypeId = membership_types.id");
+        $query = $this->db->get();
+        $data = $query->row_array();*/
+
+    public function getRecent($maxrecent, $maxdays){
+        $date = new DateTime();
+        $date->sub( new DateInterval('P'.$maxdays.'D') );
+        $year = $date->format('Y');
+        $month = $date->format('m');
+        $day = $date->format('d');
+        $query = 'id, trip_type, year, month, day, duration, date_display, user_set_date_display, title '.
+                 'FROM tripreport '.
+                 'WHERE deleter_id is NULL AND year <='.$year.' AND month <='.$month.' AND day <= '.$day.' '.
+                 'ORDER BY year DESC, month DESC, day DESC '.
+                 'LIMIT '.$maxrecent;
+        $this->db->select($query);
+        $result = $this->db->get();
+        return $result->result();
+   }
     
     private function loadEntities($tripId, $entityType) {
         // Load the list of image, gpx or map rowss respectively for the
@@ -167,10 +189,10 @@ class Tripreportmodel extends CI_Model {
         // A hack is that there is no separate map table as maps are images,
         // so we do 'map' as a special case.
         // The entity list that gets plugged into $this is a list of 
-        // objects, one per matching row of the jos_$entity table but without
+        // objects, one per matching row of the $entity table but without
         // any blob fields. Also, the ordering field from the bridging table
         // is added, too.
-        $mainTable = $entityType === 'map' ? 'jos_image' : 'jos_' . $entityType;
+        $mainTable = $entityType === 'map' ? 'image' : $entityType;
         $fieldData = $this->db->field_data($mainTable);
         $fields = array();
         foreach ($fieldData as $field) {
@@ -181,8 +203,8 @@ class Tripreportmodel extends CI_Model {
         $this->db->select(implode(',', $fields) . ',ordering');
         $this->db->from($mainTable);
         $entityId = $entityType . '_id';
-        $this->db->join("jos_tripreport_$entityType", "$mainTable.id = jos_tripreport_$entityType.$entityId");
-        $this->db->where(array("jos_tripreport_$entityType.tripreport_id" => $tripId));
+        $this->db->join("tripreport_$entityType", "$mainTable.id = tripreport_$entityType.$entityId");
+        $this->db->where(array("tripreport_$entityType.tripreport_id" => $tripId));
         $this->db->order_by('ordering');
         $entities = $this->db->get();
         $listFieldName = $entityType . 's';
@@ -203,8 +225,8 @@ class Tripreportmodel extends CI_Model {
         // or GPX) plus caption and name attributes; that is saved first, to
         // give an id.
         // The ordering of the saved entities is that of the list.
-        $entityTable = $entityType === 'map' ? 'jos_image' : 'jos_' . $entityType;
-        $bridgeTable = "jos_tripreport_$entityType";
+        $entityTable = $entityType === 'map' ? 'image' : $entityType;
+        $bridgeTable = "tripreport_$entityType";
         
         // Firstly delete all existing link table entries, as their ordering 
         // attributes are probably wrong.
@@ -274,8 +296,8 @@ class Tripreportmodel extends CI_Model {
         // Currently this isn't used as we don't actually delete trip reports
         // but is left here in case it's needed in the future.
         // *** NEVER TESTED ***
-        $entityTable = $entity === 'map' ? 'jos_image' : 'jos_' . $entity;
-        $bridgeTable = "jos_tripreport_$entityType";
+        $entityTable = $entity === 'map' ? 'image' : $entity;
+        $bridgeTable = "tripreport_$entityType";
         $tables = array($entityTable, $bridgeTable);
         
         $this->db->from($bridgeTable);

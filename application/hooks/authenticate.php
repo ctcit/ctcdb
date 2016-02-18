@@ -19,7 +19,11 @@ function authenticate() {
      */
     header("Cache-Control: no-store, no-cache, must-revalidate");
     header("Pragma: no-cache");
-    $data = JOOMLA_VERSION === '1.2' ? getJoomlaUserData_J12 : getJoomlaUserData();
+    if (JOOMLA_VERSION === '1.2'){
+        $data = getJoomlaUserData_J12;
+    }else{
+        $data = getJoomlaUserData();
+    }
     $GLOBALS['userData'] = $data;
     log_message('debug', 'Authentication hook result: ' . print_r($data, TRUE));
     date_default_timezone_set("Pacific/Auckland");

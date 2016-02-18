@@ -1,15 +1,10 @@
-<!--  Untested view for use with untested membershipList method of member controller. -->
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <h2>CTC Membership List</h2>
 <p>The membership list below is formatted for on-screen viewing.
 Printable versions are also available:
 <ul>
-	<li><a
-		href="http://www.ctc.org.nz/index2.php?option=com_chronocontact&pop=1&page=0&chronoformname=PFMembershipList"
-		target="_blank"> printable version, sorted by first name</a></li>
-	<li><a
-		href="http://www.ctc.org.nz/index2.php?option=com_chronocontact&pop=1&page=0&chronoformname=PFMembershipListSurnameSort"
-		target="_blank"> printable version, sorted by last name</a></li>
+    <li><?php echo anchor($printableListBySurnameUrl, "Printable version, sorted by last name", 'target="_blank"')?></li>
+    <li><?php echo anchor($printableListByFirstnameUrl, "Printable version, sorted by first name", 'target="_blank"')?></li>
 </ul>
 
 <p>Please note that this list is intended for the use of Christchurch
@@ -27,7 +22,55 @@ or so -- a small window should then pop up with the address in it.
 Similarly, holding the cursor over a person's phone will reveal their
 mobile number (if they have one).</p>
 <p></p>
-
+<script>
+function showHideCols(colNum) {
+    var addrCB = document.getElementById('showAddress');
+    var emailCB = document.getElementById('showEmail');
+    var mobCB = document.getElementById('showMob');
+    if (colNum === 2 && addrCB.checked)
+        emailCB.checked = mobCB.checked = false;
+    else if (colNum ===2 && !addrCB.checked){
+        emailCB.checked = true;
+        mobCB.checked = false;
+    }
+    if (colNum === 3 && emailCB.checked)
+        addrCB.checked = mobCB.checked = false;
+    else if (colNum ===3 && !emailCB.checked){
+        addrCB.checked = true;
+        emailCB.checked = false;
+    }
+    if (colNum === 4 && mobCB.checked) 
+        addrCB.checked = emailCB.checked = false;
+    else if (colNum === 4 && !mobCB.checked){
+        addrCB.checked = false;
+        emailCB.checked = true;
+    }
+    var tbl  = document.getElementById('members');
+    var rows = tbl.getElementsByTagName('tr');
+    for (var row=0; row<rows.length;row++) {
+      var cels = rows[row].getElementsByTagName('td');
+      cels[2].style.display = (addrCB.checked) ? '' : 'None';
+      cels[3].style.display = (emailCB.checked) ? '' : 'None';
+      cels[4].style.display = (mobCB.checked) ? '' : 'None';
+    }
+}
+</script>
+<script src="../media/jui/js/jquery.min.js"></script>
+<script>
+    function sort(){
+        var chkSortByFirstName = document.getElementById('chkSortByFirstName');
+        var tbl  = document.getElementById('members');
+        var rows = tbl.getElementsByTagName('tr');
+        for (var iRow = 0; iRow < rows.length; iRow++) {
+            var row = rows[iRow];
+            var showRow = (row.className === "byfirstname" && chkSortByFirstName.checked) || 
+                          (row.className === "bysurname" && !chkSortByFirstName.checked) || 
+                          (row.className ===""); // Header row
+             row.style.display = showRow ? '': 'None';
+        }
+    }
+   
+</script>
 <table width="75%">
 	<tr>
 		<td>Address: <input type="checkbox" id="showAddress"
@@ -36,45 +79,46 @@ mobile number (if they have one).</p>
 			onclick="javascript:showHideCols(3)" CHECKED></td>
 		<td>Mobile phone: <input type="checkbox" id="showMob"
 			onclick="javascript:showHideCols(4)"></td>
+		<td>Sort by first name: <input type="checkbox" id="chkSortByFirstName"
+			onclick="javascript:sort()"></td>
 	</tr>
 </table>
 
 
 <h3>Membership List</h3>
-Please email corrections to
-<a href="mailto:Susan@toniq.co.nz?subject=Change of CTC Contact Details">Susan
-Pearson</a>
-.
+<p>Members can change their personal details via the <i>User Details</i>
+ link in the members menu. Alternatively, you can email corrections
+ to <a href="mailto:trampgeek@gmail.com?subject=Change%20of%20CTC%20Contact%20Details">Richard Lobb</a>.</p>
+
+
 <?php
 
-//global $mosConfig_absolute_path;
-//require_once "$mosConfig_absolute_path/includes/ctcfuncs2.php";
-
-$rowClass = "sectiontableentry1";
 echo "<table id=\"members\">";
 echo "<thead>";
-echo "<tr class=\"$rowClass\"><td class=\"col0\"><b>Name</b></td><td class=\"col1\"><b>Phone</b></td><td class=\"col2\"  style=\"display:none\"><b>Address</b></td><td  class=\"col3\"  style=\"display\"><b>Email</b></td><td class=\"col4\"
+echo "<tr><td class=\"col0\"><b>Name</b></td><td class=\"col1\"><b>Phone</b></td><td class=\"col2\"  style=\"display:none\"><b>Address</b></td><td  class=\"col3\"  style=\"display\"><b>Email</b></td><td class=\"col4\"
 style=\"display:none\"><b>Mobile</b></td></tr>";
 echo "</thead><tbody>";
 
-foreach ($members as $user) {
-	$phone = $user->homePhone;
-	$mobTitle = $user->mobilePhone;
-	if ($mobTitle == "") $mobTitle = "No mobile";
-	print "<tr class=\"$rowClass\">";
-	$addr = $user->address1.", ".$user->address2.", ".$user->city;
-	$name = $user->firstName." ".$user->lastName;
-	print "<td class=\"col0\" title=\"$addr\">$name</td>" .
-		"<td class=\"col1\" title=\"$mobTitle \">$phone</td><td class=\"col2\"  " .
-		"style=\"display:none\">$addr</td><td class=\"col3\"  style=\"display\">".
-		"$user->primaryEmail</td><td class=\"col4\" style=\"display:none\">$user->mobilePhone</td>";
-	print "</tr>";
-	if ($rowClass == "sectiontableentry1") {
-		$rowClass = "sectiontableentry2";
-	}
-	else {
-		$rowClass = "sectiontableentry1";
-	}
+// Controller has filled $members
+foreach(array("bysurname", "byfirstname") as $order){
+    $members = $order === "bysurname" ? $membersBySurname: $membersByFirstName;
+    foreach ($members as $user) {
+        $phone = $user->homePhone;
+        $mobTitle = $user->mobilePhone;
+        if ($mobTitle === "") $mobTitle = "No mobile";
+        if (trim($phone) === "")
+            $phone = $user->mobilePhone;
+        // Hide the firstname rows by default
+        $defaultStyle = $order === "bysurname"? "": " style = \"display:none\"";
+        print "<tr class=\"$order\" $defaultStyle>";
+        $addr = implode(', ', array($user->address1, $user->address2, $user->city, $user->postcode));
+        $name = $order === "bysurname" ? implode(', ', array($user->lastName, $user->firstName)): implode(' ', array($user->firstName, $user->lastName));
+        print "<td class=\"col0\" title=\"$addr\">$name</td>" .
+            "<td class=\"col1\" title=\"$mobTitle \">$phone</td><td class=\"col2\"  " .
+            "style=\"display:none\">$addr</td><td class=\"col3\"  style=\"display\">".
+            "$user->primaryEmail</td><td class=\"col4\" style=\"display:none\">$user->mobilePhone</td>";
+        print "</tr>";
+    }
 }
 
 ?>
