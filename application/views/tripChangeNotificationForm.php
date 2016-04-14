@@ -26,5 +26,5 @@
     ?>
 <hr>
 <p>Recent trip change notifications are listed
-    <a href="http://www.ctc.org.nz/db/index.php/member/listTripChangeNotifications/0">here</a>.
+    <a href="listTripChangeNotifications/0">here</a>.
     </p.

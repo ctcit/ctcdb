@@ -65,13 +65,52 @@ class Member extends MY_Controller {
 
 	}
 
+    public function printableMembershipList(){
+ 		global $userData;
+		if ($userData['userid'] === 0) {  // Security check
+			die("Access denied #2");
+		}
+		$members = $this->Ctcmodel->getAllActiveMembers();//: $this->Ctcmodel->getAllActiveMembersByFirstName();
+		$this->_loadPage('printableMembershipList','Membership list',
+			array('members'=>$members,
+                  'surnameFirst'=>TRUE,
+                  'css'=> "memberUpdate.css"),
+			NO_MENU
+		);
+   }
+
+    public function printableMembershipListByFirstName(){
+ 		global $userData;
+		if ($userData['userid'] === 0) {  // Security check
+			die("Access denied #2");
+		}
+		$members = $this->Ctcmodel->getAllActiveMembersByFirstName();
+		$this->_loadPage('printableMembershipList','Membership list',
+			array('members'=>$members,
+                  'surnameFirst'=>FALSE,
+                  'css'=> "memberUpdate.css"),
+			NO_MENU
+		);
+   }
+    
 	// Function to display the club membership list
 	// UNTESTED.
-	public function membershipList()
-	{
-		$members = $this->Ctcmodel->getAllActiveMembers();
+	public function membershipList(){
+		global $userData;
+        $id = $userData['userid'];
+		if ($id == 0) {  // Security check
+			die("Access denied #2");
+		}
+		$printableListBySurnameUrl = "member/printableMembershipList";
+		$printableListByFirstnameUrl = "member/printableMembershipListByFirstName";
+		$membersBySurname = $this->Ctcmodel->getAllActiveMembers();
+        $membersByFirstName = $this->Ctcmodel->getAllActiveMembersByFirstname();
 		$this->_loadPage('membershipList','Membership list',
-			array('members'=>$members,'css'=> "memberUpdate.css"),
+			array('membersBySurname'=>$membersBySurname,
+                  'membersByFirstName'=>$membersByFirstName,
+                  'css'=> "memberUpdate.css",
+                  'printableListBySurnameUrl'=>$printableListBySurnameUrl,
+                  'printableListByFirstnameUrl'=>$printableListByFirstnameUrl),
 			NO_MENU
 		);
 	}

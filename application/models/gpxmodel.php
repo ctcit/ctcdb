@@ -16,7 +16,7 @@ class Gpxmodel extends CI_Model {
         $this->name = $name;
         $this->gpx = $gpx;
         $this->caption = $caption;
-        if ($this->db->insert('jos_gpx', $this) === FALSE) {
+        if ($this->db->insert('gpx', $this) === FALSE) {
             throw new RuntimeException("Failed writing GPX $name to DB");
         }
         return $this->db->insert_id();
@@ -47,13 +47,13 @@ class Gpxmodel extends CI_Model {
     // Update just the name and caption of a gpx file, given its id.
     public function update_name_and_caption($id, $name, $caption) {
         $this->db->where('id', $id);
-        $this->db->update('jos_gpx', array('name'=>$name, 'caption'=>$caption));
+        $this->db->update('gpx', array('name'=>$name, 'caption'=>$caption));
     }
     
     
     public function delete($gpx_id) {
-        $this->db->delete('jos_gpx', array('id'=>$gpx_id));
-        $this->db->delete('jos_tripreport_gpx', array('gpx_id'=>$gpx_id));
+        $this->db->delete('gpx', array('id'=>$gpx_id));
+        $this->db->delete('tripreport_gpx', array('gpx_id'=>$gpx_id));
     }
     
 }

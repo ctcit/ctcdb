@@ -59,7 +59,7 @@ class Imagemodel extends CI_Model {
             throw new RuntimeException("Failed to create thumbnail for $name");
         }
         $this->thumb = file_get_contents($thumbname);
-        if ($this->db->insert('jos_image', $this) === FALSE) {
+        if ($this->db->insert('image', $this) === FALSE) {
             throw new RuntimeException("Failed writing image $name to DB");
         }
         imagedestroy($thumb_img);
@@ -92,12 +92,12 @@ class Imagemodel extends CI_Model {
     // Update just the name and caption of an image, given its id.
     public function update_name_and_caption($id, $name, $caption) {
         $this->db->where('id', $id);
-        $this->db->update('jos_image', array('name'=>$name, 'caption'=>$caption));
+        $this->db->update('image', array('name'=>$name, 'caption'=>$caption));
     }
     
     public function delete($image_id) {
-        $this->db->delete('jos_image', array('id'=>$image_id));
-        $this->db->delete('jos_tripreport_image', array('image_id'=>$image_id));
+        $this->db->delete('image', array('id'=>$image_id));
+        $this->db->delete('tripreport_image', array('image_id'=>$image_id));
     }
     
 }

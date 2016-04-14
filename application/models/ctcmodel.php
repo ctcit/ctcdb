@@ -604,6 +604,19 @@ class Ctcmodel extends CI_Model
     function getAllActiveMembersSql() {
         return $this->getAllMembersSql("and statusAdmin='Active'");
     }
+    
+    function getAllActiveMembersByFirstNameSql(){
+        $sql = "select " . implode(',', $this->getModifiableDataFields()) .
+            ",statusAdmin as 'status', members.id as memberId, memberships.id as membershipId" .
+            " from members, memberships, membership_types" .
+            " where membershipId = memberships.id and memberships.membershipTypeId = membership_types.id and statusAdmin='Active' order by FirstName,LastName";
+        return $sql;
+    }
+    
+    function getAllActiveMembersByFirstName(){
+        $query = $this->db->query($this->getAllActiveMembersByFirstNameSql());
+        return $query->result();
+    }
 
     // An array of all active members, each element being an object.
     // UNTESTED.

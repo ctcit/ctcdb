@@ -38,7 +38,7 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "ctcweb9_userman";
-$db['default']['password'] = "yeahright";
+$db['default']['password'] = "susanrulesok";
 $db['default']['database'] = "ctcweb9_ctc";
 $db['default']['dbdriver'] = "mysqli";
 $db['default']['dbprefix'] = "";
@@ -51,7 +51,7 @@ $db['default']['dbcollat'] = "utf8_general_ci";
 
 $db['ctcweb9_joom1']['hostname'] = "localhost";
 $db['ctcweb9_joom1']['username'] = "ctcweb9_userman";
-$db['ctcweb9_joom1']['password'] = "yeahright";
+$db['ctcweb9_joom1']['password'] = "susanrulesok";
 $db['ctcweb9_joom1']['database'] = "ctcweb9_joom1";
 $db['ctcweb9_joom1']['dbdriver'] = "mysqli";
 $db['ctcweb9_joom1']['dbprefix'] = "";
@@ -61,5 +61,18 @@ $db['ctcweb9_joom1']['cache_on'] = FALSE;
 $db['ctcweb9_joom1']['cachedir'] = "";
 $db['ctcweb9_joom1']['char_set'] = "utf8";
 $db['ctcweb9_joom1']['dbcollat'] = "utf8_general_ci";
+
+$db['ctcweb9_tripreports']['hostname'] = "localhost";
+$db['ctcweb9_tripreports']['username'] = "ctcweb9_userman";
+$db['ctcweb9_tripreports']['password'] = "susanrulesok";
+$db['ctcweb9_tripreports']['database'] = "ctcweb9_tripreports";
+$db['ctcweb9_tripreports']['dbdriver'] = "mysqli";
+$db['ctcweb9_tripreports']['dbprefix'] = "";
+$db['ctcweb9_tripreports']['pconnect'] = TRUE;
+$db['ctcweb9_tripreports']['db_debug'] = TRUE;
+$db['ctcweb9_tripreports']['cache_on'] = FALSE;
+$db['ctcweb9_tripreports']['cachedir'] = "";
+$db['ctcweb9_tripreports']['char_set'] = "utf8";
+$db['ctcweb9_tripreports']['dbcollat'] = "utf8_general_ci";
 
 
