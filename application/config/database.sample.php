@@ -38,7 +38,7 @@ $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "ctcweb9_userman";
-$db['default']['password'] = "susanrulesok";
+$db['default']['password'] = "yeah_right";
 $db['default']['database'] = "ctcweb9_ctc";
 $db['default']['dbdriver'] = "mysqli";
 $db['default']['dbprefix'] = "";
@@ -51,7 +51,7 @@ $db['default']['dbcollat'] = "utf8_general_ci";
 
 $db['ctcweb9_joom1']['hostname'] = "localhost";
 $db['ctcweb9_joom1']['username'] = "ctcweb9_userman";
-$db['ctcweb9_joom1']['password'] = "susanrulesok";
+$db['ctcweb9_joom1']['password'] = "yeah_right";
 $db['ctcweb9_joom1']['database'] = "ctcweb9_joom1";
 $db['ctcweb9_joom1']['dbdriver'] = "mysqli";
 $db['ctcweb9_joom1']['dbprefix'] = "";
