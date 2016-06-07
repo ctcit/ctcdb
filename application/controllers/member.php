@@ -42,11 +42,12 @@ class Member extends MY_Controller {
 		else if ($userData['userid'] != $id) {  // Security check
 			die("Access denied 1");
 		}
-		$query = $this->db->query("select id from ctcweb9_joom1.jos_contact_details where name='dbadmin'");
-        $result = $query->row();
-        $dbAdminId = $result->id;
+		//$query = $this->db->query("select id from ctcweb9_joom1.jos_contact_details where name='dbadmin'");
+        //$result = $query->row();
+        //$dbAdminId = $result->id;
         $baseUrl = $this->config->item('joomla_base_url');
-		$sendEmailUrl = $baseUrl."?option=com_contact&amp;task=view&amp;contact_id=".strval($dbAdminId);
+		//$sendEmailUrl = $baseUrl."?option=com_contact&amp;task=view&amp;contact_id=".strval($dbAdminId);
+		$sendEmailUrl = $baseUrl."/index.php/contact-us/7-dbadmin";
 		$this->currentPassword = $this->Ctcmodel->getMemberPassword($id);
 
 		$isBrand8Flame7 = $this->_passwordCheck2('brand8flame7');
