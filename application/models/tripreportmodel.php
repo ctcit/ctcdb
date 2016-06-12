@@ -169,14 +169,15 @@ class Tripreportmodel extends CI_Model {
     public function getRecent($maxrecent, $maxdays){
         $date = new DateTime();
         $date->sub( new DateInterval('P'.$maxdays.'D') );
-        $year = $date->format('Y');
-        $month = $date->format('m');
-        $day = $date->format('d');
-        $query = 'id, trip_type, year, month, day, duration, date_display, user_set_date_display, title '.
+        $lastDateOfInterest = date_format($date,"Y-m-d");
+
+        $query = 'id, trip_type, year, month, day, duration, date_display, '.
+                 'user_set_date_display, title, upload_date '.
                  'FROM tripreport '.
-                 'WHERE deleter_id is NULL AND year <='.$year.' AND month <='.$month.' AND day <= '.$day.' '.
-                 'ORDER BY year DESC, month DESC, day DESC '.
+                 "WHERE deleter_id is NULL AND upload_date >='$lastDateOfInterest' ".
+                 'ORDER BY upload_date DESC '.
                  'LIMIT '.$maxrecent;
+                 
         $this->db->select($query);
         $result = $this->db->get();
         return $result->result();

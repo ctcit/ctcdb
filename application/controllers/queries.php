@@ -90,30 +90,37 @@ class Queries extends MY_Controller {
         }
 
         $batchId = $this->Ctcmodel->addEmailBatch($docId, $subject, $nRecipients);
-        $sampleMessage = '';
-
-        $recipients = array();
+        $fails = 0;
         foreach ($tableData as $row) {
-            $message = $this->expandTemplate($document, $row);
-            if ($sampleMessage == '') {
-                    $sampleMessage = $message;
+            if (!property_exists($row, 'email') || empty($row->email)) {
+                $fails += 1;
             }
-            if (!property_exists($row, 'email')) {
-                    $this->_loadPageInNewWindow('operationOutcome',
-            'CTCDB: The query result MUST have an email column when using email merge');
-                    return;
-            }
-            $recipients[] = $row->email;
-            $this->Ctcmodel->queueMailItem($batchId, $row->email, $subject, $message);
         }
+        
+        if ($fails > 0) {
+            $this->_loadPageInNewWindow('operationOutcome',
+            'CTCDB: One or more query rows lacked an email address. Send aborted.');
+        } else {
+            $sampleMessage = '';
+
+            $recipients = array();
+            foreach ($tableData as $row) {
+                $message = $this->expandTemplate($document, $row);
+                if ($sampleMessage == '') {
+                    $sampleMessage = $message; // For displaying the first message
+                }
+                $recipients[] = $row->email;
+                $this->Ctcmodel->queueMailItem($batchId, $row->email, $subject, $message);
+            }
 
 
-        $this->_loadPage('confirmEmails', 'ConfirmEmailMerge',
-        array(  'batchId' => $batchId,
-                'docId'   => $docId,
-                'subject' => $subject,
-                'message' => $sampleMessage,
-                'recipients' => $recipients));
+            $this->_loadPage('confirmEmails', 'ConfirmEmailMerge',
+            array(  'batchId' => $batchId,
+                    'docId'   => $docId,
+                    'subject' => $subject,
+                    'message' => $sampleMessage,
+                    'recipients' => $recipients));
+        }
     }
 
     /**
