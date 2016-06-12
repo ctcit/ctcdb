@@ -213,7 +213,7 @@ if ( ! function_exists('is_loaded'))
 */
 if ( ! function_exists('get_config'))
 {
-	function &get_config($replace = array())
+	function get_config($replace = array())
 	{
 		static $_config;
 
@@ -254,7 +254,7 @@ if ( ! function_exists('get_config'))
 			}
 		}
 
-		return $_config[0] =& $config;
+		return $_config[0] = $config;
 	}
 }
 
@@ -274,7 +274,7 @@ if ( ! function_exists('config_item'))
 
 		if ( ! isset($_config_item[$item]))
 		{
-			$config =& get_config();
+			$config = get_config();
 
 			if ( ! isset($config[$item]))
 			{
