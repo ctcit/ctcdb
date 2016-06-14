@@ -81,9 +81,9 @@ class Rest extends REST_Controller {
     }
  
     // Get a trip rerport.
-    public function tripreports_get($id=NULL) {
+    public function tripreports_get($id = 0) {
         global $userData;
-        if ($id) {
+        if ($id > 0) {
             $row = $this->tripreportmodel->getById($id);
             if ($row->id == 0) {
                 show_404($this->uri->uri_string());
