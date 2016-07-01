@@ -15,7 +15,7 @@ define("DEVEL", TRUE);  // Set this FALSE when deploying to ctc.org.nz
 */
 
 $config['base_url'] = defined("DEVEL") && DEVEL ?
-        "http://localhost/ctc/db/" : "http://www.ctc.org.nz/db/";
+        "http://norwestgale.kiwi.nz/ctc/db" : "http://www.ctc.org.nz/db";
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ $config['joomla_base'] = defined("DEVEL") && DEVEL ?
 */
 
 $config['joomla_base_url'] = defined("DEVEL") && DEVEL ?
-        "http://localhost/ctc" : "http://www.ctc.org.nz";
+        "http://norwestgale.kiwi.nz/ctc" : "http://www.ctc.org.nz";
 
 /*
 |--------------------------------------------------------------------------
@@ -198,7 +198,7 @@ $config['function_trigger'] = 'm';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 2;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -209,7 +209,7 @@ $config['log_threshold'] = 2;
 | system/logs/ folder.  Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = ''; // C:\\Dumps\\';
+$config['log_path'] = '/var/log/ctc/';
 
 /*
 |--------------------------------------------------------------------------
