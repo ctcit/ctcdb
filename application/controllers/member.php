@@ -95,7 +95,6 @@ class Member extends MY_Controller {
    }
     
 	// Function to display the club membership list
-	// UNTESTED.
 	public function membershipList(){
 		global $userData;
         $id = $userData['userid'];
