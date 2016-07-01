@@ -55,7 +55,7 @@ function showHideCols(colNum) {
     }
 }
 </script>
-<script src="../media/jui/js/jquery.min.js"></script>
+
 <script>
     function sort(){
         var chkSortByFirstName = document.getElementById('chkSortByFirstName');
