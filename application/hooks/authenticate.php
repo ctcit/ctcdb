@@ -84,6 +84,7 @@ function getJoomlaUserData() {
             $roles[] = strtolower($row->role);
         }
 
+        $fullAccess = false;
         $fullAccessRoles = config_item('full_access_roles');
         if (count(array_intersect($roles, $fullAccessRoles)) > 0) {
             $fullAccess = true;
