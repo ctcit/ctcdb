@@ -22,12 +22,8 @@ function menuItem($uriSegs, $text, $title, $newWindow = false, $isAbsolute = fal
 		echo ">$text</a>";
 	}
 	else {
-		echo "<a href=\"index.php/$uriSegs\"";
-		foreach ($attribs as $attrName => $attr) {
-			echo " $attrName=\"$attr\"";
+		echo anchor($uriSegs, $text, $attribs);
 		}
-		echo ">$text</a>";
-    }
 	echo "</td></tr>";
 }
 
