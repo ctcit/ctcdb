@@ -159,6 +159,17 @@ class Tripreportmodel extends CI_Model {
         return $q->result();
     }
     
+    public function getAllTripReports() {
+        // Return a list of all trip report ids in the database,
+        // for use in constructing a pseudo site-map that can be used
+        // by Google and other search engines to index trip reports.
+        $query = 'id, year, title FROM tripreport WHERE deleter_id is NULL ' .
+                  'ORDER BY year, title';
+        $this->db->select($query);
+        $result = $this->db->get();
+        return $result->result();
+    }
+    
     /*
             $this->db->select(implode(',',$this->getModifiableDataFields()) . ',membershipId, statusAdmin, membershipTypeEnum');
         $this->db->from('members, memberships, membership_types');
