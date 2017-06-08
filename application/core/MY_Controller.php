@@ -186,14 +186,17 @@ class MY_Controller extends CI_Controller {
     // Return a list of the legitimate values for the given field (which must be
     // an 'enum' type. This is currently a special case hack, since there's currently
     // no way of knowing which table the field belongs to. Currently, it's only
-    // expected to be called for the websiteUserTypEnum field -- other enumerated
-    // types either don't appear or (e.g. membershipTypeEnum) are also handled with
+    // expected to be called for the websiteUserTypeEnum or the preferredPhoneNum
+    // fields -- other enumerated types either don't appear or
+    // (e.g. membershipTypeEnum) are also handled with
     // special case code that restricts the options applicable to a given context.
     // TODO: Fix this hack
     {
         if ($fieldName == 'websiteUserTypeEnum') {
             return array('Registered', 'Editor', 'Author', 'Manager',
                 'Administrator', 'Super Administrator');
+        } else if ($fieldName == 'preferredPhoneEnum') {
+            return array('Mobile', 'Home', 'Work');
         }
     }
 

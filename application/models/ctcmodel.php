@@ -466,6 +466,7 @@ class Ctcmodel extends CI_Model
     {
         return array('firstName', 'lastName', 'loginName',
             'primaryEmail', 'workPhone', 'mobilePhone',
+            'preferredPhoneEnum',
             'emergencyContactName', 'emergencyContactPhone',
             'onEmailListBool', 'htmlEmailBool');
     }
@@ -604,7 +605,7 @@ class Ctcmodel extends CI_Model
     function getAllActiveMembersSql() {
         return $this->getAllMembersSql("and statusAdmin='Active'");
     }
-    
+
     function getAllActiveMembersByFirstNameSql(){
         $sql = "select " . implode(',', $this->getModifiableDataFields()) .
             ",statusAdmin as 'status', members.id as memberId, memberships.id as membershipId" .
@@ -612,7 +613,7 @@ class Ctcmodel extends CI_Model
             " where membershipId = memberships.id and memberships.membershipTypeId = membership_types.id and statusAdmin='Active' order by FirstName,LastName";
         return $sql;
     }
-    
+
     function getAllActiveMembersByFirstName(){
         $query = $this->db->query($this->getAllActiveMembersByFirstNameSql());
         return $query->result();
@@ -719,7 +720,7 @@ class Ctcmodel extends CI_Model
                  JOIN members_roles ON members.id = members_roles.memberId
                  JOIN roles ON roleId = roles.id
                  WHERE isCommittee
- 
+
             ORDER BY user");
         $rows = $query->result_array();
         $result = array();
