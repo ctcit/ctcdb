@@ -17,7 +17,7 @@ class Ctcmodel extends CI_Model
 // TODO consider transaction locking for multi-record updates.
 // TODO figure out what's needed to deal with timezones correctly.
 {
-    function Ctcmodel()
+    function __construct()
     {
         // Call the Model constructor
         parent::__construct();
