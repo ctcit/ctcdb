@@ -106,6 +106,19 @@ class Ctcmodel extends CI_Model
         $memberData2['membershipId'] = $membershipId;
         return $this->insertMember2('Couple', $memberData2);
     }
+    
+    function updateJoomlaLogin($oldLogin, $newLogin){
+        if (!defined('_JEXEC'))
+          define('_JEXEC', 1);
+        if (!defined('JPATH_BASE'))
+          define('JPATH_BASE', config_item('joomla_base'));
+        require_once ( JPATH_BASE . '/includes/defines.php' );
+        require_once ( JPATH_BASE . '/includes/framework.php' );
+        $user = JFactory::getUser($oldLogin);
+        $user->username = $newLogin;
+        $user->save(true);
+    }
+
 
     function updateMember($id, $isProfileUpdate = false)
     // Writes all the data in the current $_POST form, which is assumed to be from a
@@ -127,9 +140,15 @@ class Ctcmodel extends CI_Model
         $getQuery = "select " . implode(',', $memberFields ) . " from members where id = $id";
         $query = $this->db->query($getQuery);
         $row = $query->row_array();
+        $newLogin = "";
+        $oldLogin = "";
         foreach ($memberFields as $field) {
             $newValue = $this->input->post($field, True);
             if ($newValue != $row[$field]) {
+                if ($field == "loginName"){
+                    $oldLogin = $row[$field];
+                    $newLogin = $newValue;
+                }
                 $oldValue = $row[$field];
                 if ($oldValue == NULL) $oldValue = 'NULL';
                 $this->recordMemberUpdate($id, $field, $oldValue, $newValue);
@@ -137,6 +156,8 @@ class Ctcmodel extends CI_Model
             }
         }
         $this->updateTableFromPost('members', $id, $memberFields);
+        if ($newLogin !== "")
+            $this->updateJoomlaLogin($oldLogin, $newLogin);
         $membershipId = $this->getMembershipId($id);
         if ($isProfileUpdate) {
             $membershipFields = $this->getMembershipProfileFields();
@@ -1214,9 +1235,15 @@ ORDER BY membershipName";
     // By setting $memberId to -1 the function can be used to check if the login would be
     // valid for a new member.
     {
+        if (!preg_match("/^([-a-z0-9_.])+$/i", $login)) {
+			return "Illegal login name ($login): can contain only alphanumeric characters plus '.', '-' and '_'";
+	    }
+
         $query = $this->db->query("select firstName, lastName from members where loginName='$login' ".
-                  "and not (id=$memberId)");
-        return $query->num_rows() == 0;
+                                  "and not (id=$memberId)");
+        if ($query->num_rows() !== 0)
+            return "Invalid login ($login): already in use by another member";
+        return TRUE;
     }
 
     function recordMembershipUpdate($membershipId, $fieldName, $oldValue, $newValue, $notes='' )

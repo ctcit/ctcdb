@@ -526,15 +526,11 @@ class Ctc extends MY_Controller {
 	// and is valid for the current user id (field of $this)
 	// (extracted from the current session) or valid for a new member if that id is -1.
 	{
-	    if (! preg_match("/^([-a-z0-9_.])+$/i", $login)) {
-	    	$this->form_validation->set_message('_loginCheck', "Illegal login name ($login): can contain only alphanumeric characters plus '.', '-' and '_'");
+        $result = $this->Ctcmodel->isValidLogin($login, $this->currentMemberId);
+        if ($result !== TRUE){
+			$this->form_validation->set_message('_loginCheck', $result);
 			return FALSE;
-	    }
-		if (!$this->Ctcmodel->isValidLogin($login, $this->currentMemberId)) {
-			$this->form_validation->set_message('_loginCheck', "Invalid login ($login): perhaps already in use?");
-			return FALSE;
-		}
-		else {
+		} else {
 			return TRUE;
 		}
 	}
