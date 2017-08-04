@@ -482,14 +482,16 @@ class Ctcmodel extends CI_Model
         return $this->filterNonModifiable($this->db->list_fields('memberships'));
     }
 
-    function getMemberProfileFields()
+   function getMemberProfileFields()
     // A list of all member fields that can be modified by the members themselves
     {
         return array('firstName', 'lastName', 'loginName',
             'primaryEmail', 'workPhone', 'mobilePhone',
+            'preferredPhoneEnum',
             'emergencyContactName', 'emergencyContactPhone',
             'onEmailListBool', 'htmlEmailBool');
     }
+
 
     function getMembershipProfileFields()
     // A list of all membership fields that can be modified by the members themselves
@@ -729,13 +731,17 @@ class Ctcmodel extends CI_Model
     // This is intended solely for use in displaying a list of query owners to
     // the webmaster when editing queries. See queries.php and showQueries.php.
     {
-        $query = $this->db->query("(SELECT DISTINCT loginName as user, members.id as id"
-                    ."\n FROM user_queries, members "
-                    ."\n WHERE members.id = user_queries.userIdAdmin)"
-                    ."\n UNION (SELECT DISTINCT loginName as user, members.id as id"
-                    ."\n        FROM members, ctcweb9_joom1.jos_contact_details AS contacts"
-                    ."\n        WHERE members.id = contacts.user_id)"
-                    ."\n        ORDER BY user");
+        $query = $this->db->query("
+            SELECT DISTINCT loginName as user, members.id as id
+                 FROM user_queries JOIN members
+ 				 ON members.id = user_queries.userIdAdmin
+            UNION
+            SELECT loginName as user, members.id as id
+                 FROM members
+                 JOIN members_roles ON members.id = members_roles.memberId
+                 JOIN roles ON roleId = roles.id
+                 WHERE isCommittee
+            ORDER BY user");
         $rows = $query->result_array();
         $result = array();
         foreach ($rows as $row) {

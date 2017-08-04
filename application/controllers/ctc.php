@@ -352,7 +352,8 @@ class Ctc extends MY_Controller {
 			function makeReinstateLink($membershipId) {
 				return anchor("ctc/reinstateMembership/$membershipId","Reinstate");
 			}
-			$memberships = $this->Ctcmodel->getAllMembershipsForSelection('makeReinstateLink',"(statusAdmin='StruckOff' or statusAdmin='Resigned')");
+			$memberships = $this->Ctcmodel->getAllMembershipsForSelection(
+                    'makeReinstateLink',"(statusAdmin='StruckOff' or statusAdmin='Resigned' or statusAdmin='Deceased')");
 			$this->_loadPage('reinstateMembership', 'CTCDB: Reinstate Membership', array('memberships'=>$memberships));
 		}
 		else {
@@ -499,7 +500,7 @@ class Ctc extends MY_Controller {
 
 		$this->form_validation->set_rules($rules);
 	}
-    
+
     // The rules for validating membership fields (as distinct from member fields)
     function _setupMembershipValidation()
 	{

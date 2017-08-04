@@ -49,7 +49,7 @@ class Queries extends MY_Controller {
         $docId = $this->input->post('doc_id');
         $document = $this->Ctcmodel->getDocument($docId);
         require_once("../newsletter/generate_odt.php");
-        $engine = new XmlTemplateEngine($tableData);
+        $engine = new XmlTemplateEngine(null, $tableData);
         $output = $engine->processOdtTemplate($document);
         $this->load->helper('download');
         force_download('mergeOutput.odt', $output);

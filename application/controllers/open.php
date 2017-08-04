@@ -3,6 +3,8 @@
 // This controller contains functions are accessible to anyone, even if
 // they're not logged into the main club website.
 
+define("NO_MENU", False);
+
 class Open extends MY_Controller {
 
     public function __construct()
@@ -135,7 +137,27 @@ class Open extends MY_Controller {
         $s .= '</table>';
         echo $s;
     }
-
+    
+    
+    // ********************
+    // TRIP REPORT SITE MAP
+    // *********************
+    // Return a page containing links in the "goto" format for all trip
+    // reports in the database. Links are absolute, using the config parameter
+    // joomla_base_url. This is to provide a pseudo site-map for use by
+    // search engines.
+    // This function is a bit of a hack, as it's not really
+    // a rest API call at all - it returns a full web page.
+    public function allTripReportLinks() {
+        $this->db = $this->load->database('ctcweb9_tripreports', true);
+        $this->load->model('tripreportmodel');
+        $this->load->helper('url');
+        $allTrips = $this->tripreportmodel->getAllTripReports();
+        $this->_loadPage('allTripReportLinks', 'All Trip Reports',
+			array('trips' => $allTrips),
+			NO_MENU
+		);
+    }
 
 
 }

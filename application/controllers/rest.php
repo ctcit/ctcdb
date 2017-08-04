@@ -126,7 +126,7 @@ class Rest extends REST_Controller {
         global $userData;
         $this->checkLoggedIn();
         $row = $this->tripreportmodel->getById($id);
-        if (count($userData['roles']) == 0 && $userData['userid'] !== $row->id) {
+        if (count($userData['roles']) == 0 && $userData['userid'] !== $row->uploader_id) {
             $this->response('Unauthorised trip report modification', 403);
             die();
         }

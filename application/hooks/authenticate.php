@@ -60,17 +60,19 @@ function getJoomlaUserData() {
         $dbuser = $db['default']['username'];
         $password = $db['default']['password'];
         $dbname = $db['default']['database'];
-        $con = mysqli_connect($host, $dbuser, $password);
-        $con || die('Could not connect to CTC database');
-        $con->select_db($dbname) || die ('Could not open database');
+        $db = new mysqli($host, $dbuser, $password);
+        if ($db->connect_error) {
+            die('Could not connect to CTC database');
+        }
+        $db->select_db($dbname) || die ('Could not open database');
 
-        $result = $con->query("SELECT id from members WHERE loginName='$login'");
+        $result = $db->query("SELECT id from members WHERE loginName='$login'");
         if (!$result || $result->num_rows !== 1) {
             die("User $login not found in database. Please report this to the webmaster");
         }
         $row = $result->fetch_object();
         $memberId = $row->id;
-        $result = $con->query(
+        $result = $db->query(
                     "SELECT role
                      FROM members_roles, roles
                      WHERE memberId='$memberId'
@@ -82,6 +84,7 @@ function getJoomlaUserData() {
             $roles[] = strtolower($row->role);
         }
 
+        $fullAccess = false;
         $fullAccessRoles = config_item('full_access_roles');
         if (count(array_intersect($roles, $fullAccessRoles)) > 0) {
             $fullAccess = true;

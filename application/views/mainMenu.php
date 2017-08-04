@@ -23,7 +23,7 @@ function menuItem($uriSegs, $text, $title, $newWindow = false, $isAbsolute = fal
 	}
 	else {
 		echo anchor($uriSegs, $text, $attribs);
-	}
+		}
 	echo "</td></tr>";
 }
 
