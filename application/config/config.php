@@ -15,7 +15,7 @@ define("DEVEL", TRUE);  // Set this FALSE when deploying to ctc.org.nz
 */
 
 $config['base_url'] = defined("DEVEL") && DEVEL ?
-        "http://localhost/ctc34/db/" : "http://www.ctc.org.nz/db/";
+        "http://localhost/ctc/db/" : "http://www.ctc.org.nz/db/";
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ $config['base_url'] = defined("DEVEL") && DEVEL ?
 | users) so the Joomla site base directory is also required. [Added by RJL.]
 */
 $config['joomla_base'] = defined("DEVEL") && DEVEL ?
-        "C:/wamp/www/ctc34" : "/home/ctcweb9/public_html/";
+        "/var/www/html/ctc/" : "/home/ctcweb9/public_html/";
 
 /*
 |--------------------------------------------------------------------------
