@@ -95,6 +95,7 @@ class Member extends MY_Controller {
    }
     
 	// Function to display the club membership list
+	// UNTESTED.
 	public function membershipList(){
 		global $userData;
         $id = $userData['userid'];
@@ -419,8 +420,9 @@ class Member extends MY_Controller {
 	function _loginCheck($login)
 	// Checks if the given (new) login is valid for the current user id (field of $this).
 	{
-		if (!$this->Ctcmodel->isValidLogin($login, $this->currentMemberId)) {
-			$this->form_validation->set_message('_loginCheck', 'Sorry, but that login name is already in use.');
+        $result = $this->Ctcmodel->isValidLogin($login, $this->currentMemberId);
+		if ($result !== TRUE) {
+			$this->form_validation->set_message('_loginCheck', $result);
 			return FALSE;
 		}
 		else {
