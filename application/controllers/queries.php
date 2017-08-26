@@ -96,7 +96,7 @@ class Queries extends MY_Controller {
                 $fails += 1;
             }
         }
-        
+
         if ($fails > 0) {
             $this->_loadPageInNewWindow('operationOutcome',
             'CTCDB: One or more query rows lacked an email address. Send aborted.');
@@ -308,22 +308,13 @@ class Queries extends MY_Controller {
 
     // Return a subquery that selects the membership subset that receives the given item,
     // as specified by the given where clause (empty to select all members).
-    public function subQuery($item, $where, $showUnpaid) {
-        if ($showUnpaid) {
-            $unpaid = "IF(paid=\'No\', \'Unpaid\',\'\')";
-        } else {
-            $unpaid = "''";
-        }
-                
+    public function subQuery($item, $where) {
+
+
         $query =
-'SELECT membershipId, mailName, nameBySurname, address1, address2,
-city, postcode, mailNewsletter, type as membershipType,
-sub, reducedSub, latePenalty, login1, login2,
-primaryEmail as email,
-' . $unpaid . ' as unpaid,
-\''. $item . '\' as item
-FROM view_memberships
-WHERE status = \'Active\'';
+'        SELECT membershipId as msid, \''. $item . '\' AS item
+         FROM view_memberships
+         WHERE status = \'Active\'';
         if ($where != '') {
             $query .= " AND $where ";
         }
@@ -339,19 +330,24 @@ WHERE status = \'Active\'';
         $items = array(
             array('nl', 'Newsletter', "mailNewsletter = 'Yes'"),
             array('fmcb', 'FMC&nbsp;Bulletin', "mailFMC = 'Yes'"),
-            array('fmcc', 'FMC&nbsp;Card', "type not like 'Associate%'"),
+            array('fmcc', 'FMC&nbsp;Card', "type not like 'Associate%' and type not like 'Free%' and type <> 'Prospective'"),
             array('subs', 'Subs&nbsp;Invoice', "paid = 'No'"),
             array('cookie', 'Cookie', '')
         );
 
         $subQueries = '';
         $sep = '';
-        $showUnpaid = $this->input->post('ShowUnpaid');
+        $showUnpaid = $this->input->post('showUnpaid');
+        if ($showUnpaid) {
+            $unpaid = "IF(paid='No', 'Unpaid','')";
+        } else {
+            $unpaid = "''";
+        }
         foreach ($items as $item) {
             list($field, $itemName, $where) = $item;
             if ($this->input->post($field)) {
                 $subQueries .= $sep . $this->subQuery($itemName, $where, $showUnpaid);
-                $sep = "\nUNION\n";
+                $sep = "\n        UNION\n";
             }
         }
 
@@ -372,18 +368,26 @@ WHERE status = \'Active\'';
             }
 
             $mainQuery =
-        'SELECT membershipId, mailName, nameBySurname, address1, address2, city, postcode,
-mailNewsletter, membershipType,
-sub, reducedSub,
-sub + latePenalty as subIfLate,
-reducedSub + latePenalty as reducedSubIfLate,
-login1, login2,
-email,
-group_concat(item separator "<br />") as items, unpaid';
-
-            $mainQuery .= '
-FROM (' . $subQueries . ') as mailees
-GROUP BY membershipId';
+'SELECT membershipId, mailName, nameBySurname, address1, address2, city, postcode,
+      mailNewsletter, type as membershipType,
+      sub, reducedSub,
+      sub + latePenalty as subIfLate,
+      reducedSub + latePenalty as reducedSubIfLate,
+      login1, login2,
+      primaryEmail as email,
+      items,
+      ' . $unpaid . ' as unpaid
+FROM  view_memberships
+JOIN
+   (SELECT msid, group_concat(item separator "<br />") as items
+    FROM
+    (
+' . $subQueries .
+    ') AS items
+    GROUP BY msid
+   ) AS mailees
+ON view_memberships.membershipId = mailees.msid
+';
             if ($ordering != '') {
                 $mainQuery .= " ORDER BY $ordering";
             }
