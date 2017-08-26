@@ -330,7 +330,7 @@ class Queries extends MY_Controller {
         $items = array(
             array('nl', 'Newsletter', "mailNewsletter = 'Yes'"),
             array('fmcb', 'FMC&nbsp;Bulletin', "mailFMC = 'Yes'"),
-            array('fmcc', 'FMC&nbsp;Card', "type not like 'Associate%' and type not like 'Free%' and type <> 'Prospective'"),
+            array('fmcc', 'FMC&nbsp;Card', "isFmcMember"),
             array('subs', 'Subs&nbsp;Invoice', "paid = 'No'"),
             array('cookie', 'Cookie', '')
         );
@@ -374,6 +374,7 @@ class Queries extends MY_Controller {
       sub + latePenalty as subIfLate,
       reducedSub + latePenalty as reducedSubIfLate,
       login1, login2,
+      isFmcMember,
       primaryEmail as email,
       items,
       ' . $unpaid . ' as unpaid
