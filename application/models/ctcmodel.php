@@ -82,7 +82,7 @@ class Ctcmodel extends CI_Model
         $this->db->set($memberData);
         $this->db->insert('members');
         // $id = $this->db->insert_id();
-        if ($membershipType != 'Prospective') {
+        if ($membershipType != 'Prospective' && $membershipType != 'FreeNewsletter') {
             $this->sendWelcomeEmail($loginName, $pass);
         }
         return $memberData['membershipId'];
@@ -106,7 +106,7 @@ class Ctcmodel extends CI_Model
         $memberData2['membershipId'] = $membershipId;
         return $this->insertMember2('Couple', $memberData2);
     }
-    
+
     function updateJoomlaLogin($oldLogin, $newLogin){
         if (!defined('_JEXEC'))
           define('_JEXEC', 1);
@@ -627,7 +627,7 @@ class Ctcmodel extends CI_Model
     function getAllActiveMembersSql() {
         return $this->getAllMembersSql("and statusAdmin='Active'");
     }
-    
+
     function getAllActiveMembersByFirstNameSql(){
         $sql = "select " . implode(',', $this->getModifiableDataFields()) .
             ",statusAdmin as 'status', members.id as memberId, memberships.id as membershipId" .
@@ -635,7 +635,7 @@ class Ctcmodel extends CI_Model
             " where membershipId = memberships.id and memberships.membershipTypeId = membership_types.id and statusAdmin='Active' order by FirstName,LastName";
         return $sql;
     }
-    
+
     function getAllActiveMembersByFirstName(){
         $query = $this->db->query($this->getAllActiveMembersByFirstNameSql());
         return $query->result();
