@@ -82,7 +82,7 @@ class Ctcmodel extends CI_Model
         $this->db->set($memberData);
         $this->db->insert('members');
         // $id = $this->db->insert_id();
-        if ($membershipType != 'Prospective' && $membershipType != 'FreeNewsletter') {
+        if ($membershipType != 'Prospective' && $membershipType != 'PseudoMember') {
             $this->sendWelcomeEmail($loginName, $pass);
         }
         return $memberData['membershipId'];
