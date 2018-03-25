@@ -28,33 +28,33 @@ class Rest extends REST_Controller {
         if($method == "OPTIONS") {
             die();
         }
-        
+
         parent::__construct();
         $this->load->database('ctcweb9_tripreports');
         $this->load->model('tripreportmodel');
         $rest = true;
     }
-    
-    
+
+
     protected function log($type, $message) {
         // Call log_message with the same parameters, but prefix the message
         // by *rest* for easy identification.
         log_message($type, '*rest* ' . $message);
     }
-    
-    
+
+
     protected function error($message, $httpCode=400) {
         // Generate the http response containing the given message with the given
         // HTTP response code. Log the error first.
         $this->log('error', $message);
         $this->response($message, $httpCode);
     }
-    
-    
+
+
     public function index_get() {
         $this->response('Please access this API via the tripreports collection');
     }
-    
+
     // ****************************
     //        TRIP REPORTS
     // ****************************
@@ -65,7 +65,7 @@ class Rest extends REST_Controller {
         $data = $this->put(null, True); // All input data, xss filtered
         $this->tripreportmodel->saveReport($data, FALSE);
     }
-    
+
     // Post a new trip report. Returns trip id.
     public function tripreports_post() {
         $this->checkLoggedIn();
@@ -73,13 +73,13 @@ class Rest extends REST_Controller {
         $id = $this->tripreportmodel->saveReport($data, TRUE);
         $this->response(array('id'=>$id));
     }
-    
+
     public function tripreportyears_get() {
         // A list of all years for which trip reports exist in desc. order
         $years = $this->tripreportmodel->getAllYears();
         $this->response($years);
     }
- 
+
     // Get a trip rerport.
     public function tripreports_get($id = 0) {
         global $userData;
@@ -93,26 +93,26 @@ class Rest extends REST_Controller {
         }
         $this->response($row);
     }
-    
+
     // Get a list of trip reports for a given year.
     public function yearstripreports_get($year) {
         $rows = $this->tripreportmodel->getByYear($year);
         $this->response($rows);
     }
-    
+
     // Get a list of recent trip reports for the front page.
     public function recenttripreports_get($maxrecent, $maxdays) {
         $rows = $this->tripreportmodel->getRecent($maxrecent, $maxdays);
         $this->response($rows);
     }
-    
+
     // Delete the given trip.
     public function tripreports_delete($id) {
         $this->checkCanEdit($id);
-        $this->tripreportmodel->delete($id);        
+        $this->tripreportmodel->delete($id);
     }
-    
-    
+
+
     private function checkCanEdit($id) {
         // Check for a current user. If not, issue an immediate 401 Not authenticated.
         // Then check if the currently logged in user can edit the
@@ -131,8 +131,8 @@ class Rest extends REST_Controller {
             die();
         }
     }
-    
-    
+
+
     private function checkLoggedIn() {
         // Check that there is a currently logged in user. If not issue
         // an immediate 401 not authenticated response. Otherwise just return
@@ -143,7 +143,7 @@ class Rest extends REST_Controller {
             die();
         }
     }
-    
+
     // *******************************
     //    CURRENT USER INFO
     // *******************************
@@ -162,12 +162,12 @@ class Rest extends REST_Controller {
         $this->response((object) $data);
     }
 
-    
+
     // ********************************
     //       IMAGES
-    // ********************************   
-    
-    
+    // ********************************
+
+
     public function tripimages_post() {
         // Add a new trip image to the database. Body is a JSON record with the
         // following attributes:
@@ -183,8 +183,8 @@ class Rest extends REST_Controller {
         $id = $this->imagemodel->create_from_dataurl($name, $caption, $dataUrl);
         $this->response(array('id'=>$id));
     }
-    
-    
+
+
     public function tripimages_get($image_id) {
         // Get the specified image. Returns a JSON record containing the
         // following attributes:
@@ -197,19 +197,19 @@ class Rest extends REST_Controller {
         //    t_height: the height in pixels of the thumbnail
         //    t_url: an url that can be used to display the image
     }
-    
+
     public function tripimages_delete($image_id) {
         // Delete a specified trip image
         $this->checkLoggedIn();  // TODO - better security
         $this->load->model('imagemodel');
         $this->imagemodel->delete($image_id);
-        
+
     }
-    
+
     // ********************************
     //       GPXS
-    // ********************************  
-    
+    // ********************************
+
     public function gpxs_post() {
         $this->checkLoggedIn();
         $this->load->model('gpxmodel');
@@ -219,16 +219,16 @@ class Rest extends REST_Controller {
         $this->log('debug', "Received gpx file $name, captioned $caption");
         $id = $this->gpxmodel->create_from_dataurl($name, $caption, $dataUrl);
         $this->response(array('id'=>$id));
-        
+
     }
-    
+
     public function gpxs_get($gpx_id) {
-        // TODO: 
+        // TODO:
     }
-    
+
     public function gpxs_delete($gpx_id) {
         $this->checkLoggedIn();  // TODO - better security
         $this->load->model('gpxmodel');
-        $this->gpxmodel->delete($gpx_id);        
+        $this->gpxmodel->delete($gpx_id);
     }
 }
