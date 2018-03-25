@@ -503,7 +503,7 @@ abstract class REST_Controller extends CI_Controller
             // **** RJL **** Commented out the following line as it was
             // resulting in the last few characters from the output being
             // lost.
-            
+
             //header('Content-Length: ' . strlen($output));
         }
 
