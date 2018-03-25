@@ -489,7 +489,8 @@ class Ctcmodel extends CI_Model
             'primaryEmail', 'workPhone', 'mobilePhone',
             'preferredPhoneEnum',
             'emergencyContactName', 'emergencyContactPhone',
-            'onEmailListBool', 'htmlEmailBool');
+            'onEmailListBool', 'htmlEmailBool',
+            'onTripLeaderEmailListBool');
     }
 
 
