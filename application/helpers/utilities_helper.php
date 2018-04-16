@@ -7,10 +7,15 @@ function sendEmail($from, $fromName, $to, $subject, $message, $cc=NULL)
     $CI->load->library('email');
     $baseUrl = $CI->config->item('joomla_base_url');
     if (strpos($baseUrl,"localhost")) {
-        // Mail from home prototyping site uses Clear's SMTP server
+        // Mail from home prototyping site uses init file settings
+        //($this->smtp_user == '' AND $this->smtp_pass == '')
         $CI->email->initialize(array(
             'protocol'=>'smtp', 
-            'smtp_host'=>"smtp.clear.net.nz",
+            'smtp_host'=>$CI->config->item("smtp_host"),
+            'smtp_user'=>$CI->config->item("smtp_user"),
+            'smtp_pass'=>$CI->config->item("smtp_pass"),
+            'smtp_port'=>$CI->config->item("smtp_port"),
+            'smtp_timeout'=>$CI->config->item("smtp_timeout"),
             'newline'=>"\r\n",
             'crlf'=>"\r\n"
         ));
@@ -26,7 +31,7 @@ function sendEmail($from, $fromName, $to, $subject, $message, $cc=NULL)
     }
     $CI->email->subject($subject);
     $CI->email->message($message);
-    $CI->email->send();
+    return $CI->email->send();
     //echo "Sent email to " . $to ."<br />";
     //echo $CI->email->print_debugger();
 }

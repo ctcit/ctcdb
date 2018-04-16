@@ -17,7 +17,86 @@ class Open extends MY_Controller {
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters('<p style="font-size: 18px; color: red">', '</p>');
     }
-
+        
+    public function forgottenUserName(){
+        ob_clean();
+        $this->_loadPage('forgottenUserName', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
+    }
+    
+    public function forgottenUserNameSubmit(){
+        $searchData = $this->input->post("search_data");
+        $recaptchaResponse = $this->input->post("captcha-validated");
+        if ($recaptchaResponse !== "true")
+            die("You need to confirm you are not a robot.");
+        $memberData = $this->Ctcmodel->getMemberLoginNameFromEmailPhoneLoginName($searchData);
+        $errorMessage = $memberData['errorMessage'];
+        $mailSent = FALSE;
+        if ($errorMessage !== ""){
+            die($errorMessage);
+        }else{
+            $to = $memberData['emailAddress'];
+            if ($to === "")
+                die("User identified but no email address on record.");
+            else{
+              $subject = '[CTC]Your CTC login name';
+              $message = "Hello,\n\nA username reminder has been requested for your CTC account\n".
+                         "Your login name is: ".$memberData['loginName']."\n".
+                         "To login to your account, select the link below.\n\n".
+                         config_item("base_url")."/index.php/log-in\n\n".
+                         "Thank you.\n";
+              $this->load->helper('utilities');
+              // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
+              $mailSent = sendEmail("webmaster@ctc.org.nz", "Christchurch Tramping Club", $to, $subject, $message);
+            }
+        }
+        if ($mailSent)
+            echo("Username has been sent to the email address on record.");
+        else
+            echo("Email send failed for some reason");
+    }
+        
+    public function forgottenPassword(){
+        ob_clean();
+        $this->_loadPage('forgottenPassword', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
+    }
+    
+    public function forgottenPasswordSubmit(){
+        $searchData = $this->input->post("search_data");
+        $recaptchaResponse = $this->input->post("captcha-validated");
+        if ($recaptchaResponse !== "true")
+            die("You need to confirm you are not a robot.");
+        $memberData = $this->Ctcmodel->getMemberLoginNameFromEmailPhoneLoginName($searchData);
+        $errorMessage = $memberData['errorMessage'];
+        $mailSent = FALSE;
+        if ($errorMessage !== ""){
+            die($errorMessage);
+        }else{
+            $to = $memberData['emailAddress'];
+            if ($to === "")
+                die("Your password was not changed. User was identified but had no email address on record.");
+            else{
+              $memberid = $memberData['id'];
+              // Set new password
+              $newPassword = $this->Ctcmodel->generatePassword($memberData['loginName']);
+              $this->Ctcmodel->setMemberPasswordRaw($memberid, $newPassword);
+              $subject = '[CTC]Your new CTC password';
+              $message = "Hello,\n\nA password change has been requested for your CTC account\n".
+                         "Your login name is: ".$memberData['loginName']."\n".
+                         "Your new password is:".$newPassword."\n".
+                         "To login to your account, select the link below.\n\n".
+                         config_item("base_url")."/index.php/log-in\n\n".
+                         "You should immediately change your new password to one you can remember.\n".
+                         "Thank you.\n";
+              $this->load->helper('utilities');
+              // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
+              $mailSent = sendEmail("webmaster@ctc.org.nz", "Christchurch Tramping Club", $to, $subject, $message);
+            }
+        }
+        if ($mailSent)
+            echo("New password has been sent to the email address on record.");
+        else
+            echo("Your password was changed but the Email send failed for some reason. You may need to try the forgotten password process again.");
+    }
 
     public function processMailQueue($maxRunTimeMins)
     // Send out any queued email messages from the mail_queue table.

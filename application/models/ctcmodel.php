@@ -664,6 +664,87 @@ class Ctcmodel extends CI_Model
         $row = $query->row();
         return $row->loginName;
     }
+    
+    function getMemberLoginNameFromEmailPhoneLoginName($search_data){
+        $result = array('id'=>0, 'loginName'=>'', 'emailAddress'=>'', 'errorMessage'=>'');
+        $select = 'select members.id, mobilePhone, workPhone, homePhone, primaryEmail, loginName from members '.
+                  'join memberships on members.membershipId = memberships.id';
+        $query = $this->db->query($select);
+        foreach ($query->result() as $row) {
+            if ($this->_phoneNumsMatch($search_data, $row->mobilePhone)) {
+               if ($result['loginName'] != ""){
+                   // Ambiguous - skip mobile number checking
+                   $result['errorMessage'] = "Phone number ambiguous.";
+                   break;
+               }else{
+                   $result['loginName'] = $row->loginName;
+                   $result['emailAddress'] = $row->primaryEmail;
+                   $result['id'] = $row->id;
+               }
+            }
+        }
+        if ($result['loginName'] === ""){
+            foreach ($query->result() as $row) {
+                if ($this->_phoneNumsMatch($search_data, $row->workPhone)) {
+                    if ($result['loginName'] != ""){
+                        // Ambiguous - skip mobile number checking
+                        $result['errorMessage'] = "Phone number ambiguous.";
+                        break;
+                    }else{
+                        $result['loginName'] = $row->loginName;
+                        $result['emailAddress'] = $row->primaryEmail;
+                        $result['id'] = $row->id;
+                    }
+                }
+            }        
+        }
+        if ($result['loginName'] === ""){
+            foreach ($query->result() as $row) {
+                if ($this->_phoneNumsMatch($search_data, $row->homePhone)) {
+                    if ($result['loginName'] != ""){
+                        // Ambiguous - skip home number checking
+                        $result['errorMessage'] = "Phone number ambiguous.";
+                        break;
+                    }else{
+                        $result['loginName'] = $row->loginName;
+                        $result['emailAddress'] = $row->primaryEmail;
+                        $result['id'] = $row->id;
+                    }
+                }
+            }        
+        }
+        if ($result['loginName'] === ""){
+            foreach ($query->result() as $row) {
+                if (strtolower($search_data) === strtolower($row->primaryEmail)) {
+                    if ($result['loginName'] != ""){
+                        // Ambiguous - skip home number checking
+                        $result['errorMessage'] = "Email address ambiguous.";
+                        break;
+                    }else{
+                        $result['loginName'] = $row->loginName;
+                        $result['emailAddress'] = $row->primaryEmail;
+                        $result['id'] = $row->id;
+                    }
+                }
+            }        
+        }
+        if ($result['loginName'] === ""){
+            foreach ($query->result() as $row) {
+                if (strtolower($search_data) === strtolower($row->loginName)) {
+                    if ($result['loginName'] != ""){
+                        // Ambiguous - skip home number checking
+                        $result['errorMessage'] = "Login name ambiguous. This should never happen - notify IT team please.";
+                        break;
+                    }else{
+                        $result['loginName'] = $row->loginName;
+                        $result['emailAddress'] = $row->primaryEmail;
+                        $result['id'] = $row->id;
+                    }
+                }
+            }        
+        }
+        return $result;
+    }
 
     function getMemberIdFromLogin($login)
     // Get the id of the member with the given login.

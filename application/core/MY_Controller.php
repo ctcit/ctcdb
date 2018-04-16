@@ -27,7 +27,7 @@ class MY_Controller extends CI_Controller {
         if ($menuReqd) {
             $data['menu'] = 'mainMenu';
         }
-        $source = config_item("base_url").'/scripts/iframeResizer/js/iframeResizer.contentWindow.min.js';
+        $source = config_item("base_url").'/scripts/iframeResizer/js/iframeResizer.contentWindow.js';
         echo '<script type="text/javascript" src="'.$source.'" ></script>';
         $this->load->view('fullPageTemplate', $data);
     }
