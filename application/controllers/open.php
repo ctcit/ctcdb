@@ -39,7 +39,7 @@ class Open extends MY_Controller {
                 die("User identified but no email address on record.");
             else{
               $subject = '[CTC]Your CTC login name';
-              $message = "Hello,\n\nA username reminder has been requested for your CTC account\n".
+              $message = "Hello,\n\nA login name reminder has been requested for your CTC account\n".
                          "Your login name is: ".$memberData['loginName']."\n".
                          "To login to your account, select the link below.\n\n".
                          config_item("base_url")."/index.php/log-in\n\n".
@@ -50,7 +50,7 @@ class Open extends MY_Controller {
             }
         }
         if ($mailSent)
-            echo("Username has been sent to the email address on record.");
+            echo("Login name has been sent to the email address on record.");
         else
             echo("Email send failed for some reason");
     }
@@ -85,7 +85,7 @@ class Open extends MY_Controller {
                          "Your new password is:".$newPassword."\n".
                          "To login to your account, select the link below.\n\n".
                          config_item("base_url")."/index.php/log-in\n\n".
-                         "You should immediately change your new password to one you can remember.\n".
+                         "You should immediately change your new password to one you can remember.\n\n".
                          "Thank you.\n";
               $this->load->helper('utilities');
               // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";

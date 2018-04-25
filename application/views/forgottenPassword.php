@@ -16,7 +16,7 @@
 <p>For this to work, whatever you enter must identify you uniquely within the club.</p>
 <p>A new password will be emailed to the address on file.</p>
 <div class="control-label" style="white-space:nowrap">
-    <label class="required"  title="Login name, Email address or phone number" >
+    <label class="required"  title="Login name, email address or phone number" >
     Login, Email or phone number </label>
     <input type="text" value="" name = "search_data" size="60" required aria-required="true" autofocus />							                
 </div>
@@ -26,7 +26,7 @@
 <input type="hidden" class = "captcha-validated" name="captcha-validated" value="false" />
 <br/><br/>
 <div class="recaptcha-error">
-    <div id="forgotten-user-name" class="g-recaptcha" data-sitekey="6LeZ6kQUAAAAAHqD1WE97lF6gkAXO0hFhKhjU4L0" data-callback="onSuccess">
+    <div id="forgotten-password" class="g-recaptcha" data-sitekey="6LeZ6kQUAAAAAHqD1WE97lF6gkAXO0hFhKhjU4L0" data-callback="onSuccess">
     </div>
     <script nonce="X3rBaxv3oHGHAB8zZEkGpBLUnNM">
         var onSuccess = function(response) {

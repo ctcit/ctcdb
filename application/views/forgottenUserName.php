@@ -12,7 +12,7 @@
 <p>Please enter the email address or phone number associated with your user account.</p>
 <p>The phone number could be either mobile or home phone.</p>
 <p>For this to work, whatever you enter must identify you uniquely within the club.</p>
-<p>Your username will be emailed to the address on file.</p>
+<p>Your login name will be emailed to the address on file.</p>
 <div class="control-label" style="white-space:nowrap">
     <label class="required"  title="Email address or phone number" >
     Email or phone number </label>
