@@ -19,7 +19,6 @@ class Open extends MY_Controller {
     }
         
     public function forgottenUserName(){
-        ob_clean();
         $this->_loadPage('forgottenUserName', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
     }
     
@@ -56,7 +55,6 @@ class Open extends MY_Controller {
     }
         
     public function forgottenPassword(){
-        ob_clean();
         $this->_loadPage('forgottenPassword', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
     }
     
