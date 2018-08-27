@@ -151,7 +151,7 @@ function getJoomlaUserData_J12() {
 
         $result = mysqli_query($con,
                     "SELECT role as Role
-                     FROM ctcweb9_ctc.members_roles, ctcweb9_ctc.roles
+                     FROM ctc.members_roles, ctc.roles
                      WHERE memberId='$userId'
                      AND members_roles.roleId = roles.id"
                 );

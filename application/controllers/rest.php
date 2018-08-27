@@ -30,7 +30,7 @@ class Rest extends REST_Controller {
         }
 
         parent::__construct();
-        $this->load->database('ctcweb9_tripreports');
+        $this->load->database('tripreports');
         $this->load->model('tripreportmodel');
         $rest = true;
     }

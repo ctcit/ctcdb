@@ -356,7 +356,7 @@ $config['full_access_roles'] = array('webmaster',
 |-------------------------------------------------------------------------
 |
 | To deal with the fact that local (home machine) databases lack the live-site
-| "ctcweb9_" prefix, we define a symbol that is either "ctcweb9_" or empty.
+| "" prefix, we define a symbol that is either "" or empty.
  */
-$config['db_name_prefix'] = 'ctcweb9_';
+$config['db_name_prefix'] = '';
 

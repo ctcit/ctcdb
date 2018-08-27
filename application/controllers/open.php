@@ -226,7 +226,7 @@ class Open extends MY_Controller {
     // This function is a bit of a hack, as it's not really
     // a rest API call at all - it returns a full web page.
     public function allTripReportLinks() {
-        $this->db = $this->load->database('ctcweb9_tripreports', true);
+        $this->db = $this->load->database('tripreports', true);
         $this->load->model('tripreportmodel');
         $this->load->helper('url');
         $allTrips = $this->tripreportmodel->getAllTripReports();

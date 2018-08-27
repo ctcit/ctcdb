@@ -58,9 +58,9 @@ if ($userID == "") {
 }
 else {
 	$host = 'localhost';
-	$user = 'ctcweb9_userman';
+	$user = 'userman';
 	$password = 'susanrulesok';
-	$dbase = 'ctcweb9_ctc';
+	$dbase = 'ctc';
 	$dbprefix = '';
 	$conn = mysql_connect($host, $user, $password);
 	$db = mysql_select_db($dbase);
