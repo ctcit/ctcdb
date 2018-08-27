@@ -355,8 +355,8 @@ $config['full_access_roles'] = array('webmaster',
 | Database name prefix [RJL]
 |-------------------------------------------------------------------------
 |
-| To deal with the fact that local (home machine) databases lack the live-site
-| "" prefix, we define a symbol that is either "" or empty.
+| Optional live-site database name prefix - may be empty
+| WARNING - May not be full supported.
  */
 $config['db_name_prefix'] = '';
 
