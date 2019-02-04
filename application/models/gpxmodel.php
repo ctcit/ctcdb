@@ -30,12 +30,13 @@ class Gpxmodel extends CI_Model {
     // Return the id of the new record.
     public function create_from_dataurl($name, $caption, $dataurl) {
         list($type, $data) = explode(';', $dataurl);
-        if (strtolower($type) !== 'data:') {
-            throw new InvalidArgumentException("dataurl for gpx file $name has unexpected format");
+        list($scheme, $media_type) = explode(':', $type);
+        if (strtolower($scheme) !== 'data') {
+            throw new InvalidArgumentException("dataurl for gpx file $name has unexpected format (scheme=$scheme)");
         }
         list($encoding, $data) = explode(',', $data);
         if (strtolower($encoding) !== 'base64') {
-            throw new InvalidArgumentException("dataurl for gpx file $name has unexpected format");
+            throw new InvalidArgumentException("dataurl for gpx file $name has unexpected format (encoding=$encoding)");
         }
         $gpx = base64_decode($data);
         $id = $this->create($name, $caption, $gpx);
