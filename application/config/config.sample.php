@@ -1,7 +1,5 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-define("DEVEL", TRUE);  // Set this FALSE when deploying to ctc.org.nz
-
+define("DEVEL", FALSE);  // Set this FALSE when deploying to www.example.com
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -13,10 +11,8 @@ define("DEVEL", TRUE);  // Set this FALSE when deploying to ctc.org.nz
 |   http://www.your-site.com/
 |
 */
-
 $config['base_url'] = defined("DEVEL") && DEVEL ?
-        "http://localhost/ctc/db" : "http://www.ctc.org.nz/db";
-
+        "https://ctc.org.nz/db" : "https://ctc.org.nz/db";
 /*
 |--------------------------------------------------------------------------
 | Joomla Base Directory
@@ -26,8 +22,7 @@ $config['base_url'] = defined("DEVEL") && DEVEL ?
 | users) so the Joomla site base directory is also required. [Added by RJL.]
 */
 $config['joomla_base'] = defined("DEVEL") && DEVEL ?
-        "/var/www/html/ctc/" : "/home/ctcweb9/public_html/";
-
+        "/var/www/html/" : "/var/www/html/";
 /*
 |--------------------------------------------------------------------------
 | Joomla Base URL
@@ -35,10 +30,8 @@ $config['joomla_base'] = defined("DEVEL") && DEVEL ?
 |
 | The Joomla base URL [Added by RJL.]
 */
-
 $config['joomla_base_url'] = defined("DEVEL") && DEVEL ?
-        "http://localhost/ctc" : "http://www.ctc.org.nz";
-
+        "https://ctc.org.nz" : "https://ctc.org.nz";
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -50,7 +43,6 @@ $config['joomla_base_url'] = defined("DEVEL") && DEVEL ?
 |
 */
 $config['index_page'] = "index.php";
-
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL
@@ -67,7 +59,6 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'  Uses the ORIG_PATH_INFO
 |
 */
-
 $config['uri_protocol'] = "PATH_INFO";
 /*
 |--------------------------------------------------------------------------
@@ -79,9 +70,7 @@ $config['uri_protocol'] = "PATH_INFO";
 |
 | http://codeigniter.com/user_guide/general/urls.html
 */
-
 $config['url_suffix'] = "";
-
 /*
 |--------------------------------------------------------------------------
 | Default Language
@@ -93,7 +82,6 @@ $config['url_suffix'] = "";
 |
 */
 $config['language'] = "english";
-
 /*
 |--------------------------------------------------------------------------
 | Default Character Set
@@ -104,7 +92,6 @@ $config['language'] = "english";
 |
 */
 $config['charset'] = "UTF-8";
-
 /*
 |--------------------------------------------------------------------------
 | Enable/Disable System Hooks
@@ -115,7 +102,6 @@ $config['charset'] = "UTF-8";
 |
 */
 $config['enable_hooks'] = TRUE;
-
 /*
 |--------------------------------------------------------------------------
 | Class Extension Prefix
@@ -129,8 +115,6 @@ $config['enable_hooks'] = TRUE;
 |
 */
 $config['subclass_prefix'] = 'MY_';
-
-
 /*
 |--------------------------------------------------------------------------
 | Allowed URL Characters
@@ -149,8 +133,6 @@ $config['subclass_prefix'] = 'MY_';
 |
 */
 $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
-
-
 /*
 |--------------------------------------------------------------------------
 | Enable Query Strings
@@ -177,13 +159,12 @@ $config['enable_query_strings'] = FALSE;
 $config['directory_trigger'] = 'd';
 $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
-
 /*
 |--------------------------------------------------------------------------
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to 
+| If you have enabled error logging, you can set an error threshold to
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
@@ -199,7 +180,6 @@ $config['function_trigger'] = 'm';
 |
 */
 $config['log_threshold'] = 2;
-
 /*
 |--------------------------------------------------------------------------
 | Error Logging Directory Path
@@ -209,8 +189,7 @@ $config['log_threshold'] = 2;
 | system/logs/ folder.  Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '/var/log/ctc/';
-
+$config['log_path'] = ''; // C:\\Dumps\\';
 /*
 |--------------------------------------------------------------------------
 | Date Format for Logs
@@ -221,7 +200,6 @@ $config['log_path'] = '/var/log/ctc/';
 |
 */
 $config['log_date_format'] = 'Y-m-d H:i:s';
-
 /*
 |--------------------------------------------------------------------------
 | Cache Directory Path
@@ -232,7 +210,6 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 |
 */
 $config['cache_path'] = '';
-
 /*
 |--------------------------------------------------------------------------
 | Encryption Key
@@ -243,7 +220,6 @@ $config['cache_path'] = '';
 |
 */
 $config['encryption_key'] = "gungadin1066";
-
 /*
 |--------------------------------------------------------------------------
 | Session Variables
@@ -264,7 +240,6 @@ $config['sess_table_name']      = 'ci_sessions';
 $config['sess_match_ip']        = FALSE;
 $config['sess_match_useragent'] = TRUE;
 $config['sess_time_to_update']      = 300;
-
 /*
 |--------------------------------------------------------------------------
 | Cookie Related Variables
@@ -278,7 +253,6 @@ $config['sess_time_to_update']      = 300;
 $config['cookie_prefix']    = "";
 $config['cookie_domain']    = "";
 $config['cookie_path']      = "/";
-
 /*
 |--------------------------------------------------------------------------
 | Global XSS Filtering
@@ -289,7 +263,6 @@ $config['cookie_path']      = "/";
 |
 */
 $config['global_xss_filtering'] = FALSE;
-
 /*
 |--------------------------------------------------------------------------
 | Output Compression
@@ -308,7 +281,6 @@ $config['global_xss_filtering'] = FALSE;
 |
 */
 $config['compress_output'] = FALSE;
-
 /*
 |--------------------------------------------------------------------------
 | Master Time Reference
@@ -321,8 +293,6 @@ $config['compress_output'] = FALSE;
 |
 */
 $config['time_reference'] = 'local';
-
-
 /*
 |--------------------------------------------------------------------------
 | Rewrite PHP Short Tags
@@ -334,7 +304,6 @@ $config['time_reference'] = 'local';
 |
 */
 $config['rewrite_short_tags'] = FALSE;
-
 /*
 |-------------------------------------------------------------------------
 | Database access control
@@ -349,14 +318,31 @@ $config['rewrite_short_tags'] = FALSE;
  */
 $config['full_access_roles'] = array('webmaster',
     'dbadmin','secretary','treasurer','editor','new members rep');
-
 /*
 |-------------------------------------------------------------------------
 | Database name prefix [RJL]
 |-------------------------------------------------------------------------
 |
-| Optional live-site database name prefix - may be empty
-| WARNING - May not be full supported.
+| To deal with the fact that local (home machine) databases lack the live-site
+| "ctcweb9_" prefix, we define a symbol that is either "ctcweb9_" or empty.
  */
 $config['db_name_prefix'] = '';
 
+/*
+|-------------------------------------------------------------------------
+| Mail settings [NE]
+|-------------------------------------------------------------------------
+|
+| This configures how the sendEmail function in utilities_helper.php
+| configures the CodeIgniter email library. If use_smtp is false, the default
+| configuration is used which uses the php 'mail' function.
+| If use_smtp is true a direct SMTP connection to an external server
+| is made, using the smtp_* configurations.
+ */
+$config['use_smtp'] = FALSE;
+$config['smtp_host'] = '';
+$config['smtp_user'] = '';
+$config['smtp_pass'] = '';
+$config['smtp_port'] = '';
+$config['smtp_crypto'] = 'tls';
+$config['smtp_timeout'] = '5';
