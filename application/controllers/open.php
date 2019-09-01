@@ -41,7 +41,7 @@ class Open extends MY_Controller {
               $message = "Hello,\n\nA login name reminder has been requested for your CTC account\n".
                          "Your login name is: ".$memberData['loginName']."\n".
                          "To login to your account, select the link below.\n\n".
-                         config_item("base_url")."/index.php/log-in\n\n".
+                         config_item("joomla_base_url")."/index.php/log-in\n\n".
                          "Thank you.\n";
               $this->load->helper('utilities');
               // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
@@ -82,7 +82,7 @@ class Open extends MY_Controller {
                          "Your login name is: ".$memberData['loginName']."\n".
                          "Your new password is:".$newPassword."\n".
                          "To login to your account, select the link below.\n\n".
-                         config_item("base_url")."/index.php/log-in\n\n".
+                         config_item("joomla_base_url")."/index.php/log-in\n\n".
                          "You should immediately change your new password to one you can remember.\n\n".
                          "Thank you.\n";
               $this->load->helper('utilities');
