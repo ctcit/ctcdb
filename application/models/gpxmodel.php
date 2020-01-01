@@ -4,12 +4,12 @@
 // Intended for use by the rest API, e.g. for TripReports.
 
 
+
 class Gpxmodel extends CI_Model {
     public $id = 0;         // Gpx id (int)
     public $name = '';      // The name given to this gpx record (usu. the orig filename)
     public $caption = '';   // Caption used to display it
     public $gpx = null;     // The gpx file itself (bytes, stored as Blob)
-
     
     public function create($name, $caption, $gpx) {
         // Create a gpx record.
