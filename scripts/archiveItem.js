@@ -90,7 +90,7 @@ function DoUpload(p_files, p_idArchive) {
     projEPSG2193 = proj4('+proj=tmerc +lat_0=0 +lon_0=173 +k=0.9996 +x_0=1600000 +y_0=10000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
     if (window.Worker){
         // Check if valid gpx files
-        gpxworker = new Worker("../../Scripts/gpxvalidator.js");
+        gpxworker = new Worker("../../scripts/gpxvalidator.js");
         gpxworker.postMessage(p_files);
         gpxworker.onmessage = function(e){
             if (e.data.length ===2)
