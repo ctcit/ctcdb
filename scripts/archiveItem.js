@@ -11,38 +11,15 @@ var cmtdesc_data = [];    // array of strings (if valid gpx)
 var trackdate_data = [];
 var projEPSG2193 = null;
 
-// List View load
-function OnLoad() {
-    // Constant retrieved from server-side via JSP
-    var maxVisibleRows = 14;
-
-    var table = document.getElementById('archiveItems');
-    var wrapper = table.parentNode;
-    var rowsInTable = table.rows.length;
-    var header = document.getElementById('header');
-    var body = document.getElementById('body');
-    var height = header.getBoundingClientRect().height;
-    var cVisibleRows = 0;
-    for (var i = 0; i < rowsInTable; i++) {
-        if (table.rows[i].style.display !== "none"){
-          height += table.rows[i].getBoundingClientRect().height;
-          cVisibleRows++;
-          if (cVisibleRows >= maxVisibleRows) // Scroll for more
-              break;
-        }
-    }
-    wrapper.style.height = table.getBoundingClientRect().top + height + 5 + "px";
-    body.style.height = height + "px";
-}
 
 // Make header match data columns
 function OnWindowResize(){
     var colNumber=10; //number of table columns
     for (var i=0; i<colNumber; i++){
-        var thWidth=$("#archiveItems").find("th.col"+i).width();
+        var thWidth=$(".fixedheader").find("th.col"+i).width();
         var tdWidth=$("#archiveItems").find("td.col"+i).width();      
         if (thWidth !== tdWidth)                    
-          $("#archiveItems").find("th.col" + i).width(tdWidth);
+          $(".fixedheader").find("th.col" + i).width(tdWidth);
     }  
 }
 
@@ -634,14 +611,20 @@ function PassesFilter(p_filter, p_row){
 
 function ShowFilteredRows(p_filter){
     allrows = document.getElementsByClassName('archiveitem');
+    var iVisible = -1;
     for (var i = 0; i < allrows.length - 1; i++){
         var row = allrows[i];
-        if (PassesFilter(p_filter, row))
+        if (PassesFilter(p_filter, row)){
             row.style.display = 'table-row';
-        else 
+            iVisible++;
+            if (iVisible % 2 === 0)
+                row.style.background = "#ffffff";
+            else
+                row.style.background = "#f0f0f0";
+        }else 
             row.style.display = 'none';
     } 
-    OnLoad(); // Resize to fit viaible rows
+    //OnLoad(); // Resize to fit visible rows
 }
 
 

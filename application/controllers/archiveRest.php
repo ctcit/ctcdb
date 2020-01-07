@@ -39,16 +39,14 @@ class ArchiveRest extends REST_Controller {
             $bounds = array('left'=>$_POST['left'], 'top'=>$_POST['top'], 'right'=>$_POST['right'],'bottom'=>$_POST['bottom']);
             $trackdate = $_POST['trackdate'];
             if ($this->currentMemberId == 0) {
-                $this->response('Unauthenticated', 401);
-                die();
-            }
-            if ($archive_id === "0"){
+              $data = array('success' => false, 'message' => 'Unauthenticated user: Upload failed for '.$filename);
+            }else if ($archive_id === "0"){
                 // This is a new archive item
                 $errorFileName = null;
                 //$caption, $gpxfilename, $gpx, $routenotes, $originatorid, $bounds, $date
                 if ($this->archiveitemmodel->create_new($caption, $filename, $gpxdata, $routenotes, $this->currentMemberId, $bounds, $trackdate) === 0)
                     $errorFileName = $filename;
-                $data = ($errorFileName) ? array('success' => false, 'message' => 'Upload failed for '.$errorFilename)
+                $data = ($errorFileName) ? array('success' => false, 'message' => 'Upload failed for '.$errorFileName)
                                   : array('success' => true, 'message' => $filename.' uploaded');
             }else{
                 // We are reloading the gpx file and pertaining attributes for an existing archive item
@@ -65,17 +63,17 @@ class ArchiveRest extends REST_Controller {
             }
         }else if ($action == "DeleteArchiveItems"){
             if ($this->currentMemberId == 0) {
-                $this->response('Unauthenticated', 401);
-                die();
+                $data = array('success' => false, 'message' => 'Unauthenticated user: Upload failed for '.$filename);
+            }else{
+                $archive_item_ids = json_decode($_POST['archive_item_ids']);
+                $cDeleted = 0;
+                foreach ($archive_item_ids as $id){
+                   $this->archiveitemmodel->delete_from_database($id);
+                   $cDeleted++;
+                }
+                $result = $cDeleted.' file'.($cDeleted !== 1 ? 's':'').' deleted'; 
+                $data = array('success' => true, 'message' => $result);
             }
-            $archive_item_ids = json_decode($_POST['archive_item_ids']);
-            $cDeleted = 0;
-            foreach ($archive_item_ids as $id){
-               $this->archiveitemmodel->delete_from_database($id);
-               $cDeleted++;
-            }
-            $result = $cDeleted.' file'.($cDeleted !== 1 ? 's':'').' deleted'; 
-            $data = array('success' => true, 'message' => $result);
         }else if ($action == "DownloadArchiveItems"){
             // Anyone can do this
             $archiveItemIds = explode(":", $_POST['archiveItemIds']);
