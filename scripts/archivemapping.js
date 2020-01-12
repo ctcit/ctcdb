@@ -485,9 +485,6 @@ function InitialiseMap(L){
 
             // add click event handler for polygon
             polygon.nz50map = nz50map;
-            polygon.on('click', function(event) {
-                    selectOrUnselectMap(event.target);
-            });
 
     });
     map.on('resize', resizeLayerControl);
@@ -587,135 +584,9 @@ function AddToMap(L, map, p_gpxs){
     }
 }
 
-function generalize(latLngs) {
-        var tolerance = 10;
-        var generalizedLatLngs = [];
-        lastLatLng = null;
-        latLngs.forEach(function(latLng) {
-                if (lastLatLng === null) {
-                        generalizedLatLngs.push(latLng);
-                        lastLatLng = latLng;
-                } else {
-                        if (map.distance(latLng, lastLatLng) >= tolerance) {
-                                generalizedLatLngs.push(latLng);
-                                lastLatLng = latLng;
-                        }
-                }
-        });
-        return generalizedLatLngs;
-}
-
 window.onload = function () {
         //gpxFileInput = document.getElementById('gpx-file-input');
         //gpxFileInput.addEventListener('change', importGpx);
 };
-
-// -------------------------------------------------------
-// Map selection
-// -------------------------------------------------------
-
-function loadSelectedMaps() {
-        var lastSelectedMaps = sessionStorage.getItem('lastSelectedMaps');
-        if (lastSelectedMaps) {
-                var values = (lastSelectedMaps || "").split(" ");
-                getMapPolygons().forEach(function(polygon) {
-                        if (values.indexOf(polygon.nz50map.sheetCode) >= 0) {
-                                toggleSelectMap(polygon);
-                        }
-                });
-        }
-        //enableDisableControls();
-}
-
-function saveSelectedMaps() {
-        var selectedMapsInput = document.getElementById('selected-maps');
-        sessionStorage.setItem('lastSelectedMaps', selectedMapsInput.value);
-}
-
-function clearSelectedMaps() {
-        if (confirm('Do you really want to clear all selected maps?')) {
-                getMapPolygons().forEach(function(polygon) {
-                        if (isSelectedSheet(polygon.nz50map.sheetCode)) {
-                                toggleSelectMap(polygon);
-                        }
-                });
-                saveSelectedMaps();
-                //enableDisableControls();
-        }
-}
-
-function selectRouteMaps() {
-        // crude, but good enough, overlap detection
-        getMapPolygons().forEach(function(polygon) {
-                if (!isSelectedSheet(polygon.nz50map.sheetCode)) {
-                        var polygonBounds = polygon.getBounds();
-                        var intersects = routes.some(function(route) {
-                                return route.getLatLngs().some(function(latLng) {
-                                        return polygonBounds.contains(latLng);
-                                });
-                        });
-                        if (intersects) {
-                                toggleSelectMap(polygon);
-                        }
-                }
-        });
-        saveSelectedMaps();
-        //enableDisableControls();
-}
-
-function selectOrUnselectMap(polygon) {
-        toggleSelectMap(polygon);
-        saveSelectedMaps();
-        //enableDisableControls();
-}
-
-function getMapPolygons() {
-        return nz50LayerGroup.getLayers().filter(function(layer) {
-                return layer.nz50map;
-        });
-}
-
-function toggleSelectMap(polygon) {
-        var selectedMapsInput = document.getElementById('selected-maps');
-        var newValue = polygon.nz50map.sheetCode;
-        var values = (selectedMapsInput.value || "").split(" ");
-        var index = values.indexOf(newValue);
-        if (index < 0) {
-                values.push(newValue);
-                polygon.setStyle({ fillOpacity: 0.2});
-        } else  {
-                values.splice(index, 1);
-                polygon.setStyle({ fillOpacity: 0.0});
-        }
-        selectedMapsInput.value = values.join(" ");
-}
-
-function isSelectedSheet(sheetCode) {
-        var selectedMapsInput = document.getElementById('selected-maps');
-        var values = (selectedMapsInput.value || "").split(" ");
-        var index = values.indexOf(sheetCode);
-        return index >= 0;
-}
-
-// -------------------------------------------------------
-/*
-function enableDisableControls() {
-        var editEnabled = routes.some(function(route) {
-                return route.editor ? route.editEnabled(): false;
-        });
-        document.getElementById("new-route").disabled = routes.length > 0;
-        document.getElementById("add-route").disabled = false;
-        document.getElementById("edit-route").disabled = routes.length === 0 || editEnabled;
-        document.getElementById("end-route").disabled = routes.length === 0 || !editEnabled;
-        document.getElementById("clear-route").disabled = routes.length === 0;
-
-        document.getElementById("select-route-maps").disabled = routes.length === 0;
-        document.getElementById("clear-selected-maps").disabled = document.getElementById('selected-maps').value === '';
-}
-*/
-
-//loadRoute();
-//loadSelectedMaps();
-
 
 

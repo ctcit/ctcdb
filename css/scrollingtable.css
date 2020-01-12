@@ -1,0 +1,143 @@
+/*the following html and body rule sets are required only if using a % width or height*/
+/*html {
+width: 100%;
+height: 100%;
+}*/
+#body {
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 2px;
+  text-align: left;
+  background: white;
+}
+.scrollingtable {
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  width: auto; /*if you want a fixed width, set it here, else set to auto*/
+  min-width: 100%/*100%*/; /*if you want a % width, set it here, else set to 0*/
+  max-height: 700px/*100%*/; /*set table height here; can be fixed value or %*/
+  min-height: 104px; /*if using % height, make this large enough to fit scrollbar arrows + caption + thead*/
+  font-family: Verdana, Tahoma, sans-serif;
+  font-size: small;
+  line-height: 20px;
+  padding: 2px; /*need enough padding to make room for caption*/
+  text-align: left;
+}
+.scrollingtable * {box-sizing: border-box;}
+
+.scrollingtable > div {
+  position: relative;
+  max-height: 700px;
+}
+/*
+.scrollingtable > div:before {
+  top: 0;
+  background: lightgray; 
+}*/
+/*.scrollingtable > div:before,*/
+.scrollingtable > div > div:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  max-height: 668px;
+  left: 0;
+}
+/* This is the div that scrolls*/
+.scrollingtable > div > div {
+  min-height: 43px; /*if using % height, make this large enough to fit scrollbar arrows*/
+  max-height: 666px;
+  overflow: auto;/*scrollauto*/; /*set to auto if using fixed or % width; else scroll*/
+  overflow-x: hidden;
+  border: 1px solid gray; /*border around table body*/
+}
+.scrollingtable > div > div:after {background: white;} /*match page background color*/
+.scrollingtable > div > div > table {
+  width: 100%;
+  border-spacing: 0;
+  margin-top: 0px; /*inverse of column header height*/
+  /*margin-right: 17px;*/ /*uncomment if using % width*/
+}
+/* Not using caption*/
+.scrollingtable > div > div > table > caption {
+  position: absolute;
+  top: -20px; /*inverse of caption height*/
+  margin-top: -1px; /*inverse of border-width*/
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
+}
+.scrollingtable > div > div > table > * > tr > * {padding: 2px;}
+.scrollingtable > div > div > table > thead {
+  vertical-align: bottom;
+  white-space: nowrap;
+  text-align: left;
+}
+.scrollingtable > div > div > table > thead > tr > * > div {
+  display: inline-block;
+  padding: 2px; /*header cell padding*/
+}
+/*
+.scrollingtable > div > div > table > thead > tr > :first-child:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  border-left: 1px solid black;
+}*/
+.scrollingtable > div > div > table > thead > tr > * > div[label]:before,
+.scrollingtable > div > div > table > thead > tr > * > div > div:first-child,
+.scrollingtable > div > div > table > thead > tr > * + :before {
+  position: absolute;
+  top: 0;
+  white-space: pre-wrap;
+  color: black; /*header row font color*/
+}
+.scrollingtable > div > div > table > thead > tr > * > div[label]:before,
+.scrollingtable > div > div > table > thead > tr > * > div[label]:after {content: attr(label);}
+/*
+.scrollingtable > div > div > table > thead > tr > * + :before {
+  content: "";
+  display: block;
+  min-height: 20px; 
+  padding-top: 1px;
+  border-left: 1px solid lightgray; 
+}
+*/
+.scrollingtable .scrollbarhead {float: right;}
+.scrollingtable .scrollbarhead:before {
+  position: absolute;
+  width: 100px;
+  top: -1px; /*inverse border-width*/
+  background: white; /*match page background color*/
+}
+.scrollingtable > div > div > table > tbody > tr:after {
+  content: "";
+  display: table-cell;
+  position: relative;
+  padding: 0;
+  border-top: 1px solid lightgray;
+  top: -1px; /*inverse of border width*/
+}
+.scrollingtable > div > div > table > tbody {vertical-align: top;}
+.scrollingtable > div > div > table > tbody > tr {background: white;}
+.scrollingtable > div > div > table > tbody > tr > * {
+    border-bottom: 1px solid gray;
+    padding: 0 6px 0 6px;
+    height: 20px; /*match column header height*/
+}
+.fixedheader{
+    border-left: 1px solid black; 
+    border-right: 1px solid black; 
+    border-top: 1px solid black; 
+    background-color: lightgray;
+    box-sizing: border-box;
+}
+.scrollingtable > div > div > table > tbody:last-of-type > tr:last-child > * {border-bottom: none;}
+.scrollingtable > div > div > table > tbody > tr:nth-child(even) {background: #d0d0d0} /*alternate row color*/
+/*.scrollingtable > div > div > table > tbody > tr > * + * {border-left: 1px solid black;} /*borders between body cells*/
