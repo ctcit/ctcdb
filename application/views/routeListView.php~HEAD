@@ -1,0 +1,12 @@
+<div class="scrollingtable">
+    <div>
+        <table class ="fixedheader">
+                <tr style = "cursor: default">
+        </table>
+        <div>
+            <table id="archiveItems">
+                    <?php EmitEditRows($archiveItems)?>
+        </div>
+    </div>
+</div>
+
