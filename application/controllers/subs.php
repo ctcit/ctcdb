@@ -1,5 +1,7 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
-class Subs extends MY_Controller {
+
+class Subs extends MY_Controller
+{
 	// Controller for the subscription-management module of CTCDB
 	public function __construct()
 	{
@@ -27,8 +29,7 @@ class Subs extends MY_Controller {
 			$membershipQuery = $this->Ctcmodel->getMembershipPaymentStatus($year);
 			$this->_loadPageInNewWindow('paymentEntryForm','CTCDB: Enter subs payments',
 			array('year'=>$year, 'membershipQuery'=>$membershipQuery));
-		}
-		else { // Postback when the user clicks "submit"
+		} else { // Postback when the user clicks "submit"
 			assert($year != NULL);
 			$confirmationData = array('subsYear'=>$year, 'table'=>$this->_processPaymentsForm($year));
 			$this->_loadPageInNewWindow('confirmPayments','CDCDB: Payments confirmation', $confirmationData);
@@ -49,8 +50,7 @@ class Subs extends MY_Controller {
 					'Changed fields are blue, suspect fields are red.',
 					'membershipQuery'=>$membershipQuery,
 					'reloadValues'=>$reloadValues));
-		}
-		else {  // Postback when "save to DB" clicked
+		} else {  // Postback when "save to DB" clicked
 
 			$keyMap = array('Amount'=>'amountPaid', 'CardNum' => 'cardNumber', 'Card2Num'=>'secondaryCardNumber',
 							 'DatePaid' => 'paymentDate', 'Notes'=>'notes');
@@ -64,8 +64,7 @@ class Subs extends MY_Controller {
 				if (in_array($key, array('submit', 'reedit','IDs','changeTable'))) continue;
 				if (!preg_match('/([a-zA-Z]+[a-zA-Z0-9]*[a-zA-Z]+)([0-9]+)/', $key, $bits)) {
 					$errors[] = "INTERNAL ERROR: Unrecognised key ($key). Please report.";
-				}
-				else {
+				} else {
 					$field = $bits[1];
 					$membershipId = $bits[2];
 					$rows[$membershipId][$keyMap[$field]] = $value;
@@ -86,7 +85,8 @@ class Subs extends MY_Controller {
 
 
 
-	public function getReloadValues($changes) {
+	public function getReloadValues($changes)
+	{
 		// Compute a map of reload values for the paymentEntryForm from the
 		// change table computed earlier and passed back via recordPayments3.
 		// The map is from fieldName.msid to (value, status).
@@ -212,8 +212,7 @@ class Subs extends MY_Controller {
 			$mysqlDate = date_to_mysql($value);
 			if ($mysqlDate === NULL) {	 // Bad syntax: can't convert to MySQL form
 				$suspect = true;
-			}
-			else {
+			} else {
 				$paidYear = substr($mysqlDate, 0, 4);  // Check payment date within subs year ...
 				$paidMonth = substr($mysqlDate, 5, 2); // ... extended by 4 months each end.
 				if (!($paidYear == $subsYear || ($paidYear == ($subsYear + 1) && $paidMonth <= 8))) {
@@ -231,8 +230,7 @@ class Subs extends MY_Controller {
 				if ($value != 0) {
 					$suspect = true;
 				}
-			}
-			else /* Not lifer */ {
+			} else /* Not lifer */ {
 				if ($value < 5 || $value > 95) {
 					$suspect = true;
 				}
@@ -244,8 +242,7 @@ class Subs extends MY_Controller {
 				if ($value < 1000 || $value > 9999) {
 					$suspect = true;
 				}
-			}
-			else /* Not a couple */ {
+			} else /* Not a couple */ {
 				if ($value != NULL && $value != 0) {
 					$suspect = true;
 				}
@@ -255,6 +252,3 @@ class Subs extends MY_Controller {
 		return $suspect;
 	}
 }
-
-
-?>

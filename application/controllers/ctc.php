@@ -3,7 +3,8 @@
 define("NO_MENU", False); // Parameter value for "$menuReqd param to _loadPage
 
 
-class Ctc extends MY_Controller {
+class Ctc extends MY_Controller
+{
 	// This class is the main controller for all member/membership functions
 	// used by the club database administrators to manage membership data.
 	// These functions are accessible only to club officers whose roles
@@ -48,8 +49,7 @@ class Ctc extends MY_Controller {
 		$isPostBack = count($_POST) > 0;
 		if ($isPostBack) {
 			$templateData = $this->_getFormDataFromPost();
-		}
-		else {
+		} else {
 			$templateData = $this->_getNewMemberFormData();
 		}
 		$membershipTypes = array();
@@ -60,8 +60,7 @@ class Ctc extends MY_Controller {
 		}
 		if ($isPostBack) {
 			$templateData['membershipTypeEnum']['values'] = $membershipTypes;
-		}
-		else {
+		} else {
 			$templateData = array_merge(array('membershipTypeEnum' => array('type'=>'enum', 'label'=>'Membership type',
 			    'value'=>'Ordinary', 'values'=>$membershipTypes)), $templateData);
 		}
@@ -94,8 +93,7 @@ class Ctc extends MY_Controller {
 		if ($isPostBack) {
 			$data = $this->_getFormDataFromPost();
             unset($data['submitButton']);
-		}
-		else {
+		} else {
 			$data = $this->_getNewCoupleFormData();
 		}
 
@@ -128,8 +126,7 @@ class Ctc extends MY_Controller {
 			$this->Ctcmodel->setMemberPasswordRaw($id, $_POST['newpass']);
 			$this->_loadPage('operationOutcome', "Password changed",
 			array( 'message' => 'The user\'s password has been changed.'));
-		}
-		else {
+		} else {
 			$this->_loadPage('passwordChangeForm2','Password change',
 			array('name' => $this->Ctcmodel->getMemberName($id),
 					  'postbackUrl'=>"ctc/setParticularMemberPassword/$id"));
@@ -160,11 +157,9 @@ class Ctc extends MY_Controller {
 			if ($changes === Null) {
 				$this->_loadPage('operationOutcome', 'CTCDB: Member Update Failure',
 				array('tellWebmaster' => True));
-			}
-			else if (count($changes) > 0)  {
+			} else if (count($changes) > 0)  {
 				$this->_loadPage('operationOutcome', 'CTCDB: Member Update Done');
-			}
-			else {
+			} else {
 				$this->_loadPage('operationOutcome', 'CTCDB: Member Update No Change',
 				array('extraInfo' => 'The member update operation was completed with no errors but did not ' .
 		    			' actually alter the information stored in the database!' .
@@ -177,8 +172,7 @@ class Ctc extends MY_Controller {
 		$isPostBack = count($_POST) > 0;
 		if ($isPostBack) {
 			$fields = $this->_getFormDataFromPost();  // Get the set of fields from the posted form
-		}
-		else {
+		} else {
 			$fields = $this->_getUpdateFormDataFromDb($id);	// Else build a new form
 		}
 
@@ -187,8 +181,7 @@ class Ctc extends MY_Controller {
 		$currentType = $fields['membershipTypeEnum']['value'];
 		if (preg_match('/.*Couple/', $currentType)) {
 			$allowable = array('Couple','AssociateCouple','LifeCouple');
-		}
-		else /* Not a couple membership */ {
+		} else /* Not a couple membership */ {
 			$types = $this->Ctcmodel->getMembershipTypes();
 			$allowable = array();
 			foreach ($types as $type) {
@@ -210,8 +203,7 @@ class Ctc extends MY_Controller {
 		if (!$isPostBack) {
 			$coupleList = $this->Ctcmodel->getAllMembersForCoupling();
 			$this->_loadPage('memberCouplingGetCouple', 'CTCDB: Get Couple', array('coupleList'=>$coupleList));
-		}
-		else { // postback from the couple selection form
+		} else { // postback from the couple selection form
 			$ids = array();
 			foreach (array_keys($_POST) as $key) {  /* Look for all the checked check boxes */
 				if (preg_match('/cb[0-9]{1,5}/', $key)) {
@@ -222,8 +214,7 @@ class Ctc extends MY_Controller {
 			if (count($ids) != 2) {
 				$this->_loadPage('operationOutcome', 'CTCDB: Wrong Coupling Count',
 				array('extraInfo'=>'You must select just two members. No more, no less!'));
-			}
-			else {
+			} else {
 				$id1 = $ids[0];
 				$id2 = $ids[1];
 				$membershipData = $this->Ctcmodel->getMembershipDataByMemberId($id1);
@@ -249,7 +240,7 @@ class Ctc extends MY_Controller {
 	// Postback from the coupling-data acquisition form
 	{
         $this->_setupMembershipValidation();
-		if(!$this->form_validation->run()) {
+		if (!$this->form_validation->run()) {
 			$fields = $this->_getFormDataFromPost();
 			$formData = array('fields' => $fields,
 						'member1Id'=>$id1,
@@ -258,8 +249,7 @@ class Ctc extends MY_Controller {
 						'member2Name'=>$this->Ctcmodel->getMemberName($id2)
 			);
 			$this->_loadPage('memberCouplingGetData','CTCDB: Get Couple Data', $formData);
-		}
-		else {
+		} else {
 			$membershipFields = $this->Ctcmodel->getMembershipFields();
 			$fields = array();
 			foreach ($membershipFields as $field) {
@@ -267,8 +257,7 @@ class Ctc extends MY_Controller {
 			}
 			if ($this->Ctcmodel->coupleMembers($id1, $id2, $fields)) {
 				$this->_loadPage('operationOutcome', 'CTCDB: Members Successfully Coupled!');
-			}
-			else {
+			} else {
 				$this->_loadPage('operationOutcome', 'CTCDB: Coupling Failure',
 				array('tellWebmaster'=>True));
 			}
@@ -284,17 +273,14 @@ class Ctc extends MY_Controller {
 	{
 		if ($membershipId === NULL) {  // If direct from menu
 			$this->_loadPage('decouple', 'CTCDB: Decouple');
-		}
-		else if ($phase == 0) {  // Here via couple-selection page
+		} else if ($phase == 0) {  // Here via couple-selection page
 			$this->_loadPage('decoupleConfirm', 'CTCDB: Confirm Decouple',
 			array('membershipId' => $membershipId,
 				'coupleName' => $this->Ctcmodel->getMembershipName($membershipId)));
-		}
-		else { // Here after confirmation
+		} else { // Here after confirmation
 			if ($this->Ctcmodel->decouple($membershipId)) {
 				$this->_loadPage('operationOutcome', 'CTCDB: Decouple Success');
-			}
-			else {
+			} else {
 				$this->_loadPage('operationOutcome', 'CTCDB: Decouple Failure',
 				array('tellWebmaster' => True));
 			}
@@ -311,8 +297,7 @@ class Ctc extends MY_Controller {
 			$memberships = $this->Ctcmodel->getAllMembershipsForSelection('makeCloseLink',
 				"statusAdmin = 'Active' or statusAdmin = 'Pending'");
 			$this->_loadPage('closeMembership', 'CTCDB: Close Membership', array('memberships'=>$memberships));
-		}
-		else {
+		} else {
 			$this->form_validation->set_rules('reason', 'Reason for closure', "callback__checkReason");
 			$this->form_validation->set_rules('resignationDate', 'Resignation date', "callback__dateCheck2");
 			$this->form_validation->set_rules('membershipNotes', 'Membership Notes', '');
@@ -327,9 +312,7 @@ class Ctc extends MY_Controller {
 				$reason = $this->input->post('reason', True);
 				$this->Ctcmodel->closeMembership($membershipId, $reason, $resignationDate, $notes);
 				$this->_loadPage('operationOutcome', 'CTCDB: Membership has been closed');
-			}
-
-			else {
+			} else {
 				// First callback for a particular member, or an invalid callback. Load form.
 				$msData = $this->Ctcmodel->getMembershipDataByMembershipId($membershipId);
 				$data = array(
@@ -355,8 +338,7 @@ class Ctc extends MY_Controller {
 			$memberships = $this->Ctcmodel->getAllMembershipsForSelection(
                     'makeReinstateLink',"(statusAdmin='StruckOff' or statusAdmin='Resigned' or statusAdmin='Deceased')");
 			$this->_loadPage('reinstateMembership', 'CTCDB: Reinstate Membership', array('memberships'=>$memberships));
-		}
-		else {
+		} else {
 			$membershipName = $this->Ctcmodel->getMembershipName($membershipId);
 			$status = $this->Ctcmodel->getMembershipStatusByMembershipId($membershipId);
 			$this->_loadPage('reinstateConfirm', 'CTCDB: Confirm reinstatement',
@@ -381,8 +363,7 @@ class Ctc extends MY_Controller {
 			}
 			$members = $this->Ctcmodel->getAllMembersForSelection('makeRejoinLink',"(statusAdmin='StruckOff' or statusAdmin='Resigned')");
 			$this->_loadPage('rejoinMember', 'CTCDB: Rejoin Members', array('members'=>$members));
-		}
-		else {
+		} else {
 			$memberName = $this->Ctcmodel->getMemberName($memberId);
 			$status = $this->Ctcmodel->getMemberStatus($memberId);
 			$this->_loadPage('rejoinConfirm', 'CTCDB: Member rejoin confirmation',
@@ -542,8 +523,7 @@ class Ctc extends MY_Controller {
 		if ($login == $this->input->post('loginName__1', True)) {
 			$this->form_validation->set_message('_differentLogins', 'The two members must have different logins');
 			return FALSE;
-		}
-		else {
+		} else {
 			return TRUE;
 		}
 	}
@@ -554,8 +534,7 @@ class Ctc extends MY_Controller {
 	{
 		if (date_to_mysql($date) !== NULL) {
 			return TRUE;
-		}
-		else {
+		} else {
 			$mess = 'Invalid date. Must be in form DD-MM-YYYY.';
 			$this->form_validation->set_message('_dateCheck', $mess);
 			return FALSE;
@@ -570,8 +549,7 @@ class Ctc extends MY_Controller {
 	{
 		if ($date == NULL || date_to_mysql($date) !== NULL) {
 			return TRUE;
-		}
-		else {
+		} else {
 			$mess = "Invalid date. Must be empty (meaning 'today') or in form DD-MM-YYYY.";
 			$this->form_validation->set_message('_dateCheck2', $mess);
 			return FALSE;

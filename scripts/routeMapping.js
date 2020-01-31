@@ -501,12 +501,12 @@ function resizeLayerControl () {
         layerControl.style.maxHeight = layerControlHeight + 'px';
 }
 
-function AddGpxData(L, map, p_archiveItemIds){
+function AddGpxData(L, map, p_routeIds){
     var formdata = new FormData();
-    formdata.append('action', 'DownloadArchiveItems');
-    formdata.append('archiveItemIds', p_archiveItemIds);
+    formdata.append('action', 'DownloadRoutes');
+    formdata.append('routeIds', p_routeIds);
     var getUrl = window.location;   
-    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/archiveRest/archiveItem";
+    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routesRest/route";
     jQuery(function ($) {
         $.ajax({
             url: url,
@@ -520,7 +520,7 @@ function AddGpxData(L, map, p_archiveItemIds){
                 AddToMap(L, map, gpxs);
             },
             error: function (data) {
-                alert("Archive download failed " + data);
+                alert("Route download failed " + data);
             }
         });
     });

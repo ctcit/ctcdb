@@ -24,23 +24,22 @@
 <body>
 	<div id="map" class="map"></div>
     <input id="selected-maps" type="hidden" ></input> 
-    <input id="archiveItemIds" type= "hidden" value = "<?php echo $archiveItemIds ?>"></input> 
+    <input id="routeIds" type= "hidden" value = "<?php echo $routeIds ?>"></input> 
     <?php
     echo '<script src="'.$base_url.'/third-party/jquery.min.js" type="text/javascript"></script>';
     echo '<script src="'.$base_url.'/third-party/proj4.js" type="text/javascript"></script>';
     echo '<script src="'.$base_url.'/third-party/leaflet.js" type="text/javascript"></script>';
     echo '<script src="'.$base_url.'/third-party/gpx.min.js" type="text/javascript"></script>';
     echo '<script src="'.$base_url.'/third-party/Leaflet.Editable.js" type="text/javascript"></script>';
-    echo '<script src="'.$base_url.'/scripts/archivemapping.js" type="text/javascript"></script>';
+    echo '<script src="'.$base_url.'/scripts/routeMapping.js" type="text/javascript"></script>';
     
     ?>
     <Script>
         document.getElementById('map').style.visibility = 'hidden';
         var map = InitialiseMap(L);
-        var archiveItemIds = $('#archiveItemIds').val();
-        if (archiveItemIds.length > 0)
-            AddGpxData(L, map, archiveItemIds);
+        var routeIds = $('#routeIds').val();
+        if (routeIds.length > 0)
+            AddGpxData(L, map, routeIds);
     </Script>
 </body>
 </html>
-

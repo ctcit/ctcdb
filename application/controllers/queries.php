@@ -4,7 +4,8 @@
  * queries that can be run by a particular user. Queries owned by the special user _menu_
  * are used in the main menu, with a tooltip obtained from the first sentence of the description.
  */
-class Queries extends MY_Controller {
+class Queries extends MY_Controller
+{
 
     public function __construct()
     {
@@ -39,7 +40,8 @@ class Queries extends MY_Controller {
      * Do a print merge of the currently-displayed table data with the .odt document
      * selected by the combo box
      */
-    public function printMerge($resultId) {
+    public function printMerge($resultId)
+    {
         $tableData = $this->Ctcmodel->getSavedResult($resultId);
         if ($tableData === NULL) {
             $this->_loadPageInNewWindow('staleCSVData',
@@ -64,7 +66,8 @@ class Queries extends MY_Controller {
      * confirms, phase2 repeats the process, emailing the document to all
      * recipients.
      */
-    public function emailMerge($resultId) {
+    public function emailMerge($resultId)
+    {
         $tableData = $this->Ctcmodel->getSavedResult($resultId);
         if ($tableData === NULL) {
             $this->_loadPageInNewWindow('staleCSVData',
@@ -165,8 +168,7 @@ class Queries extends MY_Controller {
         global $userData;
         if ($user == NULL) {
             $user = $userData['userid'];
-        }
-        else {
+        } else {
             if ($user != $userData['userid'] && !$this->isWebmaster) {
                 die("Security breach disallowed");
             }
@@ -187,8 +189,7 @@ class Queries extends MY_Controller {
         }
         if ($user === '0') {
             $ownerName = "Main Menu";
-        }
-        else {
+        } else {
             $ownerName = $this->Ctcmodel->getMemberName($user);
         }
         $header = "Queries belonging to $ownerName";
@@ -199,8 +200,7 @@ class Queries extends MY_Controller {
             $this->_loadPage('showQueries', 'Queries',
                 array('queryTable' => $table, 'header' => $header, 'switchUserList' => $loginList,
                         'currentUserId' => $user));
-        }
-        else {
+        } else {
             $this->_loadPage('showQueries', 'Queries',
                 array('queryTable' => $table, 'header' => $header, 'currentUserId' => $user));
         }
@@ -232,8 +232,7 @@ class Queries extends MY_Controller {
             $this->form_validation->query = $this->_sampleSql();
             if ($ownerId === NULL) {
                 $ownerId = $userData['userid'];
-            }
-            else if ($ownerId != $userData['userid'] && !$this->isWebmaster) {
+            } else if ($ownerId != $userData['userid'] && !$this->isWebmaster) {
                 die("Security breach disallowed");
             }
             $this->form_validation->queryOwnerId = $ownerId;
@@ -262,8 +261,7 @@ class Queries extends MY_Controller {
             $query = $this->input->post('query');
             $this->Ctcmodel->saveQuery($id, $queryName, $description, $query, $queryOwnerId);
             $this->manageQueries($queryOwnerId); // Take user back to query list form
-        }
-        else { // form_validation failed: (re)load form
+        } else { // form_validation failed: (re)load form
             $this->_loadPage('editQuery', $title);
         }
     }
@@ -276,7 +274,8 @@ class Queries extends MY_Controller {
             array('id' => $id, 'queryName' => $name));
     }
 
-    public function deleteQuery2($id) {
+    public function deleteQuery2($id)
+    {
         $this->Ctcmodel->deleteQuery($id);
         $this->_loadPage('home','CTCDB: Home');
     }
@@ -290,8 +289,7 @@ class Queries extends MY_Controller {
         $this->_setQueryValidation();
         if ($this->form_validation->run()) {
             $this->_displayQueryResult($query, "CTCDB: '$name' query output");
-        }
-        else {
+        } else {
             $this->_loadPageInNewWindow('queryTestFailed', 'Bad query');
         }
     }
@@ -301,16 +299,16 @@ class Queries extends MY_Controller {
 // =============================
 
     // Starting point for envelope printing -- just display the query builder form.
-    public function printEnvelopes($error = '') {
+    public function printEnvelopes($error = '')
+    {
         $this->_loadPage('printEnvelopesForm', 'CTCDB: Print Envelopes',
             array('error'=> ''));
     }
 
     // Return a subquery that selects the membership subset that receives the given item,
     // as specified by the given where clause (empty to select all members).
-    public function subQuery($item, $where) {
-
-
+    public function subQuery($item, $where)
+    {
         $query =
 '        SELECT membershipId as msid, \''. $item . '\' AS item
          FROM view_memberships
@@ -324,7 +322,8 @@ class Queries extends MY_Controller {
     // Handle postback from printEnvelopesForm.
     // This is the guts of the job -- builds the appropriate query as specified
     // by the form, then runs that query.
-    public function printEnvelopes2() {
+    public function printEnvelopes2()
+    {
         // Build array of tuples (formFieldName, itemName, whereClause).
 
         $items = array(
@@ -354,8 +353,7 @@ class Queries extends MY_Controller {
         if ($subQueries == '') {
             $this->_loadPage('printEnvelopesForm', 'CTCDB: Print Envelopes',
                 array('error'=> 'You have to select <em>something</em> to put in the envelopes!'));
-        }
-        else {
+        } else {
 
             $ordering = '';
             $sep = '';
@@ -396,8 +394,7 @@ ON view_memberships.membershipId = mailees.msid
             if ($this->input->post('showQuery')) {
                 $this->_loadPageInNewWindow('displayQuery', 'Print Envelopes Query',
                     array('query' => $mainQuery));
-            }
-            else {
+            } else {
                 $this->_displayQueryResult($mainQuery, "CTCDB: Envelope printing query output");
             }
         }
@@ -487,8 +484,7 @@ _query_;
         $out = '';
 
         // First generate the headings from the table column names
-        foreach ($columnNames as $name)
-        {
+        foreach ($columnNames as $name) {
             $out .= $enclosure.str_replace($enclosure, $enclosure.$enclosure, $name).$enclosure.$delim;
         }
 
@@ -498,8 +494,7 @@ _query_;
         // Next blast through the result array and build out the rows
         foreach ($queryResult as $row)
         {
-            foreach ($row as $item)
-            {
+            foreach ($row as $item) {
                 $out .= $enclosure.str_replace($enclosure, $enclosure.$enclosure, $item).$enclosure.$delim;
             }
             $out = rtrim($out);
@@ -517,7 +512,8 @@ _query_;
      * Further expanded to handle a rudimentary
      * {{if fieldName = value}} ... {{endif}} syntax.
      */
-    function expandTemplate($template, $row) {
+    function expandTemplate($template, $row)
+    {
         $bits = array();
         $match = preg_match("|(.*){{ *if +([^ =}]+) *= *([^ }]+)}}(.*){{endif}}(.*)|s", $template, $bits);
 
@@ -531,13 +527,11 @@ _query_;
                 return $this->expandTemplate($bits[1], $row) .
                        $this->expandTemplate($bits[4], $row) .
                        $this->expandTemplate($bits[5], $row);
-            }
-            else {
+            } else {
                 return $this->expandTemplate($bits[1], $row) .
                        $this->expandTemplate($bits[5], $row);
             }
-        }
-        else {
+        } else {
             foreach ($row as $field=>$value) {
                 $template = str_replace('{{'.$field.'}}', $value, $template);
             }
@@ -545,4 +539,3 @@ _query_;
         }
     }
 }
-?>

@@ -4,7 +4,8 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once('application/libraries/REST_Controller.php');
 
-class Rest extends REST_Controller {
+class Rest extends REST_Controller
+{
     // This class is the controller for the RESTful interface to the CTC
     // database.
     // To handle CORS (Cross Origin Resource Sharing) it first issues
@@ -25,7 +26,7 @@ class Rest extends REST_Controller {
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, HEAD, DELETE");
 
         $method = $_SERVER['REQUEST_METHOD'];
-        if($method == "OPTIONS") {
+        if ($method == "OPTIONS") {
             die();
         }
 
@@ -36,14 +37,16 @@ class Rest extends REST_Controller {
     }
 
 
-    protected function log($type, $message) {
+    protected function log($type, $message)
+    {
         // Call log_message with the same parameters, but prefix the message
         // by *rest* for easy identification.
         log_message($type, '*rest* ' . $message);
     }
 
 
-    protected function error($message, $httpCode=400) {
+    protected function error($message, $httpCode=400)
+    {
         // Generate the http response containing the given message with the given
         // HTTP response code. Log the error first.
         $this->log('error', $message);
@@ -60,28 +63,32 @@ class Rest extends REST_Controller {
     // ****************************
 
     // Put (i.e. update) a trip report
-    public function tripreports_put($report_id) {
+    public function tripreports_put($report_id)
+    {
         $this->checkCanEdit($report_id);
         $data = $this->put(null, True); // All input data, xss filtered
         $this->tripreportmodel->saveReport($data, FALSE);
     }
 
     // Post a new trip report. Returns trip id.
-    public function tripreports_post() {
+    public function tripreports_post()
+    {
         $this->checkLoggedIn();
         $data = $this->post(null, True); // All input data, xss filtered
         $id = $this->tripreportmodel->saveReport($data, TRUE);
         $this->response(array('id'=>$id));
     }
 
-    public function tripreportyears_get() {
+    public function tripreportyears_get()
+    {
         // A list of all years for which trip reports exist in desc. order
         $years = $this->tripreportmodel->getAllYears();
         $this->response($years);
     }
 
     // Get a trip rerport.
-    public function tripreports_get($id = 0) {
+    public function tripreports_get($id = 0)
+    {
         global $userData;
         if ($id > 0) {
             $row = $this->tripreportmodel->getById($id);
@@ -95,25 +102,29 @@ class Rest extends REST_Controller {
     }
 
     // Get a list of trip reports for a given year.
-    public function yearstripreports_get($year) {
+    public function yearstripreports_get($year)
+    {
         $rows = $this->tripreportmodel->getByYear($year);
         $this->response($rows);
     }
 
     // Get a list of recent trip reports for the front page.
-    public function recenttripreports_get($maxrecent, $maxdays) {
+    public function recenttripreports_get($maxrecent, $maxdays)
+    {
         $rows = $this->tripreportmodel->getRecent($maxrecent, $maxdays);
         $this->response($rows);
     }
 
     // Delete the given trip.
-    public function tripreports_delete($id) {
+    public function tripreports_delete($id)
+    {
         $this->checkCanEdit($id);
         $this->tripreportmodel->delete($id);
     }
 
 
-    private function checkCanEdit($id) {
+    private function checkCanEdit($id)
+    {
         // Check for a current user. If not, issue an immediate 401 Not authenticated.
         // Then check if the currently logged in user can edit the
         // trip report with the given id. Otherwise issue an immediate
@@ -133,7 +144,8 @@ class Rest extends REST_Controller {
     }
 
 
-    private function checkLoggedIn() {
+    private function checkLoggedIn()
+    {
         // Check that there is a currently logged in user. If not issue
         // an immediate 401 not authenticated response. Otherwise just return
         // (no value).
@@ -151,7 +163,8 @@ class Rest extends REST_Controller {
     // If no user is logged in this will be just {id: 0}. Otherwise it
     // will be an object with id, login, name and a list of official roles for that
     // user.
-    public function user_get() {
+    public function user_get()
+    {
         global $userData;
         $data = array('id'=>(isset($userData['userid']) ? $userData['userid'] : 0));
         if ($data['id']) {
@@ -168,7 +181,8 @@ class Rest extends REST_Controller {
     // ********************************
 
 
-    public function tripimages_post() {
+    public function tripimages_post()
+    {
         // Add a new trip image to the database. Body is a JSON record with the
         // following attributes:
         //    name: the image name (usually the original filename)
@@ -185,7 +199,8 @@ class Rest extends REST_Controller {
     }
 
 
-    public function tripimages_get($image_id) {
+    public function tripimages_get($image_id)
+    {
         // Get the specified image. Returns a JSON record containing the
         // following attributes:
         //    name: the image name (usually the original filename)
@@ -198,19 +213,20 @@ class Rest extends REST_Controller {
         //    t_url: an url that can be used to display the image
     }
 
-    public function tripimages_delete($image_id) {
+    public function tripimages_delete($image_id)
+    {
         // Delete a specified trip image
         $this->checkLoggedIn();  // TODO - better security
         $this->load->model('imagemodel');
         $this->imagemodel->delete($image_id);
-
     }
 
     // ********************************
     //       GPXS
     // ********************************
 
-    public function gpxs_post() {
+    public function gpxs_post()
+    {
         $this->checkLoggedIn();
         $this->load->model('gpxmodel');
         $name = $this->post('name', false);

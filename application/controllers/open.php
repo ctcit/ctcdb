@@ -1,11 +1,11 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-// This controller contains functions are accessible to anyone, even if
-// they're not logged into the main club website.
-
 define("NO_MENU", False);
 
-class Open extends MY_Controller {
+// This controller contains functions are accessible to anyone, even if
+// they're not logged into the main club website.
+class Open extends MY_Controller 
+{
 
     public function __construct()
     {
@@ -18,25 +18,28 @@ class Open extends MY_Controller {
         $this->form_validation->set_error_delimiters('<p style="font-size: 18px; color: red">', '</p>');
     }
         
-    public function forgottenUserName(){
+    public function forgottenUserName()
+    {
         $this->_loadPage('forgottenUserName', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
     }
     
-    public function forgottenUserNameSubmit(){
+    public function forgottenUserNameSubmit()
+    {
         $searchData = $this->input->post("search_data");
         $recaptchaResponse = $this->input->post("captcha-validated");
-        if ($recaptchaResponse !== "true")
+        if ($recaptchaResponse !== "true") {
             die("You need to confirm you are not a robot.");
+        }
         $memberData = $this->Ctcmodel->getMemberLoginNameFromEmailPhoneLoginName($searchData);
         $errorMessage = $memberData['errorMessage'];
         $mailSent = FALSE;
-        if ($errorMessage !== ""){
+        if ($errorMessage !== "") {
             die($errorMessage);
-        }else{
+        } else {
             $to = $memberData['emailAddress'];
-            if ($to === "")
+            if ($to === "") {
                 die("User identified but no email address on record.");
-            else{
+            } else {
               $subject = '[CTC]Your CTC login name';
               $message = "Hello,\n\nA login name reminder has been requested for your CTC account\n".
                          "Your login name is: ".$memberData['loginName']."\n".
@@ -48,31 +51,35 @@ class Open extends MY_Controller {
               $mailSent = sendEmail("webmaster@ctc.org.nz", "Christchurch Tramping Club", $to, $subject, $message);
             }
         }
-        if ($mailSent)
+        if ($mailSent) {
             echo("Login name has been sent to the email address on record.");
-        else
+        } else {
             echo("Email send failed for some reason");
+        }
     }
         
-    public function forgottenPassword(){
+    public function forgottenPassword()
+    {
         $this->_loadPage('forgottenPassword', "", array('css'=> "ctcdbNewWindow.css"), NO_MENU);
     }
     
-    public function forgottenPasswordSubmit(){
+    public function forgottenPasswordSubmit()
+    {
         $searchData = $this->input->post("search_data");
         $recaptchaResponse = $this->input->post("captcha-validated");
-        if ($recaptchaResponse !== "true")
+        if ($recaptchaResponse !== "true") {
             die("You need to confirm you are not a robot.");
+        }
         $memberData = $this->Ctcmodel->getMemberLoginNameFromEmailPhoneLoginName($searchData);
         $errorMessage = $memberData['errorMessage'];
         $mailSent = FALSE;
-        if ($errorMessage !== ""){
+        if ($errorMessage !== "") {
             die($errorMessage);
-        }else{
+        } else {
             $to = $memberData['emailAddress'];
-            if ($to === "")
+            if ($to === "") {
                 die("Your password was not changed. User was identified but had no email address on record.");
-            else{
+            } else {
               $memberid = $memberData['id'];
               // Set new password
               $newPassword = $this->Ctcmodel->generatePassword($memberData['loginName']);
@@ -90,10 +97,11 @@ class Open extends MY_Controller {
               $mailSent = sendEmail("webmaster@ctc.org.nz", "Christchurch Tramping Club", $to, $subject, $message);
             }
         }
-        if ($mailSent)
+        if ($mailSent) {
             echo("New password has been sent to the email address on record.");
-        else
+        } else {
             echo("Your password was changed but the Email send failed for some reason. You may need to try the forgotten password process again.");
+        }
     }
 
     public function processMailQueue($maxRunTimeMins)
@@ -157,7 +165,8 @@ class Open extends MY_Controller {
     // The message is displayed on the website via the Notify Trip Change
     // entry in the main site's Member's Menu, and a response text is sent
     // via http://websms.co.nz acknowledging receipt of the message.
-    public function incomingtext() {
+    public function incomingtext()
+    {
         $mob = $this->input->post('FROM');  // Originating mobile number
         $message = $this->input->post('TEXT');
         if ($mob && $message) {
@@ -225,7 +234,8 @@ class Open extends MY_Controller {
     // search engines.
     // This function is a bit of a hack, as it's not really
     // a rest API call at all - it returns a full web page.
-    public function allTripReportLinks() {
+    public function allTripReportLinks()
+    {
         $this->db = $this->load->database('tripreports', true);
         $this->load->model('tripreportmodel');
         $this->load->helper('url');
@@ -238,7 +248,3 @@ class Open extends MY_Controller {
 
 
 }
-
-
-
-?>

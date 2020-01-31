@@ -2,8 +2,8 @@
 
 // This controller contains functions available to club officers logged into the
 // joomla website.
-
-class Officer extends MY_Controller {
+class Officer extends MY_Controller 
+{
 
 	public function __construct()
 	{
@@ -25,5 +25,3 @@ class Officer extends MY_Controller {
 	}
 
 }
-
-?>
