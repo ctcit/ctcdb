@@ -5,7 +5,8 @@
 
 define("NO_MENU", False); // Parameter value for "$menuReqd param to _loadPage
 
-class Member extends MY_Controller {
+class Member extends MY_Controller
+{
 
 	var $currentMemberId;
 	var $currentPassword;
@@ -34,12 +35,12 @@ class Member extends MY_Controller {
 
 	// Function to display a menu of user-profile update options
 	// @param $id -- the id of the member whose profile is being edited
-	public function userDetails($id = 0) {
+	public function userDetails($id = 0)
+	{
 		global $userData;
 		if ($id == 0) {
 			$id = $userData['userid'];
-		}
-		else if ($userData['userid'] != $id) {  // Security check
+		} else if ($userData['userid'] != $id) {  // Security check
 			die("Access denied 1");
 		}
 		//$query = $this->db->query("select id from joom1.jos_contact_details where name='dbadmin'");
@@ -66,7 +67,8 @@ class Member extends MY_Controller {
 
 	}
 
-    public function printableMembershipList(){
+	public function printableMembershipList()
+	{
  		global $userData;
 		if ($userData['userid'] === 0) {  // Security check
 			die("Access denied #2");
@@ -80,7 +82,8 @@ class Member extends MY_Controller {
 		);
    }
 
-    public function printableMembershipListByFirstName(){
+	public function printableMembershipListByFirstName()
+	{
  		global $userData;
 		if ($userData['userid'] === 0) {  // Security check
 			die("Access denied #2");
@@ -96,7 +99,8 @@ class Member extends MY_Controller {
     
 	// Function to display the club membership list
 	// UNTESTED.
-	public function membershipList(){
+	public function membershipList()
+	{
 		global $userData;
         $id = $userData['userid'];
 		if ($id == 0) {  // Security check
@@ -431,5 +435,3 @@ class Member extends MY_Controller {
 	}
 
 }
-
-?>
