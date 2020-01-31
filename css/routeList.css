@@ -144,21 +144,20 @@
         max-height: 100%;      
     }
     
-
     td {
-        padding: 5px 0;     /* 10px top & bottom padding, 0px left & right */
+        padding: 2px 2px;     /* 2px top & bottom padding, 2px left & right */
     }
         
-    table#routes {
+    table#routes{
         padding: 2px;
         border-collapse: collapse;
     } 
-
+    
     table#routes td {
-        padding-left: 1px;
-        padding-right: 1px;
-        padding-top: 1px;
-        padding-bottom: 1px;
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-top: 2px;
+        padding-bottom: 2px;
         margin:0px; 
     }
     table#routes tr {
@@ -168,17 +167,22 @@
         width: -webkit-calc(100% - 16px);
         width:    -moz-calc(100% - 16px);
         width:         calc(100% - 16px);
+        /*
+        border-width: 1px 0; 
+        border-color: #dddddd;
+        border-style: solid;
+        */
         margin-top: 3px;
         margin-bottom: 3px;
     }
-
-    tr:after {
+    
+    tr:after {  
         content: ' ';
         display: block;
         visibility: hidden;
         clear: both;
     }
-
+    
     thead {
         background:#CCCCCC;
         display:block
@@ -186,17 +190,19 @@
     tbody {
         max-height:100%;
         display:block;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow-y: auto;    
+        overflow-x: hidden;  
     }
-table#routes tbody{
-  overflow: hidden;
-}
+    
+    table#routes tbody{
+      overflow: hidden;
+    }
     table#routes th.col0,
     table#routes td.col0 { /*check box select */
         width:22px;
         display: table-cell;
         vertical-align: top;
+        cursor:default;
     }
     table#routes th.col1,
     table#routes td.col1 { /*title */
@@ -209,24 +215,28 @@ table#routes tbody{
         width: 22px;
         display: table-cell;
         vertical-align: top;
+        cursor:default;
     }
     table#routes th.col3,
     table#routes td.col3 { /*view gpx on map*/
         width: 22px;
         display: table-cell;
         vertical-align: top;
+        cursor:pointer;
     }
     table#routes th.col4,
     table#routes td.col4 { /*upload gpx*/
         width: 22px;
         display: table-cell;
         vertical-align: top;
+        cursor:default;
     }
     table#routes th.col5,
     table#routes td.col5 { /* trash*/
         width: 22px;
         display: table-cell;
         vertical-align: top;
+        cursor:default;
     }
     table#routes th.col6,
     table#routes td.col6 { /* location*/
@@ -242,24 +252,28 @@ table#routes tbody{
         margin:0;
         list-style: none;
         width:100%;
+        cursor:pointer;
     }    
     table#routes th.col7,
     table#routes td.col7 { /* date*/
         width: 5%;
         display: table-cell;
         vertical-align: top;
+        cursor: default;
     }
     table#routes th.col8,
     table#routes td.col8 { /*contributor*/
         width: 6%;
         display: table-cell;
         vertical-align: top;
+        cursor: default;
     }
     table#routes th.col9,
     table#routes td.col9 { /* description */
         width: 98%;
-        display: block;
+        display: table-cell;
         vertical-align: top;
+        cursor: default;
     }
     table#routes td.col9 div{ /* description */
         width: 100%;
@@ -276,6 +290,7 @@ table#routes tbody{
         width:16px;
         margin:0px 0px 0px 0px; 
         padding: 2px 2px 2px 2px;
+        cursor:pointer;
     }
     a.downloadfiles,
     a.downloadfile{
@@ -286,6 +301,7 @@ table#routes tbody{
         width:16px;
         margin:0px 0px 0px 0px; 
         padding: 2px 2px 2px 2px;   
+        cursor:pointer;
     }
     div.trashselected,
     div.trashfile{
@@ -296,15 +312,7 @@ table#routes tbody{
         width:16px;
         margin:0px 0px 0px 0px; 
         padding: 2px 2px 2px 2px;   
-    }
-    div.choosefiles:hover,
-    div.choosefile:hover,
-    a.downloadfiles:hover,
-    a.downloadfile:hover,
-    div.trashselected:hover,
-    div.trashfile:hover,
-    div.mapview:hover{
-        cursor: pointer;
+        cursor:pointer;
     }
     div.mapview{
         display: inline-block;
@@ -314,32 +322,36 @@ table#routes tbody{
         width:16px;
         margin:0px 0px 0px 0px; 
         padding: 2px 2px 2px 2px;   
+        cursor:pointer;
     }
-    div.progress {
+    div.progress{
         width: 600px;
     }
     div.main {
-        /* float: right; */
-        width: 100%;
-        padding-right: 10px;
-        padding-top: 10px;
+            float: right;
+            width: 100%;
+            padding-right: 10px;
+            padding-top: 10px;
     }
     div#wrap {
         width: 100%;
     }
-
+    
     div.spinner {
-        border: 3px solid #f3f3f3;
-        border-radius: 50%;
-        border-top: 4px solid #808080;
-        border-bottom:4px solid #808080;
-        border-left: 4px solid #c0c0c0;
-        border-right: 4px solid #c0c0c0;
-        width: 10px;
-        height: 10px;
-        -webkit-animation: spin 2s linear infinite; /* Safari */
-        animation: spin 2s linear infinite;
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #808080;
+      border-bottom:4px solid #808080;
+      border-left: 4px solid #c0c0c0;
+      border-right: 4px solid #c0c0c0;
+      width: 10px;
+      height: 10px;
+      -webkit-animation: spin 2s linear infinite; /* Safari */
+      animation: spin 2s linear infinite;
     }
+
+
+
 
     /* Safari */
     @-webkit-keyframes spin {

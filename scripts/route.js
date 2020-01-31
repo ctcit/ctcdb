@@ -21,11 +21,11 @@ function OnWindowResize() {
 
 function DoDeleteRouteFiles(p_route_ids) { // Array of id's to delete
     var formdata = new FormData();
-    formdata.append('action', 'DeleteRouteItems');
+    formdata.append('action', 'DeleteRoutes');
     var route_ids = JSON.stringify(p_route_ids);
     formdata.append('route_ids', route_ids);
     var getUrl = window.location;   
-    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routeRest/route";
+    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routesRest/route";
     jQuery(function ($) {
         $.ajax({
             url: url,
@@ -106,7 +106,7 @@ function DoUploadFiles(p_files, p_route_id) {
 function GetUploadAjax(p_file, p_route_id, p_aAjaxCalls) {
     // retrieve 
     var formdata = new FormData();
-    formdata.append('action', 'UploadRouteItem');
+    formdata.append('action', 'UploadRoute');
     formdata.append('gpxfile', p_file);
     formdata.append('route_id', p_route_id);
     var i = GoodFileIndex(p_file);
@@ -122,7 +122,7 @@ function GetUploadAjax(p_file, p_route_id, p_aAjaxCalls) {
     }
     formdata.append('trackdate', (i >= 0 && i < trackdate_data.length) ? trackdate_data[i]: '');
     var getUrl = window.location;   
-    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routeRest/route";
+    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routesRest/route";
     p_aAjaxCalls.push(
         $.ajax({
             url: url,
@@ -551,8 +551,8 @@ function FocusOutRouteNotes(p_sender) {
     content = p_sender.textContent;
     if (content !== p_sender.getAttribute("data-original")) {
         // Content changed - write to database
-        id = p_sender.id;
-        UpdateRouteItem(id, 'routenotes', content);
+        id = p_sender.id
+        UpdateRoute(id, 'routenotes', content);
     }
 }
 
@@ -561,19 +561,19 @@ function FocusOutCaption(p_sender) {
     if (content !== p_sender.getAttribute("data-original")) {
         // Content changed - write to database
         id = p_sender.id;
-        UpdateRouteItem(id, 'caption', content);
+        UpdateRoute(id, 'caption', content);
         p_sender.setAttribute("data-original", content);        
     }
 }
 
-function UpdateRouteItem(p_id, p_propname, p_value) {
+function UpdateRoute(p_id, p_propname, p_value) {
     var formdata = new FormData();
-    formdata.append('action', 'UpdateRouteItem');
+    formdata.append('action', 'UpdateRoute');
     formdata.append('propname', p_propname);
     formdata.append('value', p_value);
     formdata.append('id', p_id);
     var getUrl = window.location;   
-    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routeRest/route";
+    var url = getUrl .protocol + "//" + getUrl.host + getUrl.pathname.split('index.php')[0] + "index.php/routesRest/route";
     jQuery(function ($) {
         $.ajax({
             url: url,
@@ -629,22 +629,21 @@ function PassesFilter(p_filter, p_row) {
     return true;
 }
 
-function ShowFilteredRows(p_filter) {
+function ShowFilteredRows(p_filter){
     allrows = document.getElementsByClassName('route');
+    var iVisible = -1;
     for (var i = 0; i < allrows.length - 1; i++){
         var row = allrows[i];
-        if (PassesFilter(p_filter, row)) {
+        if (PassesFilter(p_filter, row)){
             row.style.display = 'table-row';
+            iVisible++;
+            if (iVisible % 2 === 0) {
+                row.style.background = "#ffffff";
+            } else {
+                row.style.background = "#f0f0f0";
+            }
         } else {
             row.style.display = 'none';
         }
     } 
-    OnLoad(); // Resize to fit viaible rows
 }
-
-
-
-
-
-
-

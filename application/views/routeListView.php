@@ -16,14 +16,14 @@
 <p><i>A GPX route shows the approximate route taken by a particular party on a particular day.
 It should not be regarded as a recommended route or even necessarily a good route.
 Also, permission from land-owners may be required.</p>
-<table class="filter">
+<table  style = "height:25px; border-spacing:0px; border-collapse: collapse; padding: 5px; ">
     <tr>
         <td>Filter:</td> 
-        <td><div id = "filter" onchange = "OnSearch()" style="border:solid 1px gray;cursor:text;overflow:auto;width:200px;" contenteditable = "true" ></div></td>
-        <td style = "display: none" id = "filterx"><div style="border:solid 1px gray;width:20px; text-align:center; " title = "Remove filter." onclick = "OnNoFilterClick()">X</div></td>
+        <td><div id = "filter" onchange = "OnSearch()" style="border:solid 1px gray;cursor:text;overflow:auto;width:200px;margin:0px;" contenteditable = "true" ></div></td>
+        <td style = "display: none" id = "filterx"><div style="border:solid 1px gray;cursor: default; width:20px; text-align:center; " title = "Remove filter." onclick = "OnNoFilterClick()">X</div></td>
     </tr>
 </table>
-<table id="progress" class="progress">
+<table id = "progress" style = "height: 25px; border-spacing:0px; border-collapse: collapse; padding: 5px; display:none;">
     <tr>
         <td><div class="spinner"></td>
         <td><div type = "text" id = "progresstext" ></div></td>
@@ -39,9 +39,9 @@ Also, permission from land-owners may be required.</p>
             </thead>
         </table>
         <div>
-            <table id="archiveItems">
+            <table id="routes">
                 <tbody id = "body">
-                    <?php EmitEditRows($archiveItems)?>
+                    <?php EmitEditRows($routes)?>
                 </tbody>
             </table>
         </div>
@@ -77,7 +77,7 @@ function EmitEditHeader()
 {
     global $can_edit_any;
     global $can_edit_own;
-    $row  = '<th class = "col0"><input type = "checkbox" onclick="SelectAll(this)" title = "Select all items" ></input></td>';
+    $row  = '<th class = "col0"><input type = "checkbox" onclick="SelectAll(this)" title = "Select all items" style = "cursor:pointer;"></input></td>';
     $row .= '<th class="col1" align="left" id="caption">Description</th>'; // Brief description
     $row .= '<th class="col2"><a class="downloadfiles" title="Download selected files" onclick = "DownloadSelected(this)"></a></th>'; // Download selected
     $row .= '<th class="col3"><div id = 0 class="mapview" title="View selected items on map"  onclick = "ViewSelectedOnMap(this)"></div></th>';
@@ -118,7 +118,7 @@ function EmitRow($route)
     $trashtitle = '"Delete '.$route["gpxfilename"].'"';
     $firstname = $route["firstName"];
     $lastname = $route["lastName"];
-    $downloadhref = '"'.$base_url.'/index.php/route/downloadGpx/'.$route["id"].'"';
+    $downloadhref = '"'.$base_url.'/index.php/routes/downloadGpx/'.$route["id"].'"';
     $caption = $route['caption'];
     $routenotes = $route['routenotes'];
     $trackdate = date('d/m/y', strtotime($route['trackdate']));
@@ -134,7 +134,7 @@ function EmitRow($route)
     $east = (int)(($route["left"] + $route["right"]) / 2) ;
     $north = (int)(($route["top"] + $route["bottom"]) / 2);
     $row = '<tr class = "route" style="display: none;">';
-    $row .= '<td class = "col0"><input type = "checkbox" id='.$id.' title = "Click to select this item" data-caption="'.$caption.'"></input></td>';
+    $row .= '<td class = "col0"><input type = "checkbox" id='.$id.' title = "Click to select this route" data-caption="'.$caption.'"></input></td>';
     if ($caneditthis) {
         $row .= '<td class = "col1"><div contenteditable = "true" id = '.$id
                                      .' style = "cursor: text;"'

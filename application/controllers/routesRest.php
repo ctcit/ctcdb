@@ -43,21 +43,21 @@ class RoutesRest extends REST_Controller
                 // This is a new route 
                 $errorFileName = null;
                 //$caption, $gpxfilename, $gpx, $routenotes, $originatorid, $bounds, $date
-                if ($this->routemodel->create_new($caption, $filename, $gpxdata, $routenotes, $this->currentMemberId, $bounds, $trackdate) === 0) {
+                if ($this->routemodel->createNew($caption, $filename, $gpxdata, $routenotes, $this->currentMemberId, $bounds, $trackdate) === 0) {
                     $errorFileName = $filename;
                 }
                 $data = ($errorFileName) ? array('success' => false, 'message' => 'Upload failed for '.$errorFilename)
                                          : array('success' => true, 'message' => $filename.' uploaded');
             } else {
                 // We are reloading the gpx file and pertaining attributes for an existing route item
-                $row = $this->routemodel->get_route($route_id);
+                $row = $this->routemodel->getRoute($route_id);
                 $old_routenotes = $row->routenotes;
                 if (strpos($old_routenotes, $routenotes) === false) {
                      // Not sure what to do here - everything but this pertains to the new gpx, but user might have added important info
                     $routenotes .= $old_routenotes;
                 }
                 $errorFileName = "";
-                if ($this->routemodel->update_to_database($route_id, $caption, $filename, $gpxdata, $routenotes, $this->currentMemberId, $bounds, $trackdate) ===0) {
+                if ($this->routemodel->updateToDatabase($route_id, $caption, $filename, $gpxdata, $routenotes, $this->currentMemberId, $bounds, $trackdate) ===0) {
                     $errorFileName = $filename;
                 }
                   
@@ -71,7 +71,7 @@ class RoutesRest extends REST_Controller
                 $route_ids = json_decode($_POST['route_ids']);
                 $cDeleted = 0;
                 foreach ($route_ids as $id) {
-                $this->routemodel->delete_from_database($id);
+                $this->routemodel->deleteFromDatabase($id);
                 $cDeleted++;
                 }
                 $result = $cDeleted.' file'.($cDeleted !== 1 ? 's':'').' deleted'; 
@@ -90,7 +90,7 @@ class RoutesRest extends REST_Controller
             $id = $_POST["id"];
             $propname = $_POST["propname"];
             $value = $_POST["value"];
-            $this->routemodel->update_route($id, $propname, $value);
+            $this->routemodel->updateRroute($id, $propname, $value);
             $data = array('success' => true, 'message' => $propname.' updated');
         }
         ob_end_clean(); // Discard any potential output generated internally by php
