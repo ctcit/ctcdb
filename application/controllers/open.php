@@ -134,7 +134,7 @@ class Open extends MY_Controller
                 $subject = '';
                 while ($mail && time() < $timeToQuit) {
                     $subject = $mail->subject;
-                    sendEmail($mail->from, 'Christchurch Tramping Club', $mail->to,
+                    echo sendEmail($mail->from, 'Christchurch Tramping Club', $mail->to,
                                 $subject, $mail->body);
                     $nSent++;
                     $this->Ctcmodel->logEmail($mail->to, $mail->batchId);

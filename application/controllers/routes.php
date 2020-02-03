@@ -47,7 +47,7 @@ class Routes extends MY_Controller
 	public function showRouteMapping($p_ids, $p_title)
 	{
         $data = array('routeIds' => $p_ids, 'css' => "routeList.css");// Leave as string for target to split up
-        $this->_loadPage('routemapping', $p_title, $data, NO_MENU);
+        $this->_loadPage('routeMapping', $p_title, $data, NO_MENU);
     }    
 
 }

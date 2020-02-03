@@ -16,7 +16,7 @@
 		
 	if (isset($tellWebmaster))
 		echo '<p>Something has gone seriously wrong. Please report' .
-	' this problem to the <a href="mailto:webmaster@ctc.org.nz">webmaster</a></p>';
+	' this problem to the <a href="mailto:christchurchtrampingclub@gmail.com">webmaster</a></p>';
 		
 	// echo $this->load->helper('form');  // What was this all about???
 	

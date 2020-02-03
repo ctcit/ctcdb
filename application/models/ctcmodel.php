@@ -1420,7 +1420,7 @@ ORDER BY membershipName";
         $welcomeMessage = $this->buildWelcomeMessage($memberData);
         $this->load->helper('utilities');
         $name = $userData['name'];
-        // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
+        echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
         sendEmail($userEmail, $name, $to, $subject, $welcomeMessage, $cc);
     }
 
@@ -1525,7 +1525,7 @@ ORDER BY membershipName";
     function closeBatch($batchId)
     // Mark the given batch as DONE. Send an email to webmaster
     {
-        $webmaster = 'webmaster@ctc.org.nz';
+        $webmaster = 'christchurchtrampingclub@gmail.com';
         $this->db->where(array('id' => $batchId));
         $this->db->update('email_batch', array('state' => 'DONE'));
         $q = $this->db->get_where('email_batch', array('id' => $batchId));
