@@ -6,7 +6,7 @@ require_once('application/libraries/REST_Controller.php');
 
 class RoutesRest extends REST_Controller
 {
-    // This class is the controller for the (not so) RESTful interface to the GPX archive
+    // This class is the controller for the RESTful interface to the GPX archive
 	var $currentMemberId = 0;
 	var $currentUserName = '';
 
