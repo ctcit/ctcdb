@@ -23,7 +23,6 @@ class RoutesRest extends REST_Controller
 		$this->load->model('routemodel');
 	}
      
-    // This processes a single gpx file
     public function route_post()
     {
         $action = $_POST["action"];
@@ -93,6 +92,37 @@ class RoutesRest extends REST_Controller
             $this->routemodel->updateRroute($id, $propname, $value);
             $data = array('success' => true, 'message' => $propname.' updated');
         }
+        ob_end_clean(); // Discard any potential output generated internally by php
+        $this->response(json_encode($data));
+    }
+
+    public function route_get()
+    {
+        $data = array('success' => false, 'message' => 'Operation failed');
+        $id = $_GET["id"];
+        if ($id !== null) {
+            // get single route by id
+            $data = $this->routemodel->getRoute($id);
+        }
+        else {
+            // get all routes
+            $data = $this->routemodel->getAllRoutes(null);
+        }          
+        ob_end_clean(); // Discard any potential output generated internally by php
+        $this->response(json_encode($data));
+    }
+
+    public function routeGpx_get()
+    {
+        $data = array('success' => false, 'message' => 'Operation failed');
+        $id = $_GET["id"];
+        if ($id !== null) {
+            // get the GPX for the specified route
+            $data = $this->routemodel->getRoute($id)->gpx;
+        }
+        else {
+            $data = array('success' => false, 'message' => 'id must be specified');
+        }          
         ob_end_clean(); // Discard any potential output generated internally by php
         $this->response(json_encode($data));
     }
