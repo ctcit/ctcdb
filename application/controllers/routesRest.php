@@ -23,7 +23,6 @@ class RoutesRest extends REST_Controller
 		$this->load->model('routemodel');
 	}
      
-    // This processes a single gpx file
     public function route_post()
     {
         $action = $_POST["action"];
@@ -96,4 +95,24 @@ class RoutesRest extends REST_Controller
         ob_end_clean(); // Discard any potential output generated internally by php
         $this->response(json_encode($data));
     }
+
+    // used by triphub
+    // if 'id' specified, get single route by id (with Gpx)
+    // if no 'id' specified, get all routes (without Gpx)
+    public function route_get()
+    {
+        $data = array('success' => false, 'message' => 'Operation failed');
+        $id =  $this->_get_args["id"];
+        if ($id !== null) {
+            // get single route by id
+            $data = $this->routemodel->getRoute($id);
+        }
+        else {
+            // get all routes
+            $data = $this->routemodel->getAllRoutes(null);
+        }          
+        ob_end_clean(); // Discard any potential output generated internally by php
+        $this->response($data);
+    }
+
 }
