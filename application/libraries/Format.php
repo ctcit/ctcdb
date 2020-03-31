@@ -222,7 +222,7 @@ class Format {
 		$callback = isset($_GET['callback']) ? $_GET['callback'] : '';
 		if ($callback === '')
 		{
-            return json_encode($this->_data);
+            return json_encode($this->_data, JSON_NUMERIC_CHECK);
 
             /* Had to take out this code, it doesn't work on Objects.
             $str = $this->_data;
