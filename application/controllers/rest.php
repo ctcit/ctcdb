@@ -115,6 +115,13 @@ class Rest extends REST_Controller
         $this->response($rows);
     }
 
+    // Get a list of recent trip reports for the front page.
+    public function recenttripreportcards_get($maxrecent, $maxdays)
+    {
+        $rows = $this->tripreportmodel->getRecentCards($maxrecent, $maxdays);
+        $this->response($rows);
+    }
+
     // Delete the given trip.
     public function tripreports_delete($id)
     {
