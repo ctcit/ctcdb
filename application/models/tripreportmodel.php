@@ -188,7 +188,7 @@ class Tripreportmodel extends CI_Model {
         return $result->result();
    }
     
-    public function getRecentCards($maxrecent, $maxdays) {
+    public function getRecentCards($maxrecent, $maxdays){
         $date = new DateTime();
         $date->sub( new DateInterval('P'.$maxdays.'D') );
         $lastDateOfInterest = date_format($date,"Y-m-d");

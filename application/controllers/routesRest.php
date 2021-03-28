@@ -89,7 +89,7 @@ class RoutesRest extends REST_Controller
             $id = $_POST["id"];
             $propname = $_POST["propname"];
             $value = $_POST["value"];
-            $this->routemodel->updateRroute($id, $propname, $value);
+            $this->routemodel->updateRoute($id, $propname, $value);
             $data = array('success' => true, 'message' => $propname.' updated');
         }
         ob_end_clean(); // Discard any potential output generated internally by php

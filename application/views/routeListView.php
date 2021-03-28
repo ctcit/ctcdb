@@ -134,7 +134,9 @@ function EmitRow($route)
     $east = (int)(($route["left"] + $route["right"]) / 2) ;
     $north = (int)(($route["top"] + $route["bottom"]) / 2);
     $row = '<tr class = "route" style="display: none;">';
-    $row .= '<td class = "col0"><input type = "checkbox" id='.$id.' title = "Click to select this route" data-caption="'.$caption.'"></input></td>';
+    $row .= '<td class = "col0"><input type = "checkbox" id='.$id
+                                    .' title = "Click to select this route" data-caption="'
+                                    .$caption.'"></input></td>';
     if ($caneditthis) {
         $row .= '<td class = "col1"><div contenteditable = "true" id = '.$id
                                      .' style = "cursor: text;"'
@@ -143,7 +145,11 @@ function EmitRow($route)
                                      .' onfocusout="FocusOutCaption(this)">'
                                      .$caption.'</div></td>';
     } else { 
-        $row .= '<td class = "col1"><div id = '.$id.' class = "caption">'.$route['caption'].'</div></td>';
+        $row .= '<td class = "col1"><div id = '.$id
+                                     .' class = "caption"'
+                                     .' style = "cursor: default;">'
+                                     .$route['caption']
+                                     .'</div></td>';
     }
     $row.=  '<td class = "col2"><a id = '.$id.' class="downloadfile" title='.$downloadtitle.' href= '.$downloadhref.'></a></td>'; 
     // Todo escape $caption here
