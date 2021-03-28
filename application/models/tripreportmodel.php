@@ -169,13 +169,6 @@ class Tripreportmodel extends CI_Model {
         $result = $this->db->get();
         return $result->result();
     }
-    
-    /*
-            $this->db->select(implode(',',$this->getModifiableDataFields()) . ',membershipId, statusAdmin, membershipTypeEnum');
-        $this->db->from('members, memberships, membership_types');
-        $this->db->where("members.id = $id and membershipId = memberships.id and membershipTypeId = membership_types.id");
-        $query = $this->db->get();
-        $data = $query->row_array();*/
 
     public function getRecent($maxrecent, $maxdays){
         $date = new DateTime();
@@ -185,6 +178,27 @@ class Tripreportmodel extends CI_Model {
         $query = 'id, trip_type, year, month, day, duration, date_display, '.
                  'user_set_date_display, title, upload_date '.
                  'FROM tripreport '.
+                 "WHERE deleter_id is NULL AND upload_date >='$lastDateOfInterest' ".
+                 'ORDER BY upload_date DESC '.
+                 'LIMIT '.$maxrecent;
+                 
+        $this->db->select($query);
+        $result = $this->db->get();
+        return $result->result();
+   }
+    
+    public function getRecentCards($maxrecent, $maxdays){
+        $date = new DateTime();
+        $date->sub( new DateInterval('P'.$maxdays.'D') );
+        $lastDateOfInterest = date_format($date,"Y-m-d");
+
+        $query = 'id, trip_type, year, month, day, duration, date_display, '.
+                 'user_set_date_display, title, upload_date, uploader_name '.
+                 '( SELECT image_id FROM tripreport_image ti  '.
+                 '  WHERE ti.tripreport_id = t.id AND'.
+                 '  ABS(3 * ti_width - 4 * ti_height) < 30 '.
+                 '  ORDER BY ti.id ASC LIMIT 1 ) AS image_id '.
+                 '  FROM `tripreport` t'.
                  "WHERE deleter_id is NULL AND upload_date >='$lastDateOfInterest' ".
                  'ORDER BY upload_date DESC '.
                  'LIMIT '.$maxrecent;
