@@ -1,3 +1,4 @@
+
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 // This class provides an interface to the trip reports in the database.
@@ -169,15 +170,8 @@ class Tripreportmodel extends CI_Model {
         $result = $this->db->get();
         return $result->result();
     }
-    
-    /*
-            $this->db->select(implode(',',$this->getModifiableDataFields()) . ',membershipId, statusAdmin, membershipTypeEnum');
-        $this->db->from('members, memberships, membership_types');
-        $this->db->where("members.id = $id and membershipId = memberships.id and membershipTypeId = membership_types.id");
-        $query = $this->db->get();
-        $data = $query->row_array();*/
 
-    public function getRecent($maxrecent, $maxdays){
+    public function getRecent($maxrecent, $maxdays) {
         $date = new DateTime();
         $date->sub( new DateInterval('P'.$maxdays.'D') );
         $lastDateOfInterest = date_format($date,"Y-m-d");
@@ -187,6 +181,27 @@ class Tripreportmodel extends CI_Model {
                  'FROM tripreport '.
                  "WHERE deleter_id is NULL AND upload_date >='$lastDateOfInterest' ".
                  'ORDER BY upload_date DESC '.
+                 'LIMIT '.$maxrecent;
+                 
+        $this->db->select($query);
+        $result = $this->db->get();
+        return $result->result();
+   }
+    
+    public function getRecentCards($maxrecent, $maxdays) {
+        $date = new DateTime();
+        $date->sub( new DateInterval('P'.$maxdays.'D') );
+        $lastDateOfInterest = date_format($date,"Y-m-d");
+
+        $query = 't.id, t.trip_type, t.year, t.month, t.day, t.duration, t.date_display, '.
+                 't.user_set_date_display, t.title, t.upload_date, t.uploader_name, '.
+                 '( SELECT image_id FROM tripreport_image ti JOIN image i ON ti.image_id = i.id '.
+                 '  WHERE ti.tripreport_id = t.id '. 
+                 '  AND t_width > t_height '.
+                 '  ORDER BY ti.id ASC LIMIT 1 ) AS image_id '.
+                 ' FROM tripreport t '.
+                 "WHERE t.deleter_id is NULL AND t.upload_date >='$lastDateOfInterest' ".
+                 'ORDER BY t.upload_date DESC '.
                  'LIMIT '.$maxrecent;
                  
         $this->db->select($query);
@@ -318,4 +333,5 @@ class Tripreportmodel extends CI_Model {
         $this->db->delete($tables);
     }
 }
+
 
