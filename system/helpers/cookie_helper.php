@@ -1,103 +1,111 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
 /**
- * CodeIgniter
+ * This file is part of the CodeIgniter 4 framework.
  *
- * An open source application development framework for PHP 5.1.6 or newer
+ * (c) CodeIgniter Foundation <admin@codeigniter.com>
  *
- * @package		CodeIgniter
- * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
- * @license		http://codeigniter.com/user_guide/license.html
- * @link		http://codeigniter.com
- * @since		Version 1.0
- * @filesource
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
-// ------------------------------------------------------------------------
+use Config\App;
+use Config\Services;
+
+// --------------------------------------------------------------------
 
 /**
  * CodeIgniter Cookie Helpers
- *
- * @package		CodeIgniter
- * @subpackage	Helpers
- * @category	Helpers
- * @author		ExpressionEngine Dev Team
- * @link		http://codeigniter.com/user_guide/helpers/cookie_helper.html
  */
-
-// ------------------------------------------------------------------------
-
-/**
- * Set cookie
- *
- * Accepts six parameter, or you can submit an associative
- * array in the first parameter containing all the values.
- *
- * @access	public
- * @param	mixed
- * @param	string	the value of the cookie
- * @param	string	the number of seconds until expiration
- * @param	string	the cookie domain.  Usually:  .yourdomain.com
- * @param	string	the cookie path
- * @param	string	the cookie prefix
- * @return	void
- */
-if ( ! function_exists('set_cookie'))
+if (! function_exists('set_cookie'))
 {
-	function set_cookie($name = '', $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = FALSE)
+	/**
+	 * Set cookie
+	 *
+	 * Accepts seven parameters, or you can submit an associative
+	 * array in the first parameter containing all the values.
+	 *
+	 * @param string|array $name     Cookie name or array containing binds
+	 * @param string       $value    The value of the cookie
+	 * @param string       $expire   The number of seconds until expiration
+	 * @param string       $domain   For site-wide cookie.
+	 *                                 Usually: .yourdomain.com
+	 * @param string       $path     The cookie path
+	 * @param string       $prefix   The cookie prefix
+	 * @param boolean      $secure   True makes the cookie secure
+	 * @param boolean      $httpOnly True makes the cookie accessible via
+	 *                                 http(s) only (no javascript)
+	 * @param string|null  $sameSite The cookie SameSite value
+	 *
+	 * @see (\Config\Services::response())->setCookie()
+	 * @see \CodeIgniter\HTTP\Response::setCookie()
+	 */
+	function set_cookie(
+		$name,
+		string $value = '',
+		string $expire = '',
+		string $domain = '',
+		string $path = '/',
+		string $prefix = '',
+		bool $secure = false,
+		bool $httpOnly = false,
+		string $sameSite = null
+	)
 	{
-		// Set the config file options
-		$CI =& get_instance();
-		$CI->input->set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure);
+		// The following line shows as a syntax error in NetBeans IDE
+		//(\Config\Services::response())->setcookie
+		$response = Services::response();
+		$response->setcookie($name, $value, $expire, $domain, $path, $prefix, $secure, $httpOnly, $sameSite);
 	}
 }
 
-// --------------------------------------------------------------------
+//--------------------------------------------------------------------
 
-/**
- * Fetch an item from the COOKIE array
- *
- * @access	public
- * @param	string
- * @param	bool
- * @return	mixed
- */
-if ( ! function_exists('get_cookie'))
+if (! function_exists('get_cookie'))
 {
-	function get_cookie($index = '', $xss_clean = FALSE)
+	/**
+	 * Fetch an item from the COOKIE array
+	 *
+	 * @param string  $index
+	 * @param boolean $xssClean
+	 *
+	 * @return mixed
+	 *
+	 * @see (\Config\Services::request())->getCookie()
+	 * @see \CodeIgniter\HTTP\IncomingRequest::getCookie()
+	 */
+	function get_cookie($index, bool $xssClean = false)
 	{
-		$CI =& get_instance();
+		$app             = config(App::class);
+		$appCookiePrefix = $app->cookiePrefix;
+		$prefix          = isset($_COOKIE[$index]) ? '' : $appCookiePrefix;
 
-		$prefix = '';
+		$request = Services::request();
+		$filter  = true === $xssClean ? FILTER_SANITIZE_STRING : null;
 
-		if ( ! isset($_COOKIE[$index]) && config_item('cookie_prefix') != '')
-		{
-			$prefix = config_item('cookie_prefix');
-		}
-
-		return $CI->input->cookie($prefix.$index, $xss_clean);
+		return $request->getCookie($prefix . $index, $filter);
 	}
 }
 
-// --------------------------------------------------------------------
+//--------------------------------------------------------------------
 
-/**
- * Delete a COOKIE
- *
- * @param	mixed
- * @param	string	the cookie domain.  Usually:  .yourdomain.com
- * @param	string	the cookie path
- * @param	string	the cookie prefix
- * @return	void
- */
-if ( ! function_exists('delete_cookie'))
+if (! function_exists('delete_cookie'))
 {
-	function delete_cookie($name = '', $domain = '', $path = '/', $prefix = '')
+	/**
+	 * Delete a COOKIE
+	 *
+	 * @param mixed  $name
+	 * @param string $domain the cookie domain. Usually: .yourdomain.com
+	 * @param string $path   the cookie path
+	 * @param string $prefix the cookie prefix
+	 *
+	 * @return void
+	 *
+	 * @see (\Config\Services::response())->deleteCookie()
+	 * @see \CodeIgniter\HTTP\Response::deleteCookie()
+	 */
+	function delete_cookie($name, string $domain = '', string $path = '/', string $prefix = '')
 	{
-		set_cookie($name, '', '', $domain, $path, $prefix);
+		Services::response()->deleteCookie($name, $domain, $path, $prefix);
 	}
 }
-
-
-/* End of file cookie_helper.php */
-/* Location: ./system/helpers/cookie_helper.php */
