@@ -61,8 +61,8 @@ class Queries extends BaseController
         }
         $docId = $this->request->getPost('doc_id');
         $document = $this->ctcModel->getDocument($docId);
-        require_once("../newsletter/generate_odt.php");
-        $engine = new XmlTemplateEngine(null, $tableData);
+        require_once("generate_odt.php");
+        $engine = new \XmlTemplateEngine(null, $tableData);
         $output = $engine->processOdtTemplate($document);
         return $this->response->download('mergeOutput.odt', $output);
     }
@@ -88,7 +88,7 @@ class Queries extends BaseController
         $subject = $this->request->getPost('subject');
         $document = $this->ctcModel->getDocument($docId);
         if ($document == '') {
-            return $this->loadPageInNewWindow('emptyDocument',
+            return $this->loadPageInNewWindow('operationOutcome',
             'CTCDB: Sorry, that document is non-existent or empty');
         }
 

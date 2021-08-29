@@ -1137,21 +1137,21 @@ ORDER BY membershipName";
     /**
      * Returns an iterable of the documents that might be usable as targets of
      * a printMerge command -- see queries.php. This function accesses the
-     * view_documents view, which is a view into the Newsletter.documents table.
+     * documents table.
 
      * Return value is query result of all rows from the documents table with
      * names containing the word merge and ending in $extt.
      */
     public function getMergeDocuments($ext)
     {
-        $docQuery = $this->db->table('view_documents')->getWhere("name like '%merge%.$ext'");
+        $docQuery = $this->db->table('documents')->getWhere("name like '%merge%.$ext'");
         return $docQuery->getResult();
     }
 
 
     // Get the merge document with the given id
     public function getDocument($id) {
-        $query = $this->db->table('view_documents')->getWhere(['id'=>$id]);
+        $query = $this->db->table('documents')->getWhere(['id'=>$id]);
         if ($query->getNumRows() != 1) {
             die('Oops -- missing document. Please report this error');
         }

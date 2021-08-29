@@ -47,7 +47,7 @@ function homeMenu($joomlaBaseURL) {
     menuItem("$joomlaBaseURL", "CTC Home", "Return to the main CTC website", false, true);
     menuItem("", "DB Home", "Return to the CTCDB Home Page");
     menuItem("queries/manageQueries", "Run/edit user queries", "Manage user-defined queries");
-    //menuItem("member/listTripChangeNotifications", "Trip change notifications", "A list of up to 100 recent incoming text messages");
+    menuItem("document", "Document management", "Manage documents used in queries");
 }
 
 function membershipMenu() {
