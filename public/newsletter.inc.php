@@ -1,5 +1,9 @@
 <?php
 
+// PENDING - Fold the generate functionality into the db app properly (via a controller)
+// and get rid of this file.
+// Or just wait until the newsletter dies...
+
 /// Remove every thing that is RTF markup text, leaving only the readable text
 function RtfStrip($s)
 {
@@ -500,8 +504,8 @@ function CurrentDates($con)
 // Set flag that this is a parent file
 define( '_VALID_MOS', 1 );
 define('_JEXEC', 1);
-define('JPATH_BASE', dirname(__DIR__));// Assume newsletter at top level in website
-//require_once( JPATH_BASE.'/globals.php' );
+// This is the correct path for the ctcserve setup.
+define('JPATH_BASE', '/var/www/html');
 require_once( JPATH_BASE.'/configuration.php' );
 require_once ( JPATH_BASE.'/includes/defines.php' );
 require_once ( JPATH_BASE.'/includes/framework.php' );
