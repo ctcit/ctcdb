@@ -35,8 +35,8 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Officer::index');
 
 $routes->resource('rest/tripreports');
-$routes->post('rest/tripreports/(:segment)', 'Rest\TripReports::update/$1');
-$routes->get('rest/tripreportyears', 'Rest\TripReports::show_years');
+$routes->post('rest/tripreports/(:segment)', 'Rest\Tripreports::update/$1');
+$routes->get('rest/tripreportyears', 'Rest\Tripreports::show_years');
 $routes->resource('rest/user');
 $routes->resource('rest/tripimages', ['only' => ['create', 'delete'] ] );
 $routes->resource('rest/gpxs', ['only' => ['create', 'delete'] ] );
