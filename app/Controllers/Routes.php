@@ -28,7 +28,7 @@ class Routes extends BaseController
 
         $this->currentMemberID = session()->userID;
 
-        $this->routeModel = model('routeModel');
+        $this->routeModel = model('RouteModel');
     }
 
     public function index()
