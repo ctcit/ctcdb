@@ -63,8 +63,8 @@ class Routes extends BaseController
     public function showRouteMapping($ids, $title)
     {
         // Leave ids as string for target to split up
-        $data = array('routeIds' => $ids, 'css' => "routeList.css");
-        return $this->loadPage('routeMapping', $title, $data, self::NO_MENU);
+        $data = array('routeIds' => $ids, 'css' => "routeList.css", 'title' => $title);
+        return view('routeMapping', $data);
     }
 
 }

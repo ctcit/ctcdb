@@ -10,12 +10,12 @@ function InitialiseMap(L){
             wheelPxPerZoomLevel: 400
     });
 
-    //var baseMapLayer = L.tileLayer('http://tiles-{s}.data-cdn.linz.govt.nz/services;key=6076db4a13a14365905f8914ad7e3667/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png', {
-    //        minZoom: 8,
-    //        maxZoom: 16,
-    //        subdomains:'abcd',
-    //        attribution: '<a href=“http://data.linz.govt.nz”>Sourced from LINZ. CC BY 4.0'
-    //}).addTo(map);
+    var baseMapLayer = L.tileLayer('http://tiles-{s}.data-cdn.linz.govt.nz/services;key=6076db4a13a14365905f8914ad7e3667/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png', {
+            minZoom: 8,
+            maxZoom: 16,
+            subdomains:'abcd',
+            attribution: '<a href=“http://data.linz.govt.nz”>Sourced from LINZ. CC BY 4.0'
+    }).addTo(map);
 
     // NZ50 map definitions
     var nz50maps = [
