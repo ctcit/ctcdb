@@ -385,7 +385,7 @@ class CTC extends BaseController
             $memberName = $this->ctcModel->getMemberName($memberID);
             $status = $this->ctcModel->getMemberStatus($memberID);
             return $this->loadPage('rejoinConfirm', 'CTCDB: Member rejoin confirmation',
-            array('memberID' => $memberID, 'memberName'=>$memberName, 'status'=>$status));
+                array('memberId'=>$memberID, 'memberName'=>$memberName, 'status'=>$status));
         }
     }
 
