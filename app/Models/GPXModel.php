@@ -69,7 +69,7 @@ class GPXModel extends Model
     }
 
 
-    public function delete($gpx_id)
+    public function deleteGPX($gpx_id)
     {
         $this->delete($gpx_id);
         $this->db->table('tripreport_gpx')->delete(['gpx_id'=>$gpx_id]);
