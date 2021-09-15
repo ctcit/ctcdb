@@ -13,6 +13,8 @@ class GPXModel extends Model
     public $caption = '';   // Caption used to display it
     public $gpx = null;     // The gpx file itself (bytes, stored as Blob)
 
+    protected $DBGroup = 'tripReports';
+
     private $tripReportGPXFields = '';
     private $gpxFields = '';
 
