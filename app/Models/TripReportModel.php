@@ -261,10 +261,10 @@ class TripReportModel extends Model
     private function saveEntity($entityType, $entity)
     {
         if ($entityType === 'gpx') {
-            $gpxModel = model('gpxModel');
+            $gpxModel = model('GPXModel');
             $id = $gpxModel->create_from_dataurl($entity['name'], $entity['caption'], $entity['dataUrl']);
         } else if ($entityType === 'map' || $entityType === 'image') {
-            $imageModel = model('imageModel');
+            $imageModel = model('ImageModel');
             $id = $imageModel->create_from_dataurl($entity['name'], $entity['caption'], $entity['dataUrl']);
         } else {
             throw new RuntimeException("Unknown entity type: $entityType");
@@ -278,11 +278,11 @@ class TripReportModel extends Model
     private function updateEntity($entityType, $entity)
     {
         if ($entityType === 'gpx') {
-            $gpxModel = model('gpxModel');
+            $gpxModel = model('GPXModel');
             $id = $gpxModel->update_name_and_caption($entity['id'],
                 $entity['name'], $entity['caption']);
         } else if ($entityType === 'map' || $entityType === 'image') {
-            $imageModel = model('imageModel');
+            $imageModel = model('ImageModel');
             $id = $imageModel->update_name_and_caption($entity['id'],
                 $entity['name'], $entity['caption']);
         } else {
