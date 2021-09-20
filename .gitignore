@@ -24,3 +24,5 @@ writable/debugbar/*
 
 writable/**/*.db
 writable/**/*.sqlite
+
+*.swp
