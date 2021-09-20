@@ -42,7 +42,7 @@ class Open extends BaseController
         if ($recaptchaResponse !== "true") {
             die("You need to confirm you are not a robot.");
         }
-        $memberData = model('ctcModel')->getMemberLoginNameFromEmailPhoneLoginName($searchData);
+        $memberData = model('CTCModel')->getMemberLoginNameFromEmailPhoneLoginName($searchData);
         $errorMessage = $memberData['errorMessage'];
         $mailSent = false;
         if ($errorMessage !== "") {
@@ -83,7 +83,7 @@ class Open extends BaseController
         if ($recaptchaResponse !== "true") {
             die("You need to confirm you are not a robot.");
         }
-        $memberData = model('ctcModel')->getMemberLoginNameFromEmailPhoneLoginName($searchData);
+        $memberData = model('CTCModel')->getMemberLoginNameFromEmailPhoneLoginName($searchData);
         $errorMessage = $memberData['errorMessage'];
         $mailSent = false;
         if ($errorMessage !== "") {
@@ -95,8 +95,8 @@ class Open extends BaseController
             } else {
                 $memberid = $memberData['id'];
                 // Set new password
-                $newPassword = model('ctcModel')->generatePassword($memberData['loginName']);
-                model('ctcModel')->setMemberPasswordRaw($memberid, $newPassword);
+                $newPassword = model('CTCModel')->generatePassword($memberData['loginName']);
+                model('CTCModel')->setMemberPasswordRaw($memberid, $newPassword);
                 $subject = '[CTC]Your new CTC password';
                 $message = "Hello,\n\nA password change has been requested for your CTC account\n".
                             "Your login name is: ".$memberData['loginName']."\n".
@@ -128,7 +128,7 @@ class Open extends BaseController
     // $maxRunTimeMins.
     public function processMailQueue($maxRunTimeMins)
     {
-        $ctcModel = model('ctcModel');
+        $ctcModel = model('CTCModel');
         $ctcModel->lockMailQueue();
         $batches = $ctcModel->incompleteBatches();
         $nSent = 0;
@@ -180,7 +180,7 @@ class Open extends BaseController
     // search engines.
     public function allTripReportLinks()
     {
-        $model = model('tripreportmodel');
+        $model = model('TripReportModel');
         $allTrips = $model->getAllTripReports();
         return $this->loadPage('allTripReportLinks', 'All Trip Reports',
             array('trips' => $allTrips),

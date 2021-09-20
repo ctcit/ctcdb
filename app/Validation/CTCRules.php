@@ -12,7 +12,7 @@ class CTCRules
     // (extracted from the current session) or valid for a new member if that id is -1.
     public function loginCheck($login, string $currentMemberID, array $data, & $error = null ) : bool
     {
-        $result = model('ctcModel')->isValidLogin($login, $currentMemberID);
+        $result = model('CTCModel')->isValidLogin($login, $currentMemberID);
         if ($result !== true) {
             $error = $result;
             return false;
@@ -67,7 +67,7 @@ class CTCRules
 
     public function password_is_correct($password, string $currentMemberID, array $data, & $error = null ) : bool
     {
-        if (!model('ctcModel')->isCorrectPasswordForMember($password, $currentMemberID))
+        if (!model('CTCModel')->isCorrectPasswordForMember($password, $currentMemberID))
         {
             $error = "Incorrect password";
             return false;

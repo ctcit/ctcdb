@@ -72,7 +72,7 @@ function queriesMenu() {
     // Display the standard "system" queries (i.e., all the user-queries owned by memberId = 0)
     // plus a link to the special Envelope Printing query builder.
     menuSubhead("Queries (new window)");
-    $queryList = model('ctcModel')->getQueries(0);
+    $queryList = model('CTCModel')->getQueries(0);
     foreach ($queryList as $query) {
         $id = $query['id'];
         $link = site_url("queries/runQuery/$id");
