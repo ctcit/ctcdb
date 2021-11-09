@@ -35,7 +35,7 @@ class Subs extends BaseController
             if ($year === null) {
                 $year = $this->getSubsYear();
             }
-            $membershipQuery = model('ctcModel')->getMembershipPaymentStatus($year);
+            $membershipQuery = model('CTCModel')->getMembershipPaymentStatus($year);
             return $this->loadPageInNewWindow('paymentEntryForm','CTCDB: Enter subs payments',
                                               ['year'=>$year, 'membershipQuery'=>$membershipQuery]);
         } else {
@@ -53,7 +53,7 @@ class Subs extends BaseController
         if ($this->request->getPost('reedit')!=null) {
             // Postback when the user clicks "re-edit"
             assert($year != null);
-            $membershipQuery = model('ctcModel')->getMembershipPaymentStatus($year);
+            $membershipQuery = model('CTCModel')->getMembershipPaymentStatus($year);
             $changeTable = $this->request->getPost('changeTable');
             $reloadValues = $this->getReloadValues(unserialize($changeTable));
             return $this->loadPageInNewWindow('paymentEntryForm','CTCDB: Enter subs payments',
@@ -85,7 +85,7 @@ class Subs extends BaseController
 
             foreach(array_keys($rows) as $membershipId) {
                 $row = $rows[$membershipId];
-                $numRowsAffected = model('ctcModel')->addOrAlterPayment($membershipId, $row, $year);
+                $numRowsAffected = model('CTCModel')->addOrAlterPayment($membershipId, $row, $year);
                 if ($numRowsAffected != 1) {
                     $errors[] = "INTERNAL ERROR: attempt to insert or alter payment details for MSID $membershipId and year $year ".
                         " resulted in the addition or alteration of $numRowsAffected rows, not 1 as expected.";
@@ -100,7 +100,7 @@ class Subs extends BaseController
         if ($year === null) {
             $year = $this->getSubsYear();
         }
-        $paymentsQuery = model('ctcModel')->getPaymentsList($year);
+        $paymentsQuery = model('CTCModel')->getPaymentsList($year);
         return $this->loadPage('deletePayment','CTCDB: Payment deletion form',
                                ['year'=>$year, 'paymentsQuery'=>$paymentsQuery]);
     }
@@ -108,7 +108,7 @@ class Subs extends BaseController
     // Entry point from 'delete payment' form when a 'Delete' link has been clicked.
     public function deletePayment2($year, $paymentId)
     {
-        $membershipName = model('ctcModel')->getMembershipNameFromSubsPayment($paymentId);
+        $membershipName = model('CTCModel')->getMembershipNameFromSubsPayment($paymentId);
         return $this->loadPage('confirmDeletePayment', 'CTCDB: Payment deletion confirmation',
                                ['year'=>$year, 'paymentId'=>$paymentId, 'membershipName'=>$membershipName]);
     }
@@ -116,7 +116,7 @@ class Subs extends BaseController
     // Entry point from the 'delete payment confirmation' page
     public function deletePayment3($paymentId)
     {
-        $rows = model('ctcModel')->deletePayment($paymentId);
+        $rows = model('CTCModel')->deletePayment($paymentId);
         $message = $rows == 1 ? "Deletion has been done" : "Deletion failed!";
         $data = array('message'=>$message);
         if ($rows != 1) {
@@ -148,7 +148,7 @@ class Subs extends BaseController
     //     memberships and zero or blank otherwise.
     private function processPaymentsForm($year)
     {
-        $membershipQuery = model('ctcModel')->getMembershipPaymentStatus($year);
+        $membershipQuery = model('CTCModel')->getMembershipPaymentStatus($year);
         $memberships = $membershipQuery->getResultArray();
         $table = array();
         $now = date('d-m-Y');
