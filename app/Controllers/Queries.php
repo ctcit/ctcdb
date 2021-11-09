@@ -26,7 +26,8 @@ class Queries extends BaseController
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        if (!session()->hasFullAccess) {
+        // Allow anyone with a role to run queries
+        if (count(session()->roles) == 0) {
             die('You must be a club officer logged in to the website to use this function!!!');
         }
 
