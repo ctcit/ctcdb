@@ -61,9 +61,9 @@ class CTCModel extends Model
     // If the latter is null, the new member is assumed to be part of a couple
     // where the membership row has already been added. The $memberData array
     // should then have a defined $memberData['membershipId'] field.
-    public function insertMember2($membershipType, $memberData, $membershipData=NULL)
+    public function insertMember2($membershipType, $memberData, $membershipData=null)
     {
-        if ($membershipData != NULL) {
+        if ($membershipData != null) {
             if ($membershipType == 'Prospective') {
                 $membershipData['statusAdmin'] = 'Pending';
             }
@@ -72,8 +72,10 @@ class CTCModel extends Model
             }
             $membershipId = $this->insertMembership($membershipType, $membershipData);
             if ($membershipId === false) {
+                echo "Failed to insert";
                 return false;
             }
+            echo "Inserted $membershipId";
             $memberData['membershipId'] = $membershipId;
         }
 
@@ -103,14 +105,19 @@ class CTCModel extends Model
     {
         $membershipData = $this->getFieldsFromRequest($request, $this->membershipFields, false);
         $memberData1 = $this->getFieldsFromRequest($request, $this->memberFields, false, "__1");
-        $membershipId = $this->insertMember2("Couple", $memberData1, $membershipData);
+        $membershipId = $this->insertMember2('Couple', $memberData1, $membershipData);
         if ($membershipId === false) {
+            echo "Failed to insert member 1";
             return false;
         }
 
-        $memberData2 = $this->getFieldsFromRequest($request, $memberFields, false, "__2");
+        $memberData2 = $this->getFieldsFromRequest($request, $this->memberFields, false, "__2");
         $memberData2['membershipId'] = $membershipId;
-        return $this->insertMember2('Couple', $memberData2);
+        $success = $this->insertMember2('Couple', $memberData2);
+        if (!$success) {
+            echo "Failed to insert member 1";
+        }
+        return $success;
     }
 
     public function updateJoomlaLogin($oldLogin, $newLogin){
@@ -344,7 +351,6 @@ class CTCModel extends Model
         return $ok;
     }
 
-
     public function reinstateMembership($membershipId)
     {
         $status = $this->getMembershipStatusByMembershipId($membershipId);
@@ -374,56 +380,65 @@ class CTCModel extends Model
         return $ok;
     }
 
-    // Replace the query having the given $id with the new name and value,
-    // or insert a new query if $id == 0.
-    // Returns true iff update affected exactly one row.
-    public function saveQuery($id, $name, $description, $query, $userId)
+    // True iff it would be valid to set the login for the given member to the given value.
+    // By setting $memberID to -1 the function can be used to check if the login would be
+    // valid for a new member.
+    public function isValidLogin($login, $memberID)
     {
-        $query = addslashes($query);
-        $description = addslashes($description);
-        if ($id == 0) {
-            $this->db->query("insert into user_queries
-             (name, description, sqlquery, userIdAdmin) values
-             ('$name', '$description', '$query', '$userId')");
+        if (!preg_match("/^([-a-z0-9_.])+$/i", $login)) {
+            return "Illegal login name ($login): can contain only alphanumeric characters plus '.', '-' and '_'";
         }
-        else {
-            $this->db->query("update user_queries set name='$name',
-                description='$description', sqlquery='$query',
-                userIdAdmin='$userId' where id=$id");
+
+        $query = $this->db->query("select firstName, lastName from members where loginName='$login' ".
+                                  "and not (id=$memberID)");
+        if ($query->getNumRows() !== 0) {
+            return "Invalid login ($login): already in use by another member";
         }
-        return $this->db->affectedRows() == 1;
+        return true;
     }
 
-    public function deleteQuery($id)
+    // Set the hashed password for the given member to the new value
+    public function setMemberPassword($memberID, $newHash)
     {
-        $this->db->query("delete from user_queries where id = $id");
+        $this->db->query("update members set joomlaPasswordAdmin='$newHash' where id = $memberID");
     }
 
-    public function deleteSavedResult($id)
+    // Return a table, suitable for use with the table->generate function, containing
+    // a selected subset of the fields of all members in the club. $leftColumnFunction
+    // is a function that takes the member id as a parameter and returns the string to use
+    // in the left column. The constraint parameter specifies an additional constraint
+    // that can be used on the membership select statement 'where' clause. If non-empty
+    // it is anded in.
+    public function getAllMembersForSelection($leftColumnFunction, $constraint = '')
     {
-        $this->db->table('saved_query_results')->delete(['id'=> $id]);
-    }
-
-    // Record in the saved_query_results table the result of a particular query.
-    // Returns the ID of this particular query. The saved_query_results table is configured
-    // to hold only a certain number of recent queries (currently 20) so an attempt
-    // to retrieve the query result in the future is not totally guaranteed to succeed.
-
-    // Why do I have to use base64_encode/decode in this? I'm not sure but it doesn't
-    // work if I don't. There's lots of discussion on php.net/unserialize but most people
-    // there seem as confused as me or more so.
-    public function saveResult($query) {
-        $result = array();
-        foreach ($query->getResult() as $row) {
-            $result[] = $row;
+        $select = "select " .
+          "members.id as 'ID', concat(firstName, ' ', lastName) as 'Name', membershipTypeEnum as 'Type', ".
+          "concat(address1, ', ', address2, ', ', city) as 'Address'," .
+          "homePhone as 'Phone' from " .
+          "members, memberships, membership_types where " .
+          "membershipId = memberships.id and memberships.membershipTypeId = membership_types.id ";
+        if ($constraint != '') {
+            $select .= " and $constraint ";
         }
-        $data = base64_encode(serialize($result));
-        $this->db->table("saved_query_results")->insert(['result' => $data]);
-        $id = $this->db->insertID();
-        $max = self::MaximumResultCount;
-        $rem = $id % $max;
-        $this->db->query("DELETE from saved_query_results WHERE (mod(id,$max) = $rem) and (id <> $id)");
-        return $id;
+        $select .=  " order by Name";
+        $query = $this->db->query($select);
+        $header = $query->getFieldNames();
+        $header[0] = '';  // Replacing ID with Edit link
+        $rows = $query->getResultArray();
+        $result[0] = $header;  // Header row
+        foreach ($rows as $row) { // Copy all rows across to result, inserting left column
+            $id = $row['ID'];
+            if (!($leftColumnFunction === NULL)) {
+                $leftCol = $leftColumnFunction($id);
+            }
+            else {
+                $leftCol = '';
+            }
+            $values = array_values($row);
+            $values[0] = $leftCol;  // Replace ID with link
+            array_push($result, $values);
+        }
+        return $result;
     }
 
     // Add a row to the subs_payments table for the given membership and year, or change
@@ -468,18 +483,6 @@ class CTCModel extends Model
                  ->where(array('id'=>$paymentId))
                  ->update(array('deletedBoolAdmin'=>1));
         return $this->db->affectedRows();
-    }
-
-    /**
-     * Log the sending of a bulk email item.
-     * Used by emailMerge.
-     * @param unknown_type $email Email address of recipient
-     * @param unknown_type $batchId ID of originating batch in email_batch table
-     */
-    public function logEmail($email, $batchId)
-    {
-        $this->db->table('email_log')
-                 ->insert(array('email'=>$email, 'batchId'=>$batchId));
     }
 
     // EXTERNAL SCHEMA QUERY FUNCTIONS
@@ -543,6 +546,58 @@ class CTCModel extends Model
 
     // EXTERNAL DB QUERY FUNCTIONS
     // ===========================
+
+    // Replace the query having the given $id with the new name and value,
+    // or insert a new query if $id == 0.
+    // Returns true iff update affected exactly one row.
+    public function saveQuery($id, $name, $description, $query, $userId)
+    {
+        $query = addslashes($query);
+        $description = addslashes($description);
+        if ($id == 0) {
+            $this->db->query("insert into user_queries
+             (name, description, sqlquery, userIdAdmin) values
+             ('$name', '$description', '$query', '$userId')");
+        }
+        else {
+            $this->db->query("update user_queries set name='$name',
+                description='$description', sqlquery='$query',
+                userIdAdmin='$userId' where id=$id");
+        }
+        return $this->db->affectedRows() == 1;
+    }
+
+    public function deleteQuery($id)
+    {
+        $this->db->query("delete from user_queries where id = $id");
+    }
+
+    public function deleteSavedResult($id)
+    {
+        $this->db->table('saved_query_results')->delete(['id'=> $id]);
+    }
+
+    // Record in the saved_query_results table the result of a particular query.
+    // Returns the ID of this particular query. The saved_query_results table is configured
+    // to hold only a certain number of recent queries (currently 20) so an attempt
+    // to retrieve the query result in the future is not totally guaranteed to succeed.
+
+    // Why do I have to use base64_encode/decode in this? I'm not sure but it doesn't
+    // work if I don't. There's lots of discussion on php.net/unserialize but most people
+    // there seem as confused as me or more so.
+    public function saveResult($query) {
+        $result = array();
+        foreach ($query->getResult() as $row) {
+            $result[] = $row;
+        }
+        $data = base64_encode(serialize($result));
+        $this->db->table("saved_query_results")->insert(['result' => $data]);
+        $id = $this->db->insertID();
+        $max = self::MaximumResultCount;
+        $rem = $id % $max;
+        $this->db->query("DELETE from saved_query_results WHERE (mod(id,$max) = $rem) and (id <> $id)");
+        return $id;
+    }
 
     /* Returns, for member with given id, all the data fields of both the Members and Memberships tables
      * that can be modified during an EditUser action, plus the membershipId, statusAdmin and membershipType
@@ -1215,21 +1270,119 @@ ORDER BY membershipName";
         $this->db->table('members_roles')->delete(['memberId'=>$memberID, 'roleId'=>$roleID]);
     }
 
-    // True iff it would be valid to set the login for the given member to the given value.
-    // By setting $memberID to -1 the function can be used to check if the login would be
-    // valid for a new member.
-    public function isValidLogin($login, $memberID)
-    {
-        if (!preg_match("/^([-a-z0-9_.])+$/i", $login)) {
-            return "Illegal login name ($login): can contain only alphanumeric characters plus '.', '-' and '_'";
-        }
+    // Email Delivery
+    // ===============
 
-        $query = $this->db->query("select firstName, lastName from members where loginName='$login' ".
-                                  "and not (id=$memberID)");
-        if ($query->getNumRows() !== 0) {
-            return "Invalid login ($login): already in use by another member";
+    /**
+     * Log the sending of a bulk email item.
+     * Used by emailMerge.
+     * @param unknown_type $email Email address of recipient
+     * @param unknown_type $batchId ID of originating batch in email_batch table
+     */
+    public function logEmail($email, $batchId)
+    {
+        $this->db->table('email_log')
+                 ->insert(array('email'=>$email, 'batchId'=>$batchId));
+    }
+
+    // Record info about a new batch of emails to be sent (maybe).
+    // Not all batches will actually be sent -- user may cancel, and
+    // the batch will remain until deleted by housekeeping.
+    public function addEmailBatch($docId, $subject, $numRecipients)
+    {
+        $this->db->table('email_batch')->insert(array(
+            'docId'     => $docId,
+            'subject'   => $subject,
+            'num_recipients' => $numRecipients)
+        );
+        return $this->db->insertID();
+    }
+
+    // Put an item in the queue of mail items to send as a batch
+    // Returns the id of the inserted item (rarely useful).
+    public function queueMailItem($batchId, $to, $subject, $body, $from = 'webmaster@ctc.org.nz')
+    {
+        $mailItem = array('batchId' => $batchId,
+                          'to' => $to,
+                          'from' => $from,
+                          'subject' => $subject,
+                          'body' => $body);
+        $this->db->table('email_queue')->insert($mailItem);
+        return $this->db->insertID();
+    }
+
+    // Gets the first unsent email with the given batchId.
+    // Returns mailItem or false if none available.
+    public function getNextMailItem($batchId)
+    {
+        $query = $this->db->table('email_queue')->getWhere(array('batchId' => $batchId), 1);
+        if ($query->getNumRows() > 0) {
+            return $query->getRow();
+        } else {
+            return false;
         }
-        return true;
+    }
+
+    // Gets a write lock on the mail queue to prevent multiple sessions
+    // manipulating it.
+    public function lockMailQueue()
+    {
+        $this->db->query('LOCK TABLES email_queue WRITE, email_log WRITE, email_batch WRITE');
+    }
+
+    // Release the write lock on the mail queue
+    public function unlockMailQueue()
+    {
+        $this->db->query('UNLOCK TABLES');
+    }
+
+    // Query to return a list of confirmed batches
+    public function incompleteBatches()
+    {
+        $query = $this->db->query("select id from email_batch where state='CONFIRMED'");
+        $batches = array();
+        foreach( $query->getResult() as $row) {
+            $batches[] = $row->id;
+        }
+        return $batches;
+    }
+
+    // Confirm that the given batch of emails is ready to send.
+    public function confirmMailBatch($batchId)
+    {
+        $query = $this->db->table('email_batch')
+            ->where(array('id'=>$batchId))
+            ->update(array('state' => 'CONFIRMED'));
+    }
+
+    public function deleteMailItem($id)
+    {
+        $this->db->table('email_queue')->delete(array('id'=>$id));
+    }
+
+    // Mark the given batch as DONE. Send an email to webmaster
+    public function closeBatch($batchId)
+    {
+        $webmaster = 'webmaster@ctc.org.nz';
+        $builder = $this->db->table('email_batch');
+        $builder->where(array('id' => $batchId));
+        $builder->update('email_batch', array('state' => 'DONE'));
+        $row = $builder->getWhere(array('id' => $batchId))->getRow();
+        $message = "Batch email id {$row->id}, subject '{$row->subject}' ".
+                "successfully sent to {$row->num_recipients} recipients.";
+        sendEmail($webmaster, 'Christchurch Tramping Club', $webmaster,
+                'Email Batch Sent', $message);
+    }
+
+    public function purgeOldMailItems()
+    {
+        $this->db->query(
+           "DELETE email_queue
+            FROM email_queue
+            INNER JOIN email_batch
+            ON email_batch.id = batchId
+            WHERE DATEDIFF(NOW(), email_batch.timestamp) > 5
+            ");
     }
 
 
@@ -1273,7 +1426,8 @@ ORDER BY membershipName";
     {
         $query = $this->db->table('membership_types')->getWhere(['membershipTypeEnum' => $membershipType]);
         if ($query->getNumRows() != 1) {
-            return false;  // Bad type given
+            echo "Bad membership type $membershipType";
+            return false;
         }
         $row = $query->getRow();
         $membershipTypeID = $row->id;
@@ -1285,44 +1439,6 @@ ORDER BY membershipName";
                  ->insert();
         $id = $this->db->insertID();
         return $id;
-    }
-
-    // Return a table, suitable for use with the table->generate function, containing
-    // a selected subset of the fields of all members in the club. $leftColumnFunction
-    // is a function that takes the member id as a parameter and returns the string to use
-    // in the left column. The constraint parameter specifies an additional constraint
-    // that can be used on the membership select statement 'where' clause. If non-empty
-    // it is anded in.
-    public function getAllMembersForSelection($leftColumnFunction, $constraint = '')
-    {
-        $select = "select " .
-          "members.id as 'ID', concat(firstName, ' ', lastName) as 'Name', membershipTypeEnum as 'Type', ".
-          "concat(address1, ', ', address2, ', ', city) as 'Address'," .
-          "homePhone as 'Phone' from " .
-          "members, memberships, membership_types where " .
-          "membershipId = memberships.id and memberships.membershipTypeId = membership_types.id ";
-        if ($constraint != '') {
-            $select .= " and $constraint ";
-        }
-        $select .=  " order by Name";
-        $query = $this->db->query($select);
-        $header = $query->getFieldNames();
-        $header[0] = '';  // Replacing ID with Edit link
-        $rows = $query->getResultArray();
-        $result[0] = $header;  // Header row
-        foreach ($rows as $row) { // Copy all rows across to result, inserting left column
-            $id = $row['ID'];
-            if (!($leftColumnFunction === NULL)) {
-                $leftCol = $leftColumnFunction($id);
-            }
-            else {
-                $leftCol = '';
-            }
-            $values = array_values($row);
-            $values[0] = $leftCol;  // Replace ID with link
-            array_push($result, $values);
-        }
-        return $result;
     }
 
     // Returns an associative (fieldName, fieldValue) array by pulling out a value
@@ -1441,12 +1557,6 @@ ORDER BY membershipName";
         return $crypt.':'.$salt;
     }
 
-    // Set the hashed password for the given member to the new value
-    public function setMemberPassword($memberID, $newHash)
-    {
-        $this->db->query("update members set joomlaPasswordAdmin='$newHash' where id = $memberID");
-    }
-
     private function sendWelcomeEmail($loginName, $pass)
     {
         $id = $this->getIdFromLogin($loginName);
@@ -1482,115 +1592,6 @@ ORDER BY membershipName";
         }
         $message = implode($bits);
         return $message;
-    }
-
-
-    // Record info about a new batch of emails to be sent (maybe).
-    // Not all batches will actually be sent -- user may cancel, and
-    // the batch will remain until deleted by housekeeping.
-    public function addEmailBatch($docId, $subject, $numRecipients)
-    {
-        $this->db->table('email_batch')->insert(array(
-            'docId'     => $docId,
-            'subject'   => $subject,
-            'num_recipients' => $numRecipients)
-        );
-        return $this->db->insertID();
-    }
-
-    // Put an item in the queue of mail items to send as a batch
-    // Returns the id of the inserted item (rarely useful).
-    public function queueMailItem($batchId, $to, $subject, $body, $from = 'webmaster@ctc.org.nz')
-    {
-        $mailItem = array('batchId' => $batchId,
-                          'to' => $to,
-                          'from' => $from,
-                          'subject' => $subject,
-                          'body' => $body);
-        $this->db->table('email_queue')->insert($mailItem);
-        return $this->db->insertID();
-    }
-
-
-    // Gets the first unsent email with the given batchId.
-    // Returns mailItem or false if none available.
-    public function getNextMailItem($batchId)
-    {
-        $query = $this->db->table('email_queue')->getWhere(array('batchId' => $batchId), 1);
-        if ($query->getNumRows() > 0) {
-            return $query->getRow();
-        } else {
-            return false;
-        }
-    }
-
-
-    // Gets a write lock on the mail queue to prevent multiple sessions
-    // manipulating it.
-    public function lockMailQueue()
-    {
-        $this->db->query('LOCK TABLES email_queue WRITE, email_log WRITE, email_batch WRITE');
-    }
-
-
-    // Release the write lock on the mail queue
-    public function unlockMailQueue()
-    {
-        $this->db->query('UNLOCK TABLES');
-    }
-
-
-    // Query to return a list of confirmed batches
-    public function incompleteBatches()
-    {
-        $query = $this->db->query("select id from email_batch where state='CONFIRMED'");
-        $batches = array();
-        foreach( $query->getResult() as $row) {
-            $batches[] = $row->id;
-        }
-        return $batches;
-    }
-
-
-    // Confirm that the given batch of emails is ready to send.
-    public function confirmMailBatch($batchId)
-    {
-        $query = $this->db->table('email_batch')
-            ->where(array('id'=>$batchId))
-            ->update(array('state' => 'CONFIRMED'));
-    }
-
-
-    private function deleteMailItem($id)
-    {
-        $this->db->table('email_queue')->delete(array('id'=>$id));
-    }
-
-
-    // Mark the given batch as DONE. Send an email to webmaster
-    private function closeBatch($batchId)
-    {
-        $webmaster = 'webmaster@ctc.org.nz';
-        $builder = $this->db->table('email_batch');
-        $builder->where(array('id' => $batchId));
-        $builder->update('email_batch', array('state' => 'DONE'));
-        $row = $builder->getWhere(array('id' => $batchId))->getRow();
-        $message = "Batch email id {$row->id}, subject '{$row->subject}' ".
-                "successfully sent to {$row->num_recipients} recipients.";
-        sendEmail($webmaster, 'Christchurch Tramping Club', $webmaster,
-                'Email Batch Sent', $message);
-    }
-
-
-    private function purgeOldMailItems()
-    {
-        $this->db->query(
-           "DELETE email_queue
-            FROM email_queue
-            INNER JOIN email_batch
-            ON email_batch.id = batchId
-            WHERE DATEDIFF(NOW(), email_batch.timestamp) > 5
-            ");
     }
 
 
