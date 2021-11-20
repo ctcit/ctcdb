@@ -60,7 +60,7 @@ function displayFieldAsTableRow($fieldName, $field, $pass)
 // show_calendar in the base scripts directory).
 // $value is the initial setting for the date field, in NZ-style dd-mm-yyyy format e.g. 03-11-2007.
 function form_date($fieldName, $id, $value, $class='dateinput') {
-	$imageDirUrl = base_url() . "images";
+	$imageDirUrl = base_url("images");
 	return "<input type=\"text\" class=\"$class\" name=\"$fieldName\" id=\"$id\" value=\"$value\">" .
 	"<a href=\"javascript:show_calendar('$id', '-', '$imageDirUrl');\">" .
 	"<img src=\"$imageDirUrl/cal.gif\" width=\"16\" height=\"16\" border=\"0\" alt=\"Calendar image\" title=\"Calendar helper\">".
