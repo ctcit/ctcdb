@@ -106,7 +106,6 @@ class Open extends BaseController
                             "You should immediately change your new password to one you can remember.\n\n".
                             "Thank you.\n";
                 helper('utilities');
-                // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
                 $mailSent = sendEmail("webmaster@ctc.org.nz", "Christchurch Tramping Club", $to, $subject, $message);
             }
         }
@@ -149,8 +148,8 @@ class Open extends BaseController
                 $subject = '';
                 while ($mail && time() < $timeToQuit) {
                     $subject = $mail->subject;
-                    echo sendEmail($mail->from, 'Christchurch Tramping Club', $mail->to,
-                                $subject, $mail->body);
+                    sendEmail($mail->from, 'Christchurch Tramping Club', $mail->to,
+                              $subject, $mail->body);
                     $nSent++;
                     $ctcModel->logEmail($mail->to, $mail->batchId);
                     $ctcModel->deleteMailItem($mail->id);
