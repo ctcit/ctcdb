@@ -1366,7 +1366,7 @@ ORDER BY membershipName";
         $webmaster = 'webmaster@ctc.org.nz';
         $builder = $this->db->table('email_batch');
         $builder->where(array('id' => $batchId));
-        $builder->update('email_batch', array('state' => 'DONE'));
+        $builder->update(array('state' => 'DONE'));
         $row = $builder->getWhere(array('id' => $batchId))->getRow();
         $message = "Batch email id {$row->id}, subject '{$row->subject}' ".
                 "successfully sent to {$row->num_recipients} recipients.";
