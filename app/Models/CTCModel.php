@@ -72,10 +72,8 @@ class CTCModel extends Model
             }
             $membershipId = $this->insertMembership($membershipType, $membershipData);
             if ($membershipId === false) {
-                echo "Failed to insert";
                 return false;
             }
-            echo "Inserted $membershipId";
             $memberData['membershipId'] = $membershipId;
         }
 
@@ -92,8 +90,9 @@ class CTCModel extends Model
         $pass = $this->generatePassword($loginName);
         $memberData['joomlaPasswordAdmin'] = $this->hashPassword($pass);
         $this->db->table('members')->insert($memberData);
+        $id = $this->db->insertID();
         if ($membershipType != 'Prospective' && $membershipType != 'PseudoMember') {
-            $this->sendWelcomeEmail($loginName, $pass);
+            $this->sendWelcomeEmail($id, $pass);
         }
         return $memberData['membershipId'];
     }
@@ -106,17 +105,13 @@ class CTCModel extends Model
         $membershipData = $this->getFieldsFromRequest($request, $this->membershipFields, false);
         $memberData1 = $this->getFieldsFromRequest($request, $this->memberFields, false, "__1");
         $membershipId = $this->insertMember2('Couple', $memberData1, $membershipData);
-        if ($membershipId === false) {
-            echo "Failed to insert member 1";
+        if ($membershipId == false) {
             return false;
         }
 
         $memberData2 = $this->getFieldsFromRequest($request, $this->memberFields, false, "__2");
         $memberData2['membershipId'] = $membershipId;
         $success = $this->insertMember2('Couple', $memberData2);
-        if (!$success) {
-            echo "Failed to insert member 1";
-        }
         return $success;
     }
 
@@ -206,7 +201,7 @@ class CTCModel extends Model
                     $loginName = $equest->getPost('loginName');
                     $pass = $this->generatePassword($loginName);
                     $this->setMemberPasswordRaw($id, $pass);
-                    $this->sendWelcomeEmail($loginName, $pass);
+                    $this->sendWelcomeEmail($id, $pass);
                 }
                 $this->recordMembershipUpdate($membershipId, $field, $oldValue, $newValue);
                 $changes[$field] = array($oldValue, $newValue);
@@ -613,10 +608,10 @@ class CTCModel extends Model
         return $data;
     }
 
-    public function getMembershipDataByMemberID($id)
     /* Returns, for member with given id, all the data fields of the Memberships tables
      * that can be modified during an EditUser action, plus the membershipId, statusAdmin and membershipTypeEnum
      */
+    public function getMembershipDataByMemberID($id)
     {
         $builder = $this->db->table(['members', 'memberships', 'membership_types']);
         $builder->select(implode(',',$this->getMembershipFields()) . ',membershipId, statusAdmin, membershipTypeEnum');
@@ -1426,7 +1421,6 @@ ORDER BY membershipName";
     {
         $query = $this->db->table('membership_types')->getWhere(['membershipTypeEnum' => $membershipType]);
         if ($query->getNumRows() != 1) {
-            echo "Bad membership type $membershipType";
             return false;
         }
         $row = $query->getRow();
@@ -1557,9 +1551,8 @@ ORDER BY membershipName";
         return $crypt.':'.$salt;
     }
 
-    private function sendWelcomeEmail($loginName, $pass)
+    private function sendWelcomeEmail($id, $pass)
     {
-        $id = $this->getIdFromLogin($loginName);
         $memberData = $this->getMemberDataByMemberID($id);
         $memberData['pass'] = $pass;
 
@@ -1576,7 +1569,6 @@ ORDER BY membershipName";
         $welcomeMessage = $this->buildWelcomeMessage($memberData);
         helper('utilities');
         $name = session()->name;
-        // echo "Sending email from $userEmail ($name) to $to ($loginName), subject = $subject<br />";
         sendEmail($userEmail, $name, $to, $subject, $welcomeMessage, $cc);
     }
 

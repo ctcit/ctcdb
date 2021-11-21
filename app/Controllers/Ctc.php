@@ -86,26 +86,26 @@ class CTC extends BaseController
         );
         $rules['loginName__2'] = ['label' => 'Second Login Name', 'rules' => 'differs[loginName__1]'];
 
-        if ($this->validate($rules)) {
-            $result = $this->ctcModel->insertCouple($this->request);
-            if ($result) {
-                $page = $this->loadPage('operationOutcome', 'CTCDB: New Couple Successfully Added');
+        $isPostBack = count($_POST) > 0;
+        if ($isPostBack) {
+            if ($this->validate($rules)) {
+                $result = $this->ctcModel->insertCouple($this->request);
+                if ($result) {
+                    return $this->loadPage('operationOutcome', 'CTCDB: New Couple Successfully Added');
+                } else {
+                    return $this->loadPage('operationOutcome', 'CTCDB: New Couple Addition Failed',
+                                        array('tellWebmaster'=>true));
+                }
             } else {
-                $page = $this->loadPage('operationOutcome', 'CTCDB: New Couple Addition Failed',
-                                       array('tellWebmaster'=>True));
+                // Failed validation - continue to re-show the data and validation results
+                $templateData = $this->getFormDataFromPost();
             }
         } else {
-            // If it's not a valid postback, we must load or reload the form
-            $isPostBack = count($_POST) > 0;
-            if ($isPostBack) {
-                $data = $this->getFormDataFromPost();
-                unset($data['submitButton']);
-            } else {
-                $data = $this->getNewCoupleFormData();
-            }
-            $page = $this->loadPage('newCouple', 'CTCDB: New Couple', array('fields'=>$data));
+            // No Post data - show empty form
+            $templateData = $this->getNewCoupleFormData();
         }
-        return $page;
+
+        return $this->loadPage('newCouple', 'CTCDB: New Couple', array('fields'=>$templateData));
     }
 
     /**
