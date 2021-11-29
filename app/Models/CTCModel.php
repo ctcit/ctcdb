@@ -582,7 +582,7 @@ class CTCModel extends Model
     // there seem as confused as me or more so.
     public function saveResult($query) {
         $result = array();
-        foreach ($query->getResult() as $row) {
+        foreach ($query->getResultArray() as $row) {
             $result[] = $row;
         }
         $data = base64_encode(serialize($result));
