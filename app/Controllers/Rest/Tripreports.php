@@ -92,27 +92,24 @@ class TripReports extends BaseResourceController
     // Update an existing trip report
     public function update($id = null)
     {
-        $response = $this->checkCanEdit($id);
-        if ($response === null) {
-            $data = $this->getData();
-            if ($data === null) {
-                // Couldn't get any data
-                return $this->respond("Missing POST body", 400);
+        $data = $this->getData();
+        if ($data === null) {
+            // Couldn't get any data
+            return $this->respond("Missing POST body", 400);
+        }
+        if (!array_key_exists('id', $data)) {
+            if ($id === null) {
+                return $this->respond("Must specify ID", 400);
+            } else {
+                $data['id'] = $id;
             }
-            if (!array_key_exists('id', $data)) {
-                if ($id === null) {
-                    return $this->respond("Must specify ID", 400);
-                } else {
-                    $data['id'] = $id;
-                }
-            }
-            if ($id == 0)
-            {
-                // Tripreports POSTs to id=0 to create a new trip report
-                $response = $this->create();
-            }
-            else
-            {
+        }
+        if ($id == 0) {
+            // Tripreports POSTs to id=0 to create a new trip report
+            $response = $this->create();
+        } else {
+            $response = $this->checkCanEdit($id);
+            if ($response !== null) {
                 $row = $this->tripReportModel->getById($id);
                 if ($row->id == 0) {
                     $response = $this->failNotFound();
