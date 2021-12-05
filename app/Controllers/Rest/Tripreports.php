@@ -109,7 +109,7 @@ class TripReports extends BaseResourceController
             $response = $this->create();
         } else {
             $response = $this->checkCanEdit($id);
-            if ($response !== null) {
+            if ($response === null) {
                 $row = $this->tripReportModel->getById($id);
                 if ($row->id == 0) {
                     $response = $this->failNotFound();
