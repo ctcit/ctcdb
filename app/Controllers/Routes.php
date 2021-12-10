@@ -57,6 +57,7 @@ class Routes extends BaseController
     {
         $route = $this->routeModel->getRoute($id);
         $data = array('gpxfilename' => $route->gpxfilename, 'gpx' => $route->gpx);
+        $this->response->setContentType('application/gpx+html');
         return view('downloadGpx', $data);
     }
 
