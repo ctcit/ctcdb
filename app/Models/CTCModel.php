@@ -170,8 +170,7 @@ class CTCModel extends Model
         }
         $this->updateTableFromPost($request, 'members', $id, $memberFields, $memberOverrides);
         if ($newLogin !== "" && $oldLogin !== $newLogin) {
-            // PENDING - Reinstate!
-            //$this->updateJoomlaLogin($oldLogin, $newLogin);
+            $this->updateJoomlaLogin($oldLogin, $newLogin);
         }
         $membershipId = $this->getMembershipId($id);
         if ($isProfileUpdate) {
@@ -582,7 +581,7 @@ class CTCModel extends Model
     // there seem as confused as me or more so.
     public function saveResult($query) {
         $result = array();
-        foreach ($query->getResultArray() as $row) {
+        foreach ($query->getResult() as $row) {
             $result[] = $row;
         }
         $data = base64_encode(serialize($result));
