@@ -492,7 +492,7 @@ query_;
      */
     private function makeCSV($queryResult, $delim = ",", $newline = "\n", $enclosure = '"')
     {
-        $columnNames = array_keys($queryResult[0]);
+        $columnNames = array_keys(get_object_vars($queryResult[0]));
         $out = '';
 
         // First generate the headings from the table column names
