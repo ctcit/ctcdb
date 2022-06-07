@@ -154,7 +154,7 @@ class CTCModel extends Model
         $newLogin = "";
         $oldLogin = "";
         foreach ($memberFields as $field) {
-            $newValue = $request->getPost($field, True);
+            $newValue = $request->getPostGet($field);
             if ($newValue != $row[$field]) {
                 if ($field == "loginName"){
                     $oldLogin = $row[$field];
@@ -497,7 +497,7 @@ class CTCModel extends Model
     // A list of all member fields that can be modified by the members themselves
    public function getMemberProfileFields()
     {
-        return array('firstName', 'lastName', 'loginName',
+        return array('firstName', 'lastName',
             'primaryEmail', 'workPhone', 'mobilePhone',
             'preferredPhoneEnum',
             'emergencyContactName', 'emergencyContactPhone',

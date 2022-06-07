@@ -291,11 +291,6 @@ class Member extends BaseController
                 'label' => "Primary Email",
                 'rules' => 'valid_email',
             ],
-            "loginName" =>
-            [
-                'label' => "Login name",
-                'rules' => "required|min_length[4]|loginCheck[$this->currentMemberID]",
-            ],
             "address1" =>
             [
                 'label' => 'Address Line 1',
