@@ -89,7 +89,7 @@ function subsMenu($joomlaBaseURL) {
         menuItem("subs/recordPayments", "Enter/edit payments", "Enter or edit subscription payments", true);
         menuItem("subs/deletePayment", "Delete payment", "Delete an existing subscription payment (e.g. if recorded in error)");
     }
-    menuItem($joomlaBaseURL."/newsletter/generate.php?expand=ctcsubsnotice.odt", "Print Invoices",
+    menuItem(base_url("generate.php?expand=ctcsubsnotice.odt"), "Print Invoices",
         "Subs invoices for all unpaid memberships", false, true);
 }
 
