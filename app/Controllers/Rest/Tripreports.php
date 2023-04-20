@@ -36,13 +36,17 @@ class TripReports extends BaseResourceController
         if ($year === null || $year == '') {
             $year = 0;
         }
+        $days = $this->request->getGet('days');
+        if ($days === null || $days == '') {
+            $days = -1;
+        }
 
         if ($year > 1900)
         {
             $rows = $this->tripReportModel->getByYear($year, $limit);
             return $this->respond($rows);
         } else {
-            $rows = $this->tripReportModel->getRecent($limit);
+            $rows = $this->tripReportModel->getRecent($limit, $days);
             return $this->respond($rows);
         }
     }
