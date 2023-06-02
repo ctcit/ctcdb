@@ -181,8 +181,8 @@ class TripReportModel extends Model
                   ->orderBy('upload_date desc')
                   ->limit($limit);
         if ($days>0) {
-            $date = new DateTime();
-            $date->sub( new DateInterval('P'.$maxdays.'D') );
+            $date = new \DateTime();
+            $date->sub( new \DateInterval('P'.$days.'D') );
             $lastDateOfInterest = date_format($date,"Y-m-d");
             $q = $q->where("upload_date >='$lastDateOfInterest' ");
         }

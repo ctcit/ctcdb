@@ -170,7 +170,8 @@ class CTCModel extends Model
         }
         $this->updateTableFromPost($request, 'members', $id, $memberFields, $memberOverrides);
         if ($newLogin !== "" && $oldLogin !== $newLogin) {
-            $this->updateJoomlaLogin($oldLogin, $newLogin);
+            // PENDING - Changing login is currently not supported
+            //$this->updateJoomlaLogin($oldLogin, $newLogin);
         }
         $membershipId = $this->getMembershipId($id);
         if ($isProfileUpdate) {
