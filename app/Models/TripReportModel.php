@@ -176,12 +176,17 @@ class TripReportModel extends Model
         return $q->getResult();
     }
 
-    public function getRecent($limit) {
+    public function getRecent($limit, $days=-1) {
         $q = $this->builder('view_tripreports')->select('*')
                   ->orderBy('upload_date desc')
-                  ->limit($limit)
-                  ->get();
-        return $q->getResult();
+                  ->limit($limit);
+        if ($days>0) {
+            $date = new DateTime();
+            $date->sub( new DateInterval('P'.$maxdays.'D') );
+            $lastDateOfInterest = date_format($date,"Y-m-d");
+            $q = $q->where("upload_date >='$lastDateOfInterest' ");
+        }
+        return $q->get()->getResult();
    }
 
     // Load the list of image, gpx or map rowss respectively for the
