@@ -2,20 +2,10 @@
 
 @media screen, projection {
     body {
-            margin: 0px;
-            padding: 0px;
-            border: 0px;
             line-height: 1.3em;
+            margin: 0 0 20px 0;
             color:#000;
             font-family: Verdana, sans-serif;
-            font-size: 75%;
-            line-height: 1.3em;
-            margin: 0 auto;
-            padding-top: 15px;
-            padding-bottom: 1em;
-            padding-left: 1em;
-            padding-right: 1em;
-            background-color: #F2F2F2;
             overflow: auto;  /* Fix Moz bug */
     }
 
