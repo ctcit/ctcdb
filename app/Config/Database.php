@@ -100,6 +100,26 @@ class Database extends Config
         'port'     => 3306,
     ];
 
+    public $hutbooking = [
+        'DSN'      => '',
+        'hostname' => 'db',
+        'username' => 'root',
+        'password' => 'docker',
+        'database' => 'hutbooking',
+        'DBDriver' => 'MySQLi',
+        'DBPrefix' => '',
+        'pConnect' => false,
+        'DBDebug'  => (ENVIRONMENT !== 'production'),
+        'charset'  => 'utf8mb4',
+        'DBCollat' => 'utf8mb4_general_ci',
+        'swapPre'  => '',
+        'encrypt'  => false,
+        'compress' => false,
+        'strictOn' => false,
+        'failover' => [],
+        'port'     => 3306,
+    ];
+
 
     /**
      * This database connection is used when

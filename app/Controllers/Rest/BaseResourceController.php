@@ -23,6 +23,15 @@ class BaseResourceController extends ResourceController
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+        $this->response->setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+
+        $method = $_SERVER['REQUEST_METHOD'];
+        if ($method == "OPTIONS") {
+            header('Access-Control-Allow-Origin: *');
+            header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+            die();
+        }
     }
 
     protected function getData()
@@ -45,17 +54,26 @@ class BaseResourceController extends ResourceController
         return null;
     }
 
-    protected function checkCanEdit($tripReportID)
+    protected function checkIsUser($id)
     {
-        // Check that the current user can edit the given trip report
-        $response = $this->checkValidUser();
-        if ($response === null) {
-            $row = $this->tripReportModel->getById($tripReportID);
-            if (count(session()->roles) === 0 && session()->userID !== $row->uploader_id) {
-                $response = $this->respond("You do not have permission to edit this item", 403);
-            }
+        if (session()->userID != $id) {
+            return $this->respond("You don't have permission to do that", 401);
         }
-        return $response;
+        return null;
+    }
+
+    protected function checkAdmin()
+    {
+        if ( !$this->isAdmin() )
+        {
+            return $this->respond("You must be a logged in club officer to access this function", 401);
+        }
+        return null;
+    }
+
+    protected function isAdmin()
+    {
+        return (session()->userID != 0) && (count(session()->roles) > 0);
     }
 
 }
