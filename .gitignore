@@ -7,7 +7,6 @@ Desktop.ini
 *~
 .vscode/
 vendor/
-composer.lock
 
 writable/cache/*
 !writable/cache/index.html
