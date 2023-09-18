@@ -1,69 +1,26 @@
 /* CTC style sheet for the member profile update form (embedded in Joomla) */
 
+:root {
+  --dark-green: #00591d;
+  --dark-green-hover: #176831;
+  --navbar-green: #02501b;
+  --background: #f5f6f5;
+  --background-higher: #ebedeb;
+  --masthead: #272d27;
+  --orange: #E05A00;
+  --yellowy: #F5AF00;
+  --black: #212529;
+  --on-dark: #f7f7f7f7;
+}
+
 @media screen, projection {
     body {
-            margin: 0 0 20px 0;
-            padding: 0px;
-            border: 0px;
-            line-height: 1.3em;
-            color:#000;
-            font-family: 'Lato', sans-serif;
+            padding: 0 0 50px 0;
             overflow: auto;  /* Fix Moz bug */
-    }
-
-    img {
-            border: none;
     }
 
     p {
             margin-top: 0.5em;
-    }
-
-    hr {
-            margin-top: 10px;
-            margin-right: 7px;
-            height: 2px;
-            color: #CCCCCC;
-    }
-
-    /* ---------- h1, h2, h3, h4, h5, hr ---------- */
-
-    h1 {
-            font-family: arial, sans-serif;
-            font-weight: bold;
-            /* color: #669933; */
-            font-size: 200%;
-            display: block;
-            margin-top: 0px;
-            margin-bottom: 15px;
-    }
-
-    h2 {
-            font-family: arial, sans-serif;
-            font-weight: bold;
-            /* color: #669933; */
-            font-size: 140%;
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 10px;
-    }
-
-    h3 {
-            font-weight: bold;
-            font-family: arial, sans-serif;
-            font-size: 120%;
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 10px;
-    }
-
-    h4 {
-            font-family: arial, sans-serif;
-            font-weight: bold;
-            font-size: 110%;
-            color: #669933;
-            display: block;
-            margin-top: 10px;
     }
 
     table.menu h4 {
@@ -72,7 +29,6 @@
     }
 
     h5 {
-            font-family: arial, sans-serif;
             font-weight: bold;
             font-size: 100%;
             margin-top: 0.5em;
@@ -107,20 +63,6 @@
 
 
     /* ---------- navigation ---------- */
-
-    a {
-            color: #558822;
-            text-decoration: underline;
-    }
-
-    a.thumb img {
-            border: #558822 solid 2px;
-    }
-
-    a:hover {
-            color: black;
-            text-decoration: none;
-    }
 
     td a {
             line-height: 130%; /* Space out tables of anchors */

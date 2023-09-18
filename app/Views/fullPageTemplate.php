@@ -9,6 +9,11 @@
 
     if (isset($css)) {
         $cssFile = "css/$css";
+        // If we've specified custom css, this is generally pages embedded in the main site,
+        // so use the CTC "Common" style as well as the specifed css
+        // TODO - Adapt the ctcdbstyle to work well with this common style
+        echo link_tag( "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" );
+        echo link_tag( base_url()."/../templates/ctctemplate/css/common.css" );
     } else {
         $cssFile = "css/ctcdbstyle.css";
     }
@@ -21,7 +26,7 @@
     $cssFileModTime = filemtime($cssFile);
     $cssFile .= "?version=$cssFileModTime";
     echo link_tag($cssFile);
-
+    echo link_tag("https://fonts.googleapis.com/css2?family=Lato:wght@100;400;700;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap");
 ?>
 
 <title>
