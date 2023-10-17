@@ -50,14 +50,13 @@ class Member extends BaseController
     public function userDetails()
     {
         $baseURL = config('Joomla')->baseURL;
-        $sendEmailUrl = $baseURL."/index.php/contact-us/7-dbadmin";
 
         return $this->loadPage('userDetailsOptions', 'User Details',
             $data = array(
                 'changePasswordUrl' => "member/changePassword",
                 'changeProfileUrl'=> "member/profile",
                 'subsPaymentForm' => "member/subsForm",
-                'sendEmailUrl' => $sendEmailUrl,
+                'membershipEmail' => "membership@ctc.org.nz",
                 'css'=> "memberUpdate.css"),
             self::NO_MENU
         );
