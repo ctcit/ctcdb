@@ -15,7 +15,7 @@ class Member extends BaseController
     public $currentUserName;
     public $currentUserLogin;
 
-    private const NO_MENU = false;
+    private const EMBEDDED = true;
 
     /**
      * Constructor.
@@ -57,8 +57,8 @@ class Member extends BaseController
                 'changeProfileUrl'=> "member/profile",
                 'subsPaymentForm' => "member/subsForm",
                 'membershipEmail' => "membership@ctc.org.nz",
-                'css'=> "memberUpdate.css"),
-            self::NO_MENU
+                'css'=> "joomlaEmbedded.css"),
+            self::EMBEDDED
         );
     }
 
@@ -68,8 +68,8 @@ class Member extends BaseController
         return $this->loadPage('printableMembershipList','Membership list',
             array('members' => $members,
                   'surnameFirst' => true,
-                  'css'=> "memberUpdate.css"),
-            self::NO_MENU
+                  'css'=> "joomlaEmbedded.css"),
+            self::EMBEDDED
         );
    }
 
@@ -79,8 +79,8 @@ class Member extends BaseController
         return $this->loadPage('printableMembershipList','Membership list',
             array('members' => $members,
                   'surnameFirst' => false,
-                  'css'=> "memberUpdate.css"),
-            self::NO_MENU
+                  'css'=> "joomlaEmbedded.css"),
+            self::EMBEDDED
         );
    }
 
@@ -94,10 +94,10 @@ class Member extends BaseController
         return $this->loadPage('membershipList','Membership list',
             array('membersBySurname'=>$membersBySurname,
                   'membersByFirstName'=>$membersByFirstName,
-                  'css'=> "memberUpdate.css",
+                  'css'=> "joomlaEmbedded.css",
                   'printableListBySurnameUrl'=>$printableListBySurnameUrl,
                   'printableListByFirstnameUrl'=>$printableListByFirstnameUrl),
-            self::NO_MENU
+            self::EMBEDDED
         );
     }
 
@@ -129,15 +129,15 @@ class Member extends BaseController
                 $this->ctcModel->setMemberPasswordRaw($this->currentMemberID, $_POST['newpass']);
                 return $this->loadPage('operationOutcome', "Password changed",
                         [ 'message' => 'Your password has been changed.',
-                          'css'=> "memberUpdate.css" ],
-                        self::NO_MENU
+                          'css'=> "joomlaEmbedded.css" ],
+                        self::EMBEDDED
                 );
             }
         }
         return $this->loadPage('passwordChangeForm','Password change',
                 [ 'postbackUrl'=>"member/changePassword",
-                'css'=> "passwordUpdate.css" ],
-                self::NO_MENU);
+                'css'=> "joomlaEmbedded.css" ],
+                self::EMBEDDED);
     }
 
 
@@ -150,7 +150,7 @@ class Member extends BaseController
         if ($query->getNumRows() != 1) {
             return $this->loadPage("operationOutcome", "Oops.",
                 array('tellWebmaster' => true),
-                self::NO_MENU);
+                self::EMBEDDED);
         } else {
             $row = $query->getRow();
             return $this->loadPage('subsDetailsForm','Your Subscription Renewal Form',
@@ -161,8 +161,8 @@ class Member extends BaseController
                           'sub'  	 => $row->Fee,
                           'paid'  	 => $row->DatePaid != null,
                           'overdue'  => false,
-                          'css'=> "passwordUpdate.css"),
-                    self::NO_MENU);
+                          'css'=> "joomlaEmbedded.css"),
+                    self::EMBEDDED);
         }
     }
 
@@ -178,16 +178,16 @@ class Member extends BaseController
                 array(
                     'message' => 'CTCDB: Profile Update Failure',
                     'tellWebmaster' => True,
-                    'css'=> "memberUpdate.css"),
-                self::NO_MENU
+                    'css'=> "joomlaEmbedded.css"),
+                self::EMBEDDED
             );
         } else if (count($changes) > 0) {
             $this->emailChanges($changes);
             return $this->loadPage('operationOutcome', "Successful Update",
                 array(
                     'message' => 'Your profile has been successfully updated.',
-                    'css'=> "memberUpdate.css"),
-                self::NO_MENU
+                    'css'=> "joomlaEmbedded.css"),
+                self::EMBEDDED
             );
         } else {
             return $this->loadPage('operationOutcome', "No change",
@@ -196,8 +196,8 @@ class Member extends BaseController
                         'extraInfo' => 'The update of your profile was completed with no errors but did not ' .
                             ' actually alter the information stored in the database!' .
                             ' Are you sure you actually changed the data in the form?',
-                        'css'=> "memberUpdate.css"),
-                    self::NO_MENU
+                        'css'=> "joomlaEmbedded.css"),
+                    self::EMBEDDED
             );
         }
     }
@@ -220,8 +220,8 @@ class Member extends BaseController
                          array(
                             'fields'=>$fields,
                             'postbackUrl'=> "member/profile",
-                            'css' => "memberUpdate.css"),
-                         self::NO_MENU);
+                            'css' => "joomlaEmbedded.css"),
+                         self::EMBEDDED);
     }
 
 

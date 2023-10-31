@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 // they're not logged into the main club website.
 class Open extends BaseController
 {
-    private const NO_MENU = false;
+    private const EMBEDDED = true;
 
     /**
      * Constructor.
@@ -31,8 +31,9 @@ class Open extends BaseController
     public function forgottenUserName()
     {
         return $this->loadPage('forgottenUserName', "",
-                               array('postbackUrl' => "open/forgottenUserNameSubmit",'css'=> "ctcdbNewWindow.css"),
-                               self::NO_MENU);
+                               array('postbackUrl' => "open/forgottenUserNameSubmit",
+                                     'css'=> "joomlaEmbedded.css"),
+                               self::EMBEDDED);
     }
 
     public function forgottenUserNameSubmit()
@@ -73,7 +74,7 @@ class Open extends BaseController
     {
         return $this->loadPage('forgottenPassword', "",
                                array('postbackUrl' => "open/forgottenPasswordSubmit",
-                               'css'=> "ctcdbNewWindow.css"), self::NO_MENU);
+                               'css'=> "joomlaEmbedded.css"), self::EMBEDDED);
     }
 
     public function forgottenPasswordSubmit()
@@ -183,7 +184,7 @@ class Open extends BaseController
         $allTrips = $model->getAllTripReports();
         return $this->loadPage('allTripReportLinks', 'All Trip Reports',
             array('trips' => $allTrips),
-            self::NO_MENU
+            self::EMBEDDED
         );
     }
 }

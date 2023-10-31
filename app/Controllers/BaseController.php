@@ -51,7 +51,8 @@ class BaseController extends Controller
 
     // Support methods for loading pages
     // =================================
-    protected function loadPage($contentPage, $title, $data = array(), $menuReqd = true)
+    protected function loadPage($contentPage, $title, $data = array(), 
+                                $isEmbedded = false )
     {
         $data['title'] = $title;
         if ($this->validator !== null) {
@@ -60,12 +61,13 @@ class BaseController extends Controller
         if ($contentPage !== null) {
             $data['contentPage'] = $contentPage;
         }
-        if ($menuReqd) {
+        if (!$isEmbedd$isEmbedded) {
             $data['menu'] = 'mainMenu';
         }
         $joomlaConfig = config('Joomla');
-        $data['joomlaBaseURL'] = $joomlaConfig->baseURL;
-        return view('fullPageTemplate', $data);
+        $data['joomlaBaseURL'] = $joomlaConfig->baseURL;T
+        $template = $isEmbedded ? 'embeddedPageTemplate' : 'fullPageTemplate';
+        return view($template, $data);
     }
 
     // Load a given page into a new (already created) window.

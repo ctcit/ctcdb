@@ -9,11 +9,6 @@
 
     if (isset($css)) {
         $cssFile = "css/$css";
-        // If we've specified custom css, this is generally pages embedded in the main site,
-        // so use the CTC "Common" style as well as the specifed css
-        // TODO - Adapt the ctcdbstyle to work well with this common style
-        echo link_tag( "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" );
-        echo link_tag( base_url()."/../templates/ctctemplate/css/common.css" );
     } else {
         $cssFile = "css/ctcdbstyle.css";
     }
@@ -49,14 +44,12 @@
 <body>
 <div id="wrap">
     <?php
-        if (isset($menu)) {
-            $menu_data = array(
-                'joomlaBaseURL' => $joomlaBaseURL,
-            );
-            echo "<div class='menu'>";
-            echo view($menu, $menu_data);
-            echo "</div>";
-        }
+        $menu_data = array(
+            'joomlaBaseURL' => $joomlaBaseURL,
+        );
+        echo "<div class='menu'>";
+        echo view($menu, $menu_data);
+        echo "</div>";
     ?>
 
     <div class="main">
@@ -73,11 +66,5 @@
     ?>
     </div>
 </div>
-<?php
-if (isset($menu)) {  // If it's a full-on database page
-    echo '<div class="footer">Built with <a href="http://codeigniter.com">Code Igniter</a>';
-    echo '</div>';
-}
-?>
 </body>
 </html>

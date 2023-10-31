@@ -12,7 +12,7 @@ class Routes extends BaseController
     // This controller contains route functions.
     // Some functions available to anyone and others only available to club members logged into the joomla website.
 
-    private const NO_MENU = false;
+    private const EMBEDDED = true;
 
     /**
      * Constructor.
