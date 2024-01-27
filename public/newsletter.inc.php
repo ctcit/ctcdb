@@ -500,24 +500,42 @@ function CurrentDates($con)
         return array("date"         => "2007-01-01",
                      "issuedate"    => "2007-01-01");
 }
-
-// Set flag that this is a parent file
-define( '_VALID_MOS', 1 );
 define('_JEXEC', 1);
 // This is the correct path for the ctcserve setup.
 define('JPATH_BASE', '/var/www/html');
-require_once( JPATH_BASE.'/configuration.php' );
 require_once ( JPATH_BASE.'/includes/defines.php' );
 require_once ( JPATH_BASE.'/includes/framework.php' );
-$app = JFactory::getApplication('site');
+
+if ( !array_key_exists('HTTP_HOST', $_SERVER) || $_SERVER['HTTP_HOST'] == "" ) {
+    $_SERVER['HTTP_HOST'] = "http://ctc.org.nz";
+}
+
+// Boot the DI container
+$container = \Joomla\CMS\Factory::getContainer();
+
+/*
+* Alias the session service keys to the web session service as that is the primary session backend for this application
+*
+* In addition to aliasing "common" service keys, we also create aliases for the PHP classes to ensure autowiring objects
+* is supported.  This includes aliases for aliased class names, and the keys for aliased class names should be considered
+* deprecated to be removed when the class name alias is removed as well.
+*/
+$container->alias('session.web', 'session.web.site')
+    ->alias('session', 'session.web.site')
+    ->alias('JSession', 'session.web.site')
+    ->alias(\Joomla\CMS\Session\Session::class, 'session.web.site')
+    ->alias(\Joomla\Session\Session::class, 'session.web.site')
+    ->alias(\Joomla\Session\SessionInterface::class, 'session.web.site');
+
+// Instantiate the application.
+$app = $container->get(\Joomla\CMS\Application\SiteApplication::class);
 $user = JFactory::getUser();
-$config = new JConfig();
-define('BASE_URL', $config->live_site);
-$con    = mysqli_connect($config->host,  $config->user, $config->password);
-if (!$con)
-    die('mysqli_connect failed');
-$con->set_charset('utf8mb4');
-$username	= $user->username;
+$config = JFactory::getConfig();
+
+
+$con = ($GLOBALS["___mysqli_ston"] = mysqli_connect($config->get("host"), $config->get("user"), $config->get("password")));
+// N.B. userid here is the JOOMLA id NOT the db id. The common ground here is username.
+$username = ["id"=>$user->id, "name"=>$user->username];
 
 $processor = new PostProcessor($con,$username);
 $processor->ProcessPost($_POST);
