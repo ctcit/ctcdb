@@ -59,6 +59,7 @@ class HutBookings extends BaseResourceController
         }
         $data = $this->getData();
         $booking = new \App\Models\HutBooking($data);
+        // PENDING - Pass correct user ID!:W
         $result = $this->model->tryCreate($booking, 2218);
         if ($result['result'] != "OK")
         {
