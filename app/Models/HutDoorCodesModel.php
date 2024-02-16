@@ -33,17 +33,23 @@ class HutDoorCodesModel extends Model
 
     public function current()
     {
-        return $this->where("effective < NOW()")
+        $current = $this->where("effective < NOW()")
                     ->orderBy("effective", "desc")
                     ->limit(1)
                     ->first();
+        $current->type = "current";
+        return $current;
     }
 
     public function future()
     {
-        return $this->where("effective > NOW()")
-                    ->orderBy("effective", "asc")
-                    ->findAll();
+        $codes  = $this->where("effective > NOW()")
+                     ->orderBy("effective", "asc")
+                     ->findAll();
+        foreach( $codes as $code ) {
+            $code->type = "future";
+        }
+        return $codes;
     }
 
     public function tryAdd($codeRecord)
