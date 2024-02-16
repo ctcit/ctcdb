@@ -34,8 +34,19 @@ class HutBookings extends BaseResourceController
         if ($invalidResponse = $this->checkValidUser()) {
             return $invalidResponse;
         }
-        if ($this->isAdmin()) {
-            return $this->respond($this->model->findAll());
+        if ($this->isAdmin() && !is_null($this->request->getGet("admin"))) {
+            $past = !is_null($this->request->getGet("past"));
+            $pageSize = $this->request->getGet("pageSize") ?? 10;
+            $today = (new \DateTime("today"))->format('Y-m-d');
+            if ($past) {
+                return $this->respond($this->model->where("start_date < '$today'" )
+                                           ->orderBy("start_date", "desc")
+                                           ->paginate($pageSize, 'admin'));
+            } else {
+                return $this->respond($this->model->where("start_date >= '$today'")
+                                           ->orderBy("start_date", "asc")
+                                           ->paginate($pageSize));
+            }
         }
         return $this->respond($this->model->findByMember(2218));
     }
@@ -59,7 +70,7 @@ class HutBookings extends BaseResourceController
         }
         $data = $this->getData();
         $booking = new \App\Models\HutBooking($data);
-        // PENDING - Pass correct user ID!:W
+        // PENDING - Pass correct user ID
         $result = $this->model->tryCreate($booking, 2218);
         if ($result['result'] != "OK")
         {
