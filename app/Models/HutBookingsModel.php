@@ -48,9 +48,12 @@ class HutBookingsModel extends Model
         parent::__construct();
     }
 
-    public function findByMember($id)
+    public function findByMember($id, $pageSize)
     {
-        return $this->where(["member_id" => $id])->findAll();
+        $today = (new \DateTime("today"))->format('Y-m-d');
+        return $this->where(["member_id" => $id, "start_date >=" => $today])
+                    ->orderBy("start_date", "asc")
+                    ->paginate($pageSize);
     }
 
     public function findById($id, $onlyForUser=null)

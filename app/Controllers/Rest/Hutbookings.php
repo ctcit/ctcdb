@@ -34,21 +34,23 @@ class HutBookings extends BaseResourceController
         if ($invalidResponse = $this->checkValidUser()) {
             return $invalidResponse;
         }
+        $pageSize = $this->request->getGet("pageSize") ?? 10;
         if ($this->isAdmin() && !is_null($this->request->getGet("admin"))) {
             $past = !is_null($this->request->getGet("past"));
-            $pageSize = $this->request->getGet("pageSize") ?? 10;
             $today = (new \DateTime("today"))->format('Y-m-d');
             if ($past) {
                 return $this->respond($this->model->where("start_date < '$today'" )
                                            ->orderBy("start_date", "desc")
-                                           ->paginate($pageSize, 'admin'));
+                                           ->paginate($pageSize));
             } else {
                 return $this->respond($this->model->where("start_date >= '$today'")
                                            ->orderBy("start_date", "asc")
                                            ->paginate($pageSize));
             }
         }
-        return $this->respond($this->model->findByMember(2218));
+        // PENDING - Use correct user ID!
+        return $this->respond($this->model
+                                   ->findByMember(2218, $pageSize));
     }
 
     public function show($id = 0)
@@ -89,6 +91,9 @@ class HutBookings extends BaseResourceController
         if ($existingBooking) {
             if (!$this->isAdmin() && $invalidResponse = $this->checkIsUser($existingBooking->member_id)) {
                 return $invalidResponse;
+            }
+            if ($data['status'] != "Cancelled" && $existingBooking->status == "Cancelled") {
+                return $this->respond("Cannot uncancel a booking", 400);
             }
             $update = new \App\Models\HutBooking($data);
             $update->id = $id;
