@@ -25,6 +25,7 @@ class HutDoorCodesModel extends Model
     protected $returnType = 'App\Models\DoorCode';
     protected $useTimestamps = true;
     protected $protectFields = true;
+    protected $useSoftDeletes = true;
 
     public function __construct()
     {
@@ -37,7 +38,6 @@ class HutDoorCodesModel extends Model
                     ->orderBy("effective", "desc")
                     ->limit(1)
                     ->first();
-        $current->type = "current";
         return $current;
     }
 
@@ -46,9 +46,6 @@ class HutDoorCodesModel extends Model
         $codes  = $this->where("effective > NOW()")
                      ->orderBy("effective", "asc")
                      ->findAll();
-        foreach( $codes as $code ) {
-            $code->type = "future";
-        }
         return $codes;
     }
 

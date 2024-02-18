@@ -14,6 +14,10 @@ class HutDoorCodes extends BaseResourceController
 {
     public $model;
 
+    // The HutDoorCodesModel allows for an arbitrary number of code records
+    // Here we only ever return the current code and the next future code,
+    // and only allow one future code to be set at a time - and we delete any other future codes
+
     /**
      * Constructor.
      *
@@ -34,11 +38,17 @@ class HutDoorCodes extends BaseResourceController
         if (!$this->isAdmin()) {
             return $invalidResponse;
         }
-        $current = [ $this->model->current(), ];
+        $current = $this->model->current();
         $future = $this->model->future();
-        return $this->respond(array_merge($current, $future));
+        $result = [
+            "current_code" => $current->code,
+            "future_code" => $future[0]->code,
+            "future_effective" => $future[0]->effective
+        ];
+        return $this->respond($result);
     }
 
+    /*
     public function create()
     {
         if (!$this->isAdmin()) {
@@ -53,36 +63,41 @@ class HutDoorCodes extends BaseResourceController
         }
         return $this->respond($result['codeEntry']);
     }
+    */
 
-    public function update($id = null)
+    // We (soft) delete alll existing records and add new ones
+    public function create()
     {
         if (!$this->isAdmin()) {
             return $invalidResponse;
         }
-        $data = $this->getData();
-        $existingEntry = $this->model->find($id);
-        if ($existinEntry) {
-            $update = new \App\Models\HutDoorCode($data);
-            $update->id = $id;
-            if ($this->model->save($update)) {
-                $entry = $this->model->find($id);
-                return $this->respond($entry, 200);
+        // Delete all existing entries - if they don't match the new ones
+        $data = $this->request->getJSON();
+        if (!isset($data->code) || !isset($data->future_code) || !isset($data->future_effective)) {
+            print_r($data);
+            return $this->respond("Missing data", 400);
+        }
+        $existing = $this->model->current();
+        if ($existing && $existing->code != $data->code) {
+            $this->model->delete($existing->id);
+            $entry = new \App\Models\DoorCode(["effective"=>date("Y-m-d"), "code"=>$data->code  ]);
+            $this->model->save($entry);
+        }
+        $future = $this->model->future();
+        foreach($future as $f) {
+            $exists = false;
+            if ($f->code == $data->future_code && $f->effective == $data->future_effective) {
+                $exists = true;
+            } else {
+                $this->model->delete($f->id);
             }
         }
-        return $this->respond("Failed", 400);
-    }
-
-    public function delete($id = null)
-    {
-        if (!$this->isAdmin()) {
-            return $invalidResponse;
+        if (!$exists) {
+            $entry = new \App\Models\DoorCode(["effective"=>$data->future_effective, "code"=>$data->future_code]);
+            $this->model->save($entry);
         }
-        if($this->model->tryDelete($id)) {
-            return $this->respond("OK", 200);
-        }
-        return $this->respond("Not found or not allowed", 400);
+        return $this->index();
     }
-
 }
 
 ?>
