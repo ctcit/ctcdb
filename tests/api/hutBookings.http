@@ -1,0 +1,47 @@
+
+GET http://localhost:8080/rest/hutavailability HTTP/1.1
+
+###
+
+GET http://localhost:8080/rest/hutbookings HTTP/1.1
+
+###
+
+# Create a booking
+POST http://localhost:8080/rest/hutbookings HTTP/1.1
+content-type: application/json
+
+{
+  "member_id": 2218,
+  "start_date": "2024-04-06",
+  "nights": 1,
+  "bunks": 2,
+  "type": "Member",
+  "status": "Confirmed",
+  "notes": "",
+  "name": "Nick Edwards",
+  "email": "nickedwrds@gmail.com",
+  "phone": "0273656751"
+}
+
+###
+
+# Update an existing booking
+PUT http://localhost:8080/rest/hutbookings/45 HTTP/1.1
+content-type: application/json
+
+{
+  "id": 45,
+  "member_id": 2218,
+  "start_date": "2024-03-28",
+  "nights": 2,
+  "bunks": 8,
+  "type": "Member",
+  "status": "Confirmed",
+  "notes": "",
+  "name": "Nick Edwards",
+  "email": "nickedwrds@gmail.com",
+  "phone": "0273656751"
+}
+
+###
