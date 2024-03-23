@@ -49,6 +49,15 @@ class HutDoorCodesModel extends Model
         return $codes;
     }
 
+    public function atDate($date)
+    {
+        $code = $this->where("effective <= '$date'")
+                     ->orderBy("effective", "desc")
+                     ->limit(1)
+                     ->first();
+        return $code;
+    }
+
     public function tryAdd($codeRecord)
     {
         $effective = new DateTime($booking->effective);
