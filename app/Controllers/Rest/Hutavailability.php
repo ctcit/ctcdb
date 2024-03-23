@@ -13,7 +13,7 @@ class HutAvailability extends BaseResourceController
 
     public $model;
 
-    public const BookingHorizon = 180;
+    public const BookingHorizonMonths = 6;
 
     /**
      * Constructor.
@@ -38,7 +38,8 @@ class HutAvailability extends BaseResourceController
 
         $dt = new \DateTime();
         $availability = [];
-        for( $i = 0; $i < self::BookingHorizon; $i++) {
+        $lastMonth = (clone $dt)->modify('+' . self::BookingHorizonMonths . ' months')->format('m-Y');
+        while( $dt->format('m-Y') != $lastMonth ) {
             $date = $dt->format('Y-m-d');
             $availability[$date] = $this->model->bunksAvailableOnDate($date);
             $dt->modify('+1 day');
