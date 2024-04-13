@@ -41,7 +41,7 @@ $routes->resource('rest/user');
 $routes->resource('rest/tripimages', ['only' => ['create', 'delete'] ] );
 $routes->resource('rest/gpxs', ['only' => ['create', 'delete'] ] );
 $routes->resource('rest/routes', ['only' => ['create']]);
-$routes->resource('rest/hutbookings');
+$routes->resource('rest/hutbookings', ['only' => ['get', 'create', 'update']]);
 $routes->resource('rest/hutavailability', ['only' => ['get']]);
 $routes->resource('rest/hutdoorcodes', ['only' => ['get', 'create']]);
 
