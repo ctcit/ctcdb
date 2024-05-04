@@ -39,11 +39,11 @@ class HutBookings extends BaseResourceController
             $past = !is_null($this->request->getGet("past"));
             $today = (new \DateTime("today"))->format('Y-m-d');
             if ($past) {
-                return $this->respond($this->model->where("start_date < '$today'" )
+                return $this->respond($this->model->where("DATE_ADD(start_date, INTERVAL nights DAY) < '$today'" )
                                            ->orderBy("start_date", "desc")
                                            ->paginate($pageSize));
             } else {
-                return $this->respond($this->model->where("start_date >= '$today'")
+                return $this->respond($this->model->where("DATE_ADD(start_date, INTERVAL nights DAY) >= '$today'")
                                            ->orderBy("start_date", "asc")
                                            ->paginate($pageSize));
             }
@@ -95,17 +95,20 @@ class HutBookings extends BaseResourceController
         return $this->respond($result['booking']);
     }
 
+    /*
     public function delete($id = null)
     {
         if ($invalidResponse = $this->checkValidUser()) {
             return $invalidResponse;
         }
-        $onlyForId = !$this->isAdmin() ? session()->userID : null;
-        if($this->model->tryDelete($id, $onlyForId)) {
-            return $this->respond("OK", 200);
+        $result = $this->model->tryDelete($id);
+        if ($result['result'] != "OK")
+        {
+            return $this->respond(["status"=>"failed", "reason"=>$result['result']], 400);
         }
-        return $this->respond("Not found or not allowed", 400);
+        return $this->respond("Booking $id deleted", 200);
     }
+    */
 
 }
 
