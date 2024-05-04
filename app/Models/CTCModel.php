@@ -1556,6 +1556,8 @@ ORDER BY membershipName";
         $memberData = $this->getMemberDataByMemberID($id);
         $memberData['pass'] = $pass;
 
+        // $userEmail is the email address of the logged in user
+        // (i.e. the club officer adding the new member)
         $userEmail = session()->email;
         $to = $memberData['primaryEmail'];
         if ($to == "") {
