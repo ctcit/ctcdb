@@ -335,9 +335,9 @@ EOT;
         $details = "";
         foreach($fields as $field) {
             if ($oldBooking->$field != $newBooking->$field) {
-                $details .= "$field: $oldBooking->$field -> $newBooking->$field\n";
+                $details .= "$field: ".$oldBooking->$field." -> ".$newBooking->$field."\n";
             } else {
-                $details .= "$field: $oldBooking->$field\n";
+                $details .= "$field: ".$oldBooking->$field."\n";
             }
         }
         // Send an email to the hut booking team
