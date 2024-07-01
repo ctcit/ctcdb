@@ -45,17 +45,19 @@
 <body>
     <div class="container">
         <div class="row">
-        <?php
-            if (isset($prebuiltPage)) {
-                echo $prebuiltPage;
-            } else if (is_array($contentPage)) {
-                foreach ($contentPage as $page) {
-                    echo view($page);
+            <div class="col">
+            <?php
+                if (isset($prebuiltPage)) {
+                    echo $prebuiltPage;
+                } else if (is_array($contentPage)) {
+                    foreach ($contentPage as $page) {
+                        echo view($page);
+                    }
+                } else {
+                    echo view($contentPage);
                 }
-            } else {
-                echo view($contentPage);
-            }
-        ?>
+            ?>
+            </div>
         </div>
     </div>
 </body>
