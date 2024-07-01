@@ -17,6 +17,7 @@ class TripReportModel extends Model
     public $title = '';
     public $body = '';
     public $map_copyright = 'Topomap data is Crown Copyright Reserved.';
+    public $private_land = 0;
     public $uploader_id = 0;
     public $uploader_name = '';
     public $upload_date = '';
