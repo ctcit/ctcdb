@@ -43,7 +43,7 @@
 
 </head>
 <body>
-    <div id="container">
+    <div class="container">
         <div class="row">
         <?php
             if (isset($prebuiltPage)) {
