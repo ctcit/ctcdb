@@ -1,4 +1,8 @@
 
+# Note that sometimes it is necessary to run the server as
+#   php spark serve --host 127.0.0.1
+# otherwise the VSCode REST client will not be able to connect to the server
+
 GET http://localhost:8080/rest/hutavailability HTTP/1.1
 
 ###
@@ -45,3 +49,35 @@ content-type: application/json
 }
 
 ###
+
+PUT http://localhost:8080/rest/hutbookings/103 HTTP/1.1
+
+{
+    "id": 103,
+    "member_id": 2218,
+    "start_date": "2024-05-14",
+    "nights": 3,
+    "bunks": "4",
+    "type": "Member",
+    "status": "Confirmed",
+    "notes": "",
+    "name": "Nick Edwards",
+    "email": "nickedwrds@gmail.com",
+    "phone": "0273656751",
+    "door_code": "6573",
+    "created_at": {
+        "date": "2024-05-04 17:54:42.000000",
+        "timezone_type": 3,
+        "timezone": "Pacific/Auckland"
+    },
+    "updated_at": {
+        "date": "2024-05-04 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Pacific/Auckland"
+    },
+    "deleted_at": {
+        "date": "-0001-11-30 00:00:00.000000",
+        "timezone_type": 3,
+        "timezone": "Pacific/Auckland"
+    }
+}
