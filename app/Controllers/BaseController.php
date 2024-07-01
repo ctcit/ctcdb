@@ -61,11 +61,11 @@ class BaseController extends Controller
         if ($contentPage !== null) {
             $data['contentPage'] = $contentPage;
         }
-        if (!$isEmbedd$isEmbedded) {
+        if (!$isEmbedded) {
             $data['menu'] = 'mainMenu';
         }
         $joomlaConfig = config('Joomla');
-        $data['joomlaBaseURL'] = $joomlaConfig->baseURL;T
+        $data['joomlaBaseURL'] = $joomlaConfig->baseURL;
         $template = $isEmbedded ? 'embeddedPageTemplate' : 'fullPageTemplate';
         return view($template, $data);
     }
