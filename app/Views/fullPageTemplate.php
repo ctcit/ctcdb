@@ -44,12 +44,14 @@
 <body>
 <div id="wrap">
     <?php
-        $menu_data = array(
-            'joomlaBaseURL' => $joomlaBaseURL,
-        );
-        echo "<div class='menu'>";
-        echo view($menu, $menu_data);
-        echo "</div>";
+        if (isset($menu)) {
+            $menu_data = array(
+                'joomlaBaseURL' => $joomlaBaseURL,
+            );
+            echo "<div class='menu'>";
+            echo view($menu, $menu_data);
+            echo "</div>";
+        }
     ?>
 
     <div class="main">

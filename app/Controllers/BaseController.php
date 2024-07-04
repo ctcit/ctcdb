@@ -52,7 +52,7 @@ class BaseController extends Controller
     // Support methods for loading pages
     // =================================
     protected function loadPage($contentPage, $title, $data = array(), 
-                                $isEmbedded = false )
+                                $isEmbedded = false)
     {
         $data['title'] = $title;
         if ($this->validator !== null) {
