@@ -302,7 +302,7 @@ class PostProcessor
     var $userpositions;
     var $username;
 
-    function PostProcessor($con,$username)
+    function __construct($con,$username)
     {
         // get the information about the current user from the sessions table
         $this->con 				= $con;

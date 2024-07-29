@@ -64,7 +64,7 @@ class RtfGenerator
     var $fielddata;
     var $debugtext = "";
 
-    function RtfGenerator($con)
+    function __construct($con)
     {
         $this->con          = $con;
         $this->fielddata    = ProcessFields($con);
