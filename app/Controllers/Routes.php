@@ -49,7 +49,7 @@ class Routes extends BaseController
                   'userID' => $this->currentMemberID,
                   'canEditAny' => $canEditAny,
                   'canEditOwn' => $canEditOwn),
-            self::NO_MENU
+            self::EMBEDDED
         );
     }
 
