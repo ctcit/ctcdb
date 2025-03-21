@@ -89,4 +89,15 @@ class Security extends BaseConfig
        * @var string 'Lax'|'None'|'Strict'
 	 */
 	public $samesite = 'Lax';
+
+	/**
+	 * --------------------------------------------------------------------------
+	 * reCaptha Secret Key
+	 * --------------------------------------------------------------------------
+	 *
+	 * Don't enter the real value here, instead set the value in the .env file!
+	 * 
+	 */
+	public $recaptchaSecretKey = '';
+
 }

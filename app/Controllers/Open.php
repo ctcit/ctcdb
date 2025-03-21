@@ -117,6 +117,79 @@ class Open extends BaseController
         }
     }
 
+    public function prospectiveMember()
+    {
+        return $this->loadPage('prospectiveMemberForm', "",
+                               array('postbackUrl' => "open/prospectiveMemberSubmit",
+                                     'css'=> "joomlaEmbedded.css"),
+                               self::EMBEDDED);
+    }
+
+    public function prospectiveMemberSubmit()
+    {
+        $request = $this->request;
+        $recaptchaResponse = $this->request->getPost("captcha-validated");
+        if (!$this->recaptchaVerify()) {
+            die("reCapcha verification failed. Please email members@ctc.org.nz for help.");
+        }
+        
+        if (empty($request->getPost('email')) || empty($request->getPost('email2'))) {
+            die("<p>An email address is required.</p>".
+                "<p>Please back up in the browser, correct the error and resubmit.</p>");
+        } else if ($request->getPost('email') != $request->getPost('email2')) {
+            die("<p>Sorry, your form could not be processed as the two email fields do not match.</p>".
+                "<p>Please back up in the browser, correct the error and resubmit.</p>");
+        } else {
+            // Now send the email
+            // The "name" field needs the leading underscore because for some reason Joola removes
+            // the "name" attribute from the input if it's value is "name" ?!?
+            $name = $request->getPost('_name');
+            $email = $request->getPost('email');
+            $email2 = $request->getPost('email2');
+            $phone = $request->getPost('phone');
+            $mobile = $request->getPost('mobile');
+            $address = $request->getPost('address');
+            $postcode = $request->getPost('postcode');
+            $howDidYouHear = $request->getPost('howdidyouhear');
+            $notes = $request->getPost('notes');
+
+            $body = <<<END
+New CTC Prospective Member Contact
+
+Name: $name
+Email: $email
+Email Veification: $email2
+Phone: $phone
+Mobile: $mobile
+Address: $address
+Postcode: $postcode
+How did you hear about the CTC: $howDidYouHear
+Notes: $notes
+END;
+            //$to = "new_members@ctc.org.nz"; // Todo look up a contact to find this
+            $to = "nickedwards@gmail.com";
+            $from = "new_members@ctc.org.nz";
+            $sender = "CTC website contact";
+            $subject = "CTC Proposed Member";
+
+            log_message('debug', 'Sending email to '.$to);
+            log_message('debug', 'From: '.$from.' Sender: '.$sender);
+            log_message('debug', 'Subject: '.$subject);
+            log_message('debug', 'Body: '.$body);  
+
+            if ( ENVIRONMENT === 'development' ) {
+                log_message('debug', 'Email not sent in development mode');
+            } else {
+                helper('utilities');
+            }
+            $mailSent = sendEmail($from, $sender, $to, $subject, $body);
+
+            echo( "<p>Your form has been submitted.</p>".
+                  "<p>Thank you for your interest in the CTC. Our Membership Officer wil be in touch with tyou soon.</p>" );
+        }
+        return true;
+    }
+
     // Send out any queued email messages from the mail_queue table.
     // This command is called via CRON every 15 minutes or so.
     // It will probably not run to completion, due to various timeouts.
@@ -186,5 +259,29 @@ class Open extends BaseController
             array('trips' => $allTrips),
             self::EMBEDDED
         );
+    }
+
+    private function recaptchaVerify()
+    {
+        $secret = config('Security')->recaptchaSecretKey;
+
+        // The response from reCAPTCHA
+        $recaptchaResponse = $this->request->getPost("g-recaptcha-response");
+
+        // The user's IP address
+        $remoteIP = $this->request->getIPAddress();
+
+        // Make the request to verify the reCAPTCHA response
+        $requestURL = "https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$recaptchaResponse}&remoteip={$remoteIP}";
+
+        if ( ENVIRONMENT === 'development' ) {
+            log_message('debug', 'Recaptcha verification skipped in development mode');
+            log_message('debug', 'Would have made request to: '.$requestURL);
+            return true;
+        }
+
+        $verifyResponse = file_get_contents($requestURL);
+        $responseData = json_decode($verifyResponse);
+        return $responseData->success;
     }
 }
