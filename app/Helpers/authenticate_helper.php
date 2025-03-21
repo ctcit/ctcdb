@@ -23,7 +23,19 @@ function authenticate() {
     //header("Cache-Control: no-store, no-cache, must-revalidate");
     //header("Pragma: no-cache");
     log_message('debug', 'Getting user data');
-    $data = getJoomlaUserData();
+    if ((getenv("CI_ENVIRONMENT") == 'development') &&
+        $fixed_user = getenv("TEST_USER")) {
+        $is_admin = getenv("TEST_IS_ADMIN");
+        $data = [
+            'userID' => $fixed_user,
+            'login' => '',
+            'roles' => $is_admin ? ["webmaster"] : [],
+            'hasFullAccess' => $is_admin,
+            'email' => '',
+            'name' => '' ];
+    } else {
+        $data = getJoomlaUserData();
+    }
     log_message('debug', 'Authentication hook result: ' . print_r($data, true));
     $session = session();
     $session->set($data);

@@ -6,6 +6,9 @@ ehthumbs.db
 Desktop.ini
 *~
 .vscode/
+vendor/
+
+composer.phar
 
 writable/cache/*
 !writable/cache/index.html
