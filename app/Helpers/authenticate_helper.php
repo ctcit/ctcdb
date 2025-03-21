@@ -11,6 +11,7 @@ function authenticate() {
      *     $session->userid is the logged-in user ID. 0 means not logged in.
      *     $session->login is the login name if logged in
      *     $session->name is the person's name, e.g. 'Richard Lobb'
+     *     $session->email is the users's email
      *     $session->hasFullAccess is a boolean true IFF this is a logged in
      *        club officer with at least one of the roles listed in the config parameter
      *        full_access_roles (see config.php).
@@ -19,27 +20,23 @@ function authenticate() {
      *
      * See https://codeigniter.com/user_guide/libraries/sessions.html
      */
-    // PENDING - The commented out rows don't seem to belong here - but where should they go?
-    //header("Cache-Control: no-store, no-cache, must-revalidate");
-    //header("Pragma: no-cache");
     log_message('debug', 'Getting user data');
     if ((getenv("CI_ENVIRONMENT") == 'development') &&
-        $fixed_user = getenv("TEST_USER")) {
-        $is_admin = getenv("TEST_IS_ADMIN");
+        $fixed_user = getenv("DEV_USER_ID")) {
+        $is_admin = getenv("DEV_USER_IS_ADMIN");
         $data = [
             'userID' => $fixed_user,
-            'login' => '',
+            'login' => getenv("DEV_USER_LOGIN"),
             'roles' => $is_admin ? ["webmaster"] : [],
             'hasFullAccess' => $is_admin,
-            'email' => '',
-            'name' => '' ];
+            'email' => getenv("DEV_USER_EMAIL"),
+            'name' => getenv("DEV_USER_NAME") ];
     } else {
         $data = getJoomlaUserData();
     }
     log_message('debug', 'Authentication hook result: ' . print_r($data, true));
     $session = session();
     $session->set($data);
-    //date_default_timezone_set("Pacific/Auckland");
 }
 
 /** Get memberId, loginname, fullname and list of committee roles for the

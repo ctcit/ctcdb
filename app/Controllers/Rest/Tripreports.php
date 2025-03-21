@@ -6,10 +6,12 @@ use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Models\TripReportModel;
 
 class TripReports extends BaseResourceController
 {
     private const NO_MENU = false;
+    private $tripReportModel;
 
     /**
      * Constructor.
@@ -146,6 +148,20 @@ class TripReports extends BaseResourceController
         }
         return $response;
     }
+
+    private function checkCanEdit($tripReportID)
+    {
+        // Check that the current user can edit the given trip report
+        $response = $this->checkValidUser();
+        if ($response === null) {
+            $row = $this->tripReportModel->getById($tripReportID);
+            if (count(session()->roles) === 0 && session()->userID !== $row->uploader_id) {
+                $response = $this->respond("You do not have permission to edit this item", 403);
+            }
+        }
+        return $response;
+    }
+
 }
 
 ?>

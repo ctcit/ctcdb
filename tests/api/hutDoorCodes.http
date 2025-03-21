@@ -1,0 +1,13 @@
+
+
+
+###
+
+POST http://localhost:8080/rest/hutdoorcodes HTTP/1.1
+content-type: application/json
+
+{
+    "current_code": "4569",
+    "future_code": "",
+    "future_effective": "2022-05-23"
+}

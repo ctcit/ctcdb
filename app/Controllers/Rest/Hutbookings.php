@@ -34,10 +34,22 @@ class HutBookings extends BaseResourceController
         if ($invalidResponse = $this->checkValidUser()) {
             return $invalidResponse;
         }
-        if ($this->isAdmin()) {
-            return $this->respond($this->model->findAll());
+        $pageSize = $this->request->getGet("pageSize") ?? 10;
+        if ($this->isAdmin() && !is_null($this->request->getGet("admin"))) {
+            $past = !is_null($this->request->getGet("past"));
+            $today = (new \DateTime("today"))->format('Y-m-d');
+            if ($past) {
+                return $this->respond($this->model->where("start_date < '$today'" )
+                                           ->orderBy("start_date", "desc")
+                                           ->paginate($pageSize));
+            } else {
+                return $this->respond($this->model->where("start_date >= '$today'")
+                                           ->orderBy("start_date", "asc")
+                                           ->paginate($pageSize));
+            }
         }
-        return $this->respond($this->model->findByMember(2218));
+        return $this->respond($this->model
+                                   ->findByMember(session()->userID, $pageSize));
     }
 
     public function show($id = 0)
@@ -46,7 +58,7 @@ class HutBookings extends BaseResourceController
             return $invalidResponse;
         }
         $onlyForId = !$this->isAdmin() ? session()->userID : null;
-        if ($result = $this->model->findById($id,$onlyForId)) {
+        if ($result = $this->model->findById($id, $onlyForId)) {
             return $this->respond($result);
         }
         return $this->respond("No booking with id=$id", 404);
@@ -59,7 +71,7 @@ class HutBookings extends BaseResourceController
         }
         $data = $this->getData();
         $booking = new \App\Models\HutBooking($data);
-        $result = $this->model->tryCreate($booking, 2218);
+        $result = $this->model->tryCreate($booking);
         if ($result['result'] != "OK")
         {
             return $this->respond(["status"=>"failed", "reason"=>$result['result']], 400);
@@ -73,19 +85,14 @@ class HutBookings extends BaseResourceController
             return $invalidResponse;
         }
         $data = $this->getData();
-        $existingBooking = $this->model->find($id);
-        if ($existingBooking) {
-            if (!$this->isAdmin() && $invalidResponse = $this->checkIsUser($existingBooking->member_id)) {
-                return $invalidResponse;
-            }
-            $update = new \App\Models\HutBooking($data);
-            $update->id = $id;
-            if ($this->model->save($update)) {
-                $existingBooking = $this->model->find($id);
-                return $this->respond($existingBooking, 200);
-            }
+        $data['id'] = $id;
+        $booking = new \App\Models\HutBooking($data);
+        $result = $this->model->tryUpdate($booking);
+        if ($result['result'] != "OK")
+        {
+            return $this->respond(["status"=>"failed", "reason"=>$result['result']], 400);
         }
-        return $this->respond("Failed", 400);
+        return $this->respond($result['booking']);
     }
 
     public function delete($id = null)
