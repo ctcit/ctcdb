@@ -1,6 +1,11 @@
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+ <script src="https://www.google.com/recaptcha/api.js"></script>
+ <script>
+   function onSubmit(token) {
+     document.getElementById("prospective-member-form").submit();
+   }
+ </script>
 
-<?php echo form_open($postbackUrl); ?>
+<?php echo form_open($postbackUrl, ['id' => 'prospective-member-form']); ?>
 <h2>Prospective Member Form</h2>
 <p>Most of the information you will need to know about the club can be found on the <a href="index.php/about/about-ctc" rel="alternate">About the CTC</a> page of this website.</p>
 <p>Once you have read that, assuming you still want to join the club, please fill in the form below.</p>
@@ -50,7 +55,11 @@
 <p>Notes:<textarea cols="50" name="notes" rows="5"></textarea></p>
 <input class="captcha-validated" name="captcha-validated" type="hidden" value="false" />
 <div class="recaptcha-error">
-<div id="prospective-member" class="g-recaptcha" data-sitekey="6LeZ6kQUAAAAAHqD1WE97lF6gkAXO0hFhKhjU4L0" data-callback="onSuccess"></div>
-</div>
-<div class="pt-3"><input class="btn ctc-button" type="submit" value="Submit" default/></div>
+<!--<div id="prospective-member" class="g-recaptcha" data-sitekey="6Ld8F6YoAAAAAOKsw2dOvJfY6rDBzSfgDArOCHSy" data-callback="onSuccess"></div>
+</div>-->
+<!--<div class="pt-3"><input class="btn ctc-button" type="submit" value="Submit" default/></div>-->
+<button class="g-recaptcha btn ctc-button" 
+        data-sitekey="6Ld8F6YoAAAAAOKsw2dOvJfY6rDBzSfgDArOCHSy" 
+        data-callback='onSubmit' 
+        data-action='submit'>Submit</button>
 </form>

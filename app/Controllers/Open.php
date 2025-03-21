@@ -130,7 +130,7 @@ class Open extends BaseController
         $request = $this->request;
         $recaptchaResponse = $this->request->getPost("captcha-validated");
         if (!$this->recaptchaVerify()) {
-            die("reCapcha verification failed. Please email members@ctc.org.nz for help.");
+            die("reCapcha verification failed. Please email membership@ctc.org.nz for help.");
         }
         
         if (empty($request->getPost('email')) || empty($request->getPost('email2'))) {
@@ -166,9 +166,8 @@ Postcode: $postcode
 How did you hear about the CTC: $howDidYouHear
 Notes: $notes
 END;
-            //$to = "new_members@ctc.org.nz"; // Todo look up a contact to find this
-            $to = "nickedwards@gmail.com";
-            $from = "new_members@ctc.org.nz";
+            $to = "membership@ctc.org.nz"; // Todo look up a contact to find this
+            $from = "membership@ctc.org.nz";
             $sender = "CTC website contact";
             $subject = "CTC Proposed Member";
 
@@ -274,9 +273,9 @@ END;
         // Make the request to verify the reCAPTCHA response
         $requestURL = "https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$recaptchaResponse}&remoteip={$remoteIP}";
 
+        log_message('debug', 'Sending recaptcha request to: '.$requestURL);
         if ( ENVIRONMENT === 'development' ) {
             log_message('debug', 'Recaptcha verification skipped in development mode');
-            log_message('debug', 'Would have made request to: '.$requestURL);
             return true;
         }
 
