@@ -270,7 +270,7 @@ trait RequestTrait
 			{
 				$values[$key] = is_array($value)
 					? $this->fetchGlobal($method, $key, $filter, $flags)
-					: filter_var($value, $filter, $flags);
+					: filter_var($value, $filter, $flags ?? 0);
 			}
 
 			return $values;
@@ -335,7 +335,7 @@ trait RequestTrait
 			return $value;
 		}
 
-		return filter_var($value, $filter, $flags);
+		return filter_var($value, $filter, $flags ?? 0);
 	}
 
 	//--------------------------------------------------------------------
