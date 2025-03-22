@@ -169,7 +169,7 @@ END;
             $to = "membership@ctc.org.nz"; // Todo look up a contact to find this
             $from = "membership@ctc.org.nz";
             $sender = "CTC website contact";
-            $subject = "CTC Proposed Member";
+            $subject = "CTC Prospective Member";
 
             log_message('debug', 'Sending email to '.$to);
             log_message('debug', 'From: '.$from.' Sender: '.$sender);
@@ -184,7 +184,7 @@ END;
             $mailSent = sendEmail($from, $sender, $to, $subject, $body);
 
             echo( "<p>Your form has been submitted.</p>".
-                  "<p>Thank you for your interest in the CTC. Our Membership Officer wil be in touch with tyou soon.</p>" );
+                  "<p>Thank you for your interest in the CTC. Our Membership Officer will be in touch with you soon.</p>" );
         }
         return true;
     }
