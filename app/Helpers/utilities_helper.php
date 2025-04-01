@@ -41,7 +41,8 @@ function sendEmail($from, $fromName, $to, $subject, $message, $cc=NULL)
     $toString = is_array($to) ? join(',', $to) : $to;
     log_message('debug', 'To: '.$toString);
     if ($cc) {
-        log_message('debug', 'CC: '.join(',', $cc));
+        $ccString = is_array($cc) ? join(',', $cc) : $cc;
+        log_message('debug', 'CC: '.$ccString);
     }
     log_message('debug', 'From: '.$trueFromEmail.' '.$trueFromName);
     log_message('debug', 'Reply-To: '.$from.' '.$fromName);
