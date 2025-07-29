@@ -627,6 +627,7 @@ class Entity implements JsonSerializable
 	 * @return array|mixed
 	 * @throws Exception
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize()
 	{
 		return $this->toArray();

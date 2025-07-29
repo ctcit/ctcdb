@@ -275,6 +275,7 @@ class Time extends DateTime
 	 * @return Time
 	 * @throws Exception
 	 */
+	#[\ReturnTypeWillChange]
 	public static function createFromFormat($format, $datetime, $timeZone = null)
 	{
 		if (! $date = parent::createFromFormat($format, $datetime))
@@ -764,6 +765,7 @@ class Time extends DateTime
 	 * @return Time
 	 * @throws Exception
 	 */
+	#[\ReturnTypeWillChange]
 	public function setTimezone($timezone)
 	{
 		$timezone = $timezone instanceof DateTimeZone ? $timezone : new DateTimeZone($timezone);
@@ -778,6 +780,7 @@ class Time extends DateTime
 	 * @return Time
 	 * @throws Exception
 	 */
+	#[\ReturnTypeWillChange]
 	public function setTimestamp($timestamp)
 	{
 		$time = date('Y-m-d H:i:s', $timestamp);
@@ -1351,6 +1354,7 @@ class Time extends DateTime
 	/**
 	 * This is called when we unserialize the Time object.
 	 */
+	#[\ReturnTypeWillChange]
 	public function __wakeup()
 	{
 		/**
