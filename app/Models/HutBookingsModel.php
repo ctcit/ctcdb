@@ -25,7 +25,7 @@ class HutBookingsModel extends Model
 
     protected $primaryKey = 'id';
     protected $allowedFields = [
-        'member_id', 'start_date', 'nights', 'bunks',
+        'type', 'member_id', 'start_date', 'nights', 'bunks',
         'status', 'notes', 'name', 'email', 'phone', 'door_code'
     ];
     protected $returnType = 'App\Models\HutBooking';
