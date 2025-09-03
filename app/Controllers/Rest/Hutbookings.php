@@ -95,6 +95,20 @@ class HutBookings extends BaseResourceController
         return $this->respond($result['booking']);
     }
 
+    public function checkDoorCodes()
+    {
+        if ($invalidResponse = $this->checkValidUser()) {
+            return $invalidResponse;
+        }
+        $data = $this->getData();
+        $doorCodes = $this->model->checkDoorCodes($data['door_codes']);
+        if (empty($doorCodes)) {
+            return $this->respond("No door codes found", 404);
+        }
+        return $this->respond($doorCodes);
+    }
+
+    // No delete - we use update with status=Cancelled
     /*
     public function delete($id = null)
     {

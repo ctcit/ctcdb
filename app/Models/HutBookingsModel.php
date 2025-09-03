@@ -363,7 +363,7 @@ EOT;
     {
         // Send an email to the hut booking team
         $text = <<<EOT
-The following CTC hut booking has been cancelled.
+The following CTC hut booking has been cancelled:
 
 Name: $booking->name
 Email: $booking->email
